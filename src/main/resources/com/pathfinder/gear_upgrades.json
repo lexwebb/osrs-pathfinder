@@ -57,7 +57,7 @@
     "slot": "WEAPON",
     "style": "MELEE",
     "tier": "MID",
-    "item_id": 28987,
+    "item_id": 28810,
     "recommended_combat": 65,
     "skill_reqs": [
       {
@@ -113,7 +113,7 @@
     "slot": "WEAPON",
     "style": "MELEE",
     "tier": "MID",
-    "item_id": 23544,
+    "item_id": 23528,
     "recommended_combat": 70,
     "skill_reqs": [
       {
@@ -349,7 +349,7 @@
     "slot": "BODY",
     "style": "MELEE",
     "tier": "LATE",
-    "item_id": 28929,
+    "item_id": 29022,
     "recommended_combat": 75,
     "skill_reqs": [
       {
@@ -901,7 +901,7 @@
     "slot": "WEAPON",
     "style": "MAGIC",
     "tier": "MID",
-    "item_id": 28581,
+    "item_id": 28585,
     "recommended_combat": 65,
     "skill_reqs": [
       {

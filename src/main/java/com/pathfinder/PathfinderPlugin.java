@@ -146,7 +146,8 @@ public class PathfinderPlugin extends Plugin
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
-		if (event.getContainerId() == InventoryID.BANK.getId())
+		int containerId = event.getContainerId();
+		if (containerId == InventoryID.BANK.getId())
 		{
 			ItemContainer bankContainer = event.getItemContainer();
 			if (bankContainer != null)
@@ -154,6 +155,10 @@ public class PathfinderPlugin extends Plugin
 				processBankSnapshot(bankContainer);
 				scanAccount();
 			}
+		}
+		else if (containerId == InventoryID.INVENTORY.getId() || containerId == InventoryID.EQUIPMENT.getId())
+		{
+			clientThread.invokeLater(this::scanAccount);
 		}
 	}
 
@@ -172,20 +177,26 @@ public class PathfinderPlugin extends Plugin
 			}
 
 			int id = item.getId();
+			int canonicalId = itemManager.canonicalize(id);
 			int qty = item.getQuantity();
 
 			ownedItemIds.add(id);
+			ownedItemIds.add(canonicalId);
 
-			if (id == ItemID.COINS_995)
+			if (canonicalId == ItemID.COINS_995 || id == ItemID.COINS_995)
 			{
 				coins += qty;
 			}
-			else if (id == ItemID.PLATINUM_TOKEN)
+			else if (canonicalId == ItemID.PLATINUM_TOKEN || id == ItemID.PLATINUM_TOKEN)
 			{
 				platinumTokens += qty;
 			}
 
-			long price = itemManager.getItemPrice(id);
+			long price = itemManager.getItemPrice(canonicalId);
+			if (price <= 0)
+			{
+				price = itemManager.getItemPrice(id);
+			}
 			estimatedTotal += (price * qty);
 		}
 
@@ -200,7 +211,7 @@ public class PathfinderPlugin extends Plugin
 			.timestamp(System.currentTimeMillis())
 			.build();
 
-		log.debug("Pathfinder bank scanned: Cash {}, Bank Total {}", liquidCash, estimatedTotal);
+		log.debug("Pathfinder bank scanned: Cash {}, Bank Total {}, Items {}", liquidCash, estimatedTotal, ownedItemIds.size());
 	}
 
 	public void requestAccountScan()
@@ -296,12 +307,16 @@ public class PathfinderPlugin extends Plugin
 
 		// Inventory & equipment items
 		BankSnapshot snapshot = lastBankSnapshot;
+		Set<Integer> allOwned = new HashSet<>();
 		if (snapshot != null)
 		{
-			Set<Integer> allOwned = new HashSet<>(snapshot.getOwnedItemIds());
-			addItemsFromContainer(InventoryID.INVENTORY, allOwned);
-			addItemsFromContainer(InventoryID.EQUIPMENT, allOwned);
+			allOwned.addAll(snapshot.getOwnedItemIds());
+		}
+		addItemsFromContainer(InventoryID.INVENTORY, allOwned);
+		addItemsFromContainer(InventoryID.EQUIPMENT, allOwned);
 
+		if (snapshot != null)
+		{
 			snapshot = BankSnapshot.builder()
 				.coins(snapshot.getCoins())
 				.platinumTokens(snapshot.getPlatinumTokens())
@@ -310,10 +325,17 @@ public class PathfinderPlugin extends Plugin
 				.ownedItemIds(allOwned)
 				.timestamp(snapshot.getTimestamp())
 				.build();
-
-			// In Bronzeman mode, any item ever found in bank/inventory counts as unlocked
-			unlockedItemIds.addAll(allOwned);
 		}
+		else if (!allOwned.isEmpty())
+		{
+			snapshot = BankSnapshot.builder()
+				.ownedItemIds(allOwned)
+				.timestamp(System.currentTimeMillis())
+				.build();
+		}
+
+		// In Bronzeman mode, any item ever found in bank/inventory counts as unlocked
+		unlockedItemIds.addAll(allOwned);
 
 		Set<String> completedDiaries = new HashSet<>();
 		try
@@ -416,6 +438,7 @@ public class PathfinderPlugin extends Plugin
 				if (item != null && item.getId() > 0)
 				{
 					targetSet.add(item.getId());
+					targetSet.add(itemManager.canonicalize(item.getId()));
 				}
 			}
 		}

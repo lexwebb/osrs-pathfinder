@@ -239,4 +239,36 @@ public class RecommendationEngineTest
 		// Since it is already unlocked in Bronzeman, it only requires Attack 70 to equip
 		Assert.assertEquals(Recommendation.Status.READY, whipRec.getStatus());
 	}
+
+	@Test
+	public void testOwnedItemsInBankAreNotRecommended()
+	{
+		Map<Skill, Integer> skills = new HashMap<>();
+		for (Skill s : Skill.values())
+		{
+			skills.put(s, 80);
+		}
+
+		Set<Integer> owned = new HashSet<>();
+		owned.add(28810); // Zombie Axe in bank
+
+		BankSnapshot snapshot = BankSnapshot.builder()
+			.timestamp(System.currentTimeMillis())
+			.totalLiquidCash(5_000_000)
+			.ownedItemIds(owned)
+			.build();
+
+		AccountProfile profile = AccountProfile.builder()
+			.combatLevel(100)
+			.totalLevel(1600)
+			.skills(skills)
+			.bankSnapshot(snapshot)
+			.build();
+
+		List<Recommendation> recs = engine.evaluateAll(profile);
+		boolean hasZombieAxe = recs.stream()
+			.anyMatch(r -> "gear-zombie-axe".equals(r.getActivity().getId()));
+
+		Assert.assertFalse("Owned Zombie Axe (28810) must NOT be recommended", hasZombieAxe);
+	}
 }
