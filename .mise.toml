@@ -1,0 +1,5 @@
+[tools]
+java = "17.0.2"
+
+[env]
+JAVA_HOME = "/home/lex/.local/share/mise/installs/java/17.0.2"
