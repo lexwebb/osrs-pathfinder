@@ -13,11 +13,11 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
+import net.runelite.client.ui.DynamicGridLayout;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.LinkBrowser;
 
@@ -32,25 +32,23 @@ public class RecommendationCard extends JPanel
 	private static final Color LOCKED_COLOR = new Color(229, 57, 53);
 	private static final Color LOCKED_BG = new Color(50, 20, 20);
 
-	private static final Color GOLD_HIGHLIGHT = new Color(241, 196, 15);
+	private static final Color BRONZEMAN_COPPER = new Color(205, 127, 50);
+	private static final Color BRONZEMAN_BG = new Color(50, 30, 15);
 
 	public RecommendationCard(Recommendation rec)
 	{
 		Activity activity = rec.getActivity();
 
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		setAlignmentX(Component.LEFT_ALIGNMENT);
+		setLayout(new DynamicGridLayout(0, 1, 0, 4));
 		setBackground(ColorScheme.DARKER_GRAY_COLOR);
 		setBorder(BorderFactory.createCompoundBorder(
 			BorderFactory.createMatteBorder(0, 3, 0, 0, getStatusBorderColor(rec.getStatus())),
-			new EmptyBorder(7, 8, 7, 8)
+			new EmptyBorder(6, 8, 6, 8)
 		));
 
 		// 1. Header Row (Title on left, Status badge on right)
 		JPanel headerRow = new JPanel(new BorderLayout(4, 0));
 		headerRow.setOpaque(false);
-		headerRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-		headerRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
 
 		JLabel titleLabel = new JLabel(activity.getTitle());
 		titleLabel.setFont(FontManager.getRunescapeBoldFont());
@@ -93,35 +91,32 @@ public class RecommendationCard extends JPanel
 		// 2. Unlock Highlight (if present)
 		if (activity.getUnlockHighlight() != null && !activity.getUnlockHighlight().isEmpty())
 		{
-			add(Box.createRigidArea(new Dimension(0, 3)));
 			JLabel unlockLabel = new JLabel("<html><body style='width: 190px; color: #f1c40f;'><b>★ "
 				+ activity.getUnlockHighlight() + "</b></body></html>");
 			unlockLabel.setFont(FontManager.getRunescapeSmallFont());
-			unlockLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			add(unlockLabel);
 		}
 
 		// 3. Description
 		if (activity.getDescription() != null && !activity.getDescription().isEmpty())
 		{
-			add(Box.createRigidArea(new Dimension(0, 3)));
 			JLabel descLabel = new JLabel("<html><body style='width: 190px; color: #b0b0b0; line-height: 1.15;'>"
 				+ activity.getDescription() + "</body></html>");
 			descLabel.setFont(FontManager.getRunescapeSmallFont());
-			descLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			add(descLabel);
 		}
 
 		// 4. Missing Requirements / Prerequisites (if any)
 		if (!rec.getMissingRequirements().isEmpty())
 		{
-			add(Box.createRigidArea(new Dimension(0, 4)));
+			JPanel reqPanel = new JPanel();
+			reqPanel.setLayout(new BoxLayout(reqPanel, BoxLayout.Y_AXIS));
+			reqPanel.setOpaque(false);
 
 			JLabel reqTitle = new JLabel("Prerequisites:");
 			reqTitle.setFont(FontManager.getRunescapeSmallFont());
 			reqTitle.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
-			reqTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-			add(reqTitle);
+			reqPanel.add(reqTitle);
 
 			Color bulletColor = rec.getStatus() == Recommendation.Status.ALMOST_READY ? ALMOST_READY_COLOR : LOCKED_COLOR;
 			for (String miss : rec.getMissingRequirements())
@@ -129,19 +124,16 @@ public class RecommendationCard extends JPanel
 				JLabel reqItem = new JLabel("<html><body style='width: 185px;'>• " + miss + "</body></html>");
 				reqItem.setFont(FontManager.getRunescapeSmallFont());
 				reqItem.setForeground(bulletColor);
-				reqItem.setAlignmentX(Component.LEFT_ALIGNMENT);
-				add(reqItem);
+				reqPanel.add(reqItem);
 			}
+			add(reqPanel);
 		}
 
 		// 5. Footer Row (Tags on left, Wiki Link on right)
-		add(Box.createRigidArea(new Dimension(0, 5)));
 		JPanel footerRow = new JPanel(new BorderLayout(4, 0));
 		footerRow.setOpaque(false);
-		footerRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-		footerRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 
-		// Tags panel (first 2-3 tags to fit neatly)
+		// Tags panel
 		JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 0));
 		tagPanel.setOpaque(false);
 		int tagCount = 0;
@@ -150,8 +142,19 @@ public class RecommendationCard extends JPanel
 			if (tagCount >= 3) break;
 			JLabel tagBadge = new JLabel(" " + tag + " ");
 			tagBadge.setFont(FontManager.getRunescapeSmallFont());
-			tagBadge.setForeground(new Color(175, 175, 175));
-			tagBadge.setBackground(ColorScheme.DARK_GRAY_COLOR);
+
+			if ("Bronzeman Unlock".equalsIgnoreCase(tag))
+			{
+				tagBadge.setForeground(BRONZEMAN_COPPER);
+				tagBadge.setBackground(BRONZEMAN_BG);
+				tagBadge.setBorder(BorderFactory.createLineBorder(BRONZEMAN_COPPER, 1));
+			}
+			else
+			{
+				tagBadge.setForeground(new Color(175, 175, 175));
+				tagBadge.setBackground(ColorScheme.DARK_GRAY_COLOR);
+			}
+
 			tagBadge.setOpaque(true);
 			tagPanel.add(tagBadge);
 			tagCount++;

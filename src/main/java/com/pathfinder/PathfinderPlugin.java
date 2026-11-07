@@ -29,6 +29,7 @@ import net.runelite.api.vars.AccountType;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
@@ -40,7 +41,7 @@ import net.runelite.client.util.ImageUtil;
 @PluginDescriptor(
 	name = "Pathfinder",
 	description = "Intelligent next-step adventure advisor and unlock discovery engine",
-	tags = {"pathfinder", "quests", "goals", "suggestions", "skilling", "bossing", "gear"}
+	tags = {"pathfinder", "quests", "goals", "suggestions", "skilling", "bossing", "gear", "bronzeman"}
 )
 public class PathfinderPlugin extends Plugin
 {
@@ -55,6 +56,9 @@ public class PathfinderPlugin extends Plugin
 
 	@Inject
 	private ItemManager itemManager;
+
+	@Inject
+	private ConfigManager configManager;
 
 	@Inject
 	private PathfinderConfig config;
@@ -114,8 +118,16 @@ public class PathfinderPlugin extends Plugin
 	@Subscribe
 	public void onStatChanged(StatChanged statChanged)
 	{
-		// Refresh recommendations dynamically when a stat levels up
 		if (client.getGameState() == GameState.LOGGED_IN)
+		{
+			clientThread.invokeLater(this::scanAccount);
+		}
+	}
+
+	@Subscribe
+	public void onConfigChanged(ConfigChanged event)
+	{
+		if ("pathfinder".equals(event.getGroup()))
 		{
 			clientThread.invokeLater(this::scanAccount);
 		}
@@ -207,7 +219,44 @@ public class PathfinderPlugin extends Plugin
 			: 3;
 
 		AccountType accountType = client.getAccountType();
-		boolean isIronman = accountType != null && accountType.isIronman();
+
+		// Account restriction modes (Standard, Ironman, Bronzeman)
+		boolean isIronman = false;
+		boolean isBronzeman = false;
+
+		PathfinderConfig.AccountMode mode = config.accountMode();
+		if (mode == PathfinderConfig.AccountMode.BRONZEMAN)
+		{
+			isBronzeman = true;
+		}
+		else if (mode == PathfinderConfig.AccountMode.IRONMAN)
+		{
+			isIronman = true;
+		}
+		else if (mode == PathfinderConfig.AccountMode.STANDARD)
+		{
+			isIronman = false;
+			isBronzeman = false;
+		}
+		else // AUTO_DETECT
+		{
+			isIronman = accountType != null && accountType.isIronman();
+			// Auto-detect Bronzeman if user has bronzeman plugin configuration
+			String bmConfig = configManager.getConfiguration("bronzemanmode", "unlockedItems");
+			if (bmConfig == null)
+			{
+				bmConfig = configManager.getConfiguration("anotherbronzemanmode", "unlockedItems");
+			}
+			if (bmConfig != null && !bmConfig.isEmpty())
+			{
+				isBronzeman = true;
+			}
+		}
+
+		// Read Bronzeman unlocked items from config
+		Set<Integer> unlockedItemIds = new HashSet<>();
+		readBronzemanUnlocks("bronzemanmode", unlockedItemIds);
+		readBronzemanUnlocks("anotherbronzemanmode", unlockedItemIds);
 
 		Set<String> completedQuests = new HashSet<>();
 		for (Quest quest : Quest.values())
@@ -225,7 +274,7 @@ public class PathfinderPlugin extends Plugin
 			}
 		}
 
-		// Also collect inventory & equipment into owned items if bank snapshot exists
+		// Inventory & equipment items
 		BankSnapshot snapshot = lastBankSnapshot;
 		if (snapshot != null)
 		{
@@ -241,20 +290,43 @@ public class PathfinderPlugin extends Plugin
 				.ownedItemIds(allOwned)
 				.timestamp(snapshot.getTimestamp())
 				.build();
+
+			// In Bronzeman mode, any item ever found in bank/inventory counts as unlocked
+			unlockedItemIds.addAll(allOwned);
 		}
 
 		AccountProfile profile = AccountProfile.builder()
 			.combatLevel(combatLevel)
 			.totalLevel(totalLevel)
 			.isIronman(isIronman)
+			.isBronzeman(isBronzeman)
 			.skills(skills)
 			.completedQuests(completedQuests)
+			.unlockedItemIds(unlockedItemIds)
 			.bankSnapshot(snapshot)
 			.build();
 
 		if (panel != null)
 		{
 			panel.updateProfile(profile);
+		}
+	}
+
+	private void readBronzemanUnlocks(String group, Set<Integer> targetSet)
+	{
+		String data = configManager.getConfiguration(group, "unlockedItems");
+		if (data != null && !data.isEmpty())
+		{
+			for (String part : data.split("[,;\\s]+"))
+			{
+				try
+				{
+					targetSet.add(Integer.parseInt(part.trim()));
+				}
+				catch (NumberFormatException ignored)
+				{
+				}
+			}
 		}
 	}
 

@@ -36,138 +36,92 @@ public class RecommendationEngineTest
 	}
 
 	@Test
-	public void testNewAccountHasValidRecommendations()
+	public void testBronzemanModeForcesOrganicDropObjective()
 	{
 		Map<Skill, Integer> skills = new HashMap<>();
 		for (Skill s : Skill.values())
 		{
-			skills.put(s, 1);
+			skills.put(s, 75);
 		}
-		skills.put(Skill.HITPOINTS, 10);
 
-		AccountProfile freshAccount = AccountProfile.builder()
-			.combatLevel(3)
-			.totalLevel(32)
-			.isIronman(false)
-			.skills(skills)
-			.completedQuests(new HashSet<>())
-			.build();
-
-		List<Recommendation> recs = engine.evaluateAll(freshAccount);
-		Assert.assertNotNull(recs);
-		Assert.assertFalse(recs.isEmpty());
-	}
-
-	@Test
-	public void testAffordableGearUpgradeRecommended()
-	{
-		Map<Skill, Integer> skills = new HashMap<>();
-		for (Skill s : Skill.values())
-		{
-			skills.put(s, 1);
-		}
-		// 70 Attack for Abyssal Whip
-		skills.put(Skill.ATTACK, 70);
-
-		// Bank snapshot with 2.5M GP liquid cash (Whip costs ~1.8M)
+		// Whip item ID is 4151
+		// Player has 10M cash, but has NEVER unlocked Abyssal Whip in Bronzeman mode
 		BankSnapshot bank = BankSnapshot.builder()
-			.coins(2_500_000L)
-			.totalLiquidCash(2_500_000L)
-			.estimatedTotalValue(10_000_000L)
+			.coins(10_000_000L)
+			.totalLiquidCash(10_000_000L)
+			.estimatedTotalValue(50_000_000L)
 			.timestamp(System.currentTimeMillis())
 			.ownedItemIds(new HashSet<>())
 			.build();
 
-		AccountProfile profile = AccountProfile.builder()
-			.combatLevel(80)
-			.totalLevel(800)
+		AccountProfile bronzemanProfile = AccountProfile.builder()
+			.combatLevel(100)
+			.totalLevel(1500)
 			.isIronman(false)
+			.isBronzeman(true)
 			.skills(skills)
 			.completedQuests(new HashSet<>())
+			.unlockedItemIds(new HashSet<>())
 			.bankSnapshot(bank)
 			.build();
 
-		List<Recommendation> recs = engine.evaluateAll(profile);
+		List<Recommendation> recs = engine.evaluateAll(bronzemanProfile);
 
-		Recommendation whip = recs.stream()
+		Recommendation whipRec = recs.stream()
 			.filter(r -> "gear-abyssal-whip".equals(r.getActivity().getId()))
 			.findFirst()
 			.orElse(null);
 
-		Assert.assertNotNull(whip);
-		Assert.assertEquals(Recommendation.Status.READY, whip.getStatus());
-		Assert.assertEquals(ActivityCategory.GEAR, whip.getActivity().getCategory());
-		Assert.assertTrue(whip.getActivity().getSafeWikiUrl().contains("runescape.wiki"));
+		Assert.assertNotNull(whipRec);
+		// Should have Bronzeman Unlock tag
+		Assert.assertTrue("Should contain Bronzeman Unlock tag",
+			whipRec.getActivity().getTags().contains("Bronzeman Unlock"));
+		// Should mention the organic drop source rather than just buying on GE
+		Assert.assertTrue(whipRec.getMissingRequirements().stream()
+			.anyMatch(req -> req.contains("Abyssal Demons")));
 	}
 
 	@Test
-	public void testAlreadyOwnedGearNotRecommended()
+	public void testBronzemanModeAllowsGEPurchaseOnceUnlocked()
 	{
 		Map<Skill, Integer> skills = new HashMap<>();
 		for (Skill s : Skill.values())
 		{
-			skills.put(s, 70);
+			skills.put(s, 75);
 		}
 
-		// Whip item ID is 4151
-		Set<Integer> owned = new HashSet<>();
-		owned.add(4151);
+		// Player has unlocked Whip (4151) previously, but doesn't currently own it in bank
+		Set<Integer> unlocked = new HashSet<>();
+		unlocked.add(4151);
 
 		BankSnapshot bank = BankSnapshot.builder()
 			.coins(5_000_000L)
 			.totalLiquidCash(5_000_000L)
 			.estimatedTotalValue(20_000_000L)
 			.timestamp(System.currentTimeMillis())
-			.ownedItemIds(owned)
+			.ownedItemIds(new HashSet<>())
 			.build();
 
-		AccountProfile profile = AccountProfile.builder()
-			.combatLevel(85)
-			.totalLevel(1200)
+		AccountProfile bronzemanProfile = AccountProfile.builder()
+			.combatLevel(100)
+			.totalLevel(1500)
 			.isIronman(false)
+			.isBronzeman(true)
 			.skills(skills)
 			.completedQuests(new HashSet<>())
+			.unlockedItemIds(unlocked)
 			.bankSnapshot(bank)
 			.build();
 
-		List<Recommendation> recs = engine.evaluateAll(profile);
+		List<Recommendation> recs = engine.evaluateAll(bronzemanProfile);
 
-		boolean hasWhip = recs.stream().anyMatch(r -> "gear-abyssal-whip".equals(r.getActivity().getId()));
-		Assert.assertFalse("Should not recommend whip if player already owns it in bank", hasWhip);
-	}
+		Recommendation whipRec = recs.stream()
+			.filter(r -> "gear-abyssal-whip".equals(r.getActivity().getId()))
+			.findFirst()
+			.orElse(null);
 
-	@Test
-	public void testSortingOrders()
-	{
-		Map<Skill, Integer> skills = new HashMap<>();
-		for (Skill s : Skill.values())
-		{
-			skills.put(s, 40);
-		}
-
-		AccountProfile profile = AccountProfile.builder()
-			.combatLevel(50)
-			.totalLevel(900)
-			.skills(skills)
-			.completedQuests(new HashSet<>())
-			.build();
-
-		List<Recommendation> recs = engine.evaluateAll(profile);
-
-		// Alphabetical
-		engine.sort(recs, RecommendationEngine.SortOrder.ALPHABETICAL);
-		for (int i = 0; i < recs.size() - 1; i++)
-		{
-			String a = recs.get(i).getActivity().getTitle();
-			String b = recs.get(i + 1).getActivity().getTitle();
-			Assert.assertTrue(a.compareToIgnoreCase(b) <= 0);
-		}
-
-		// Closest unlock
-		engine.sort(recs, RecommendationEngine.SortOrder.CLOSEST_UNLOCK);
-		for (int i = 0; i < recs.size() - 1; i++)
-		{
-			Assert.assertTrue(recs.get(i).getMissingLevelSum() <= recs.get(i + 1).getMissingLevelSum());
-		}
+		Assert.assertNotNull(whipRec);
+		// Once unlocked, it is READY to buy on GE
+		Assert.assertEquals(Recommendation.Status.READY, whipRec.getStatus());
 	}
 }

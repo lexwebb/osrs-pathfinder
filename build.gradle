@@ -41,6 +41,9 @@ tasks.register('run', JavaExec) {
 
 	jvmArgs "-ea"
 	args "--developer-mode", "--debug"
+
+	environment "WEBKIT_DISABLE_DMABUF_RENDERER", "1"
+	environment "WEBKIT_DISABLE_COMPOSITING_MODE", "1"
 }
 
 tasks.register('shadowJar', Jar) {

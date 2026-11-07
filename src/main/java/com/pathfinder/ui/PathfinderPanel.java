@@ -34,10 +34,13 @@ import net.runelite.client.util.LinkBrowser;
 
 public class PathfinderPanel extends PluginPanel
 {
+	private static final Color BRONZE_COLOR = new Color(205, 127, 50);
+
 	private final PathfinderPlugin plugin;
 	private final RecommendationEngine engine;
 
 	private final JLabel headerTitle = new JLabel("OSRS Pathfinder");
+	private final JLabel modeBadge = new JLabel("");
 	private final JLabel statusSummary = new JLabel("Log in to scan account");
 	private final JLabel bankSummary = new JLabel("💰 Open bank to scan wealth & gear");
 
@@ -69,10 +72,20 @@ public class PathfinderPanel extends PluginPanel
 		topContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		topContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		// 1. Header Title & Subtitle
+		// 1. Header Title Row with Mode Badge
+		JPanel titleRow = new JPanel(new BorderLayout(4, 0));
+		titleRow.setOpaque(false);
+		titleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+		titleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
+
 		headerTitle.setFont(FontManager.getRunescapeBoldFont());
 		headerTitle.setForeground(ColorScheme.BRAND_ORANGE);
-		headerTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		modeBadge.setFont(FontManager.getRunescapeSmallFont());
+		modeBadge.setForeground(BRONZE_COLOR);
+
+		titleRow.add(headerTitle, BorderLayout.WEST);
+		titleRow.add(modeBadge, BorderLayout.EAST);
 
 		statusSummary.setFont(FontManager.getRunescapeSmallFont());
 		statusSummary.setForeground(Color.WHITE);
@@ -142,7 +155,7 @@ public class PathfinderPanel extends PluginPanel
 		toggleRow.add(hiddenGemsCheck);
 
 		// Assemble Header
-		topContainer.add(headerTitle);
+		topContainer.add(titleRow);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 2)));
 		topContainer.add(statusSummary);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
@@ -189,6 +202,19 @@ public class PathfinderPanel extends PluginPanel
 		SwingUtilities.invokeLater(() -> {
 			statusSummary.setText(String.format("Combat %d • %d Ready • %d Near",
 				profile.getCombatLevel(), readyCount, nearCount));
+
+			if (profile.isBronzeman())
+			{
+				modeBadge.setText("🛡️ Bronzeman");
+			}
+			else if (profile.isIronman())
+			{
+				modeBadge.setText("🛡️ Ironman");
+			}
+			else
+			{
+				modeBadge.setText("");
+			}
 
 			if (profile.hasScannedBank())
 			{

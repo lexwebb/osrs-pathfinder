@@ -16,6 +16,7 @@ public class AccountProfile
 	int combatLevel;
 	int totalLevel;
 	boolean isIronman;
+	boolean isBronzeman;
 
 	BankSnapshot bankSnapshot;
 
@@ -24,6 +25,9 @@ public class AccountProfile
 
 	@Builder.Default
 	Set<String> completedQuests = new HashSet<>();
+
+	@Builder.Default
+	Set<Integer> unlockedItemIds = new HashSet<>(); // For Bronzeman Mode tracking
 
 	public int getSkillLevel(Skill skill)
 	{
@@ -38,5 +42,14 @@ public class AccountProfile
 	public boolean hasScannedBank()
 	{
 		return bankSnapshot != null && bankSnapshot.hasScanned();
+	}
+
+	public boolean hasUnlockedItem(int itemId)
+	{
+		if (unlockedItemIds.contains(itemId))
+		{
+			return true;
+		}
+		return bankSnapshot != null && bankSnapshot.ownsItem(itemId);
 	}
 }

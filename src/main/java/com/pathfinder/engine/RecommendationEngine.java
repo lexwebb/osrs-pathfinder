@@ -61,10 +61,10 @@ public class RecommendationEngine
 			recommendations.add(evaluateActivity(profile, activity));
 		}
 
-		// 2. Gear upgrades (evaluated against bank & cash stack)
+		// 2. Gear upgrades (evaluated against bank, cash stack, and Bronzeman/Ironman rules)
 		for (GearUpgrade gear : activityDatabase.getGearUpgrades())
 		{
-			// Skip if player already owns the item in bank
+			// Skip if player currently owns the item in bank/inventory
 			if (profile.hasScannedBank() && profile.getBankSnapshot().ownsItem(gear.getItemId()))
 			{
 				continue;
@@ -90,8 +90,8 @@ public class RecommendationEngine
 			{
 				int diff = req.getLevel() - currentLevel;
 				missingLevelSum += diff;
-				missing.add(String.format("%s: %d/%d (%d level%s away)",
-					req.getSkill().getName(), currentLevel, req.getLevel(), diff, diff == 1 ? "" : "s"));
+				missing.add(String.format("%s: %d/%d (%d away)",
+					req.getSkill().getName(), currentLevel, req.getLevel(), diff));
 			}
 		}
 
@@ -141,7 +141,7 @@ public class RecommendationEngine
 
 		if (activity.isHiddenGem())
 		{
-			score += 30; // Bonus for variety/off-the-beaten-path
+			score += 30; // Bonus for variety
 		}
 
 		return Recommendation.builder()
@@ -166,8 +166,8 @@ public class RecommendationEngine
 			{
 				int diff = req.getLevel() - current;
 				missingLevelSum += diff;
-				missing.add(String.format("%s: %d/%d (%d level%s away)",
-					req.getSkill().getName(), current, req.getLevel(), diff, diff == 1 ? "" : "s"));
+				missing.add(String.format("%s: %d/%d (%d away)",
+					req.getSkill().getName(), current, req.getLevel(), diff));
 			}
 		}
 
@@ -182,26 +182,48 @@ public class RecommendationEngine
 			}
 		}
 
-		// Economy / Ironman acquisition
+		boolean isBronzemanUnlocked = profile.isBronzeman() && profile.hasUnlockedItem(gear.getItemId());
 		boolean canAfford = true;
-		if (profile.isIronman())
+		List<String> tags = new ArrayList<>(Arrays.asList("Gear", gear.getSlot()));
+
+		String desc;
+		if (profile.isBronzeman() && !isBronzemanUnlocked)
 		{
+			tags.add("Bronzeman Unlock");
+			desc = "Bronzeman Unlock: Obtain organically to unlock GE purchases!";
 			if (gear.getIronmanSource() != null && !gear.getIronmanSource().isEmpty())
 			{
-				missing.add("Ironman Source: " + gear.getIronmanSource());
+				missing.add("Source: " + gear.getIronmanSource());
 			}
 		}
-		else if (profile.hasScannedBank() && gear.getEstimatedPrice() > 0)
+		else if (profile.isIronman())
 		{
-			long cash = profile.getBankSnapshot().getTotalLiquidCash();
-			if (cash < gear.getEstimatedPrice())
+			tags.add("Ironman Grind");
+			desc = gear.getHighlight();
+			if (gear.getIronmanSource() != null && !gear.getIronmanSource().isEmpty())
 			{
-				canAfford = false;
-				long needed = gear.getEstimatedPrice() - cash;
-				missing.add(String.format("Cost: %s GP (You have %s — need %s more)",
-					BankSnapshot.formatGpValue(gear.getEstimatedPrice()),
-					BankSnapshot.formatGpValue(cash),
-					BankSnapshot.formatGpValue(needed)));
+				missing.add("Source: " + gear.getIronmanSource());
+			}
+		}
+		else
+		{
+			tags.add("Tradeable");
+			desc = gear.getHighlight();
+			if (profile.hasScannedBank() && gear.getEstimatedPrice() > 0)
+			{
+				long cash = profile.getBankSnapshot().getTotalLiquidCash();
+				if (cash < gear.getEstimatedPrice())
+				{
+					canAfford = false;
+					long needed = gear.getEstimatedPrice() - cash;
+					missing.add(String.format("Cost: %s GP (Need %s more)",
+						BankSnapshot.formatGpValue(gear.getEstimatedPrice()),
+						BankSnapshot.formatGpValue(needed)));
+				}
+				else
+				{
+					desc += " (Affordable with ~" + BankSnapshot.formatGpValue(gear.getEstimatedPrice()) + " GP)";
+				}
 			}
 		}
 
@@ -220,13 +242,6 @@ public class RecommendationEngine
 			status = Recommendation.Status.LOCKED;
 		}
 
-		// Description & Highlights
-		String desc = gear.getHighlight();
-		if (gear.getEstimatedPrice() > 0 && !profile.isIronman())
-		{
-			desc += " (~" + BankSnapshot.formatGpValue(gear.getEstimatedPrice()) + " GP on Grand Exchange)";
-		}
-
 		Activity gearActivity = Activity.builder()
 			.id("gear-" + gear.getId())
 			.title(gear.getName())
@@ -239,17 +254,22 @@ public class RecommendationEngine
 			.wikiUrl(gear.getWikiUrl())
 			.skillRequirements(gear.getSkillReqs())
 			.questRequirements(gear.getQuestReq() != null && !gear.getQuestReq().isEmpty() ? List.of(gear.getQuestReq()) : Collections.emptyList())
-			.tags(Arrays.asList("Gear", gear.getSlot(), profile.isIronman() ? "Untradable/Grind" : "Tradeable"))
+			.tags(tags)
 			.build();
 
-		int score = 60;
+		int score = 65;
 		if (status == Recommendation.Status.READY)
 		{
-			score += 80;
+			score += 85;
 		}
 		else if (status == Recommendation.Status.ALMOST_READY)
 		{
-			score += 30;
+			score += 35;
+		}
+
+		if (profile.isBronzeman() && !isBronzemanUnlocked)
+		{
+			score += 20; // High priority milestone for Bronzeman accounts
 		}
 
 		return Recommendation.builder()
