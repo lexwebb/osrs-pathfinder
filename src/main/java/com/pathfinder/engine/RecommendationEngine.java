@@ -139,6 +139,10 @@ public class RecommendationEngine
 					|| snapshot.ownsItem(28822);
 			case 12954: // Dragon Defender -> Avernic Defender
 				return snapshot.ownsItem(22322);
+			case 3105: // Climbing Boots -> Rune Boots, Dragon Boots, Primordial Boots
+				return snapshot.ownsItem(4115)   // Rune Boots
+					|| snapshot.ownsItem(11840)  // Dragon Boots
+					|| snapshot.ownsItem(13239); // Primordial Boots
 			case 11840: // Dragon Boots -> Primordial Boots
 				return snapshot.ownsItem(13239);
 			case 10828: // Helm of Neitiznot -> Faceguard, Torva

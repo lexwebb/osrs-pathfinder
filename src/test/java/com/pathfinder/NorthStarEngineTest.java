@@ -316,10 +316,11 @@ public class NorthStarEngineTest
 
 		NorthStarGoal goal = database.createGoalFromCombatCheckpoint(midMelee);
 
-		// Player owns higher tier: Amulet of Fury (6585) and Abyssal Whip (4151)
+		// Player owns higher tier: Amulet of Fury (6585), Abyssal Whip (4151), and Dragon Boots (11840)
 		Set<Integer> owned = new HashSet<>();
 		owned.add(6585);
 		owned.add(4151);
+		owned.add(11840);
 
 		AccountProfile profile = AccountProfile.builder()
 			.skills(Collections.emptyMap())
@@ -332,6 +333,7 @@ public class NorthStarEngineTest
 		NorthStarProgress progress = engine.evaluateNorthStar(profile, goal);
 		Assert.assertFalse("Owning Fury should satisfy Glory neck requirement", progress.hasItemGap(1704));
 		Assert.assertFalse("Owning Whip should satisfy Zombie Axe weapon requirement", progress.hasItemGap(28810));
+		Assert.assertFalse("Owning Dragon Boots should satisfy Climbing Boots requirement", progress.hasItemGap(3105));
 	}
 
 	@Test
@@ -342,7 +344,7 @@ public class NorthStarEngineTest
 		{
 			skills.put(s, 70);
 		}
-		skills.put(Skill.SLAYER, 65); // Slayer 65
+		skills.put(Skill.SLAYER, 50); // Slayer 50 vs target 58
 
 		AccountProfile profile = AccountProfile.builder()
 			.combatLevel(100)

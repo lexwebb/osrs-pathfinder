@@ -378,11 +378,32 @@
     "highlight": "+4 Melee Strength with high slash defence and set bonus healing"
   },
   {
+    "id": "climbing-boots",
+    "name": "Climbing Boots",
+    "slot": "BOOTS",
+    "style": "MELEE",
+    "tier": "EARLY",
+    "item_id": 3105,
+    "recommended_combat": 30,
+    "skill_reqs": [
+      {
+        "skill": "AGILITY",
+        "level": 12
+      }
+    ],
+    "organic_skill_reqs": [],
+    "quest_req": "Death Plateau",
+    "estimated_price": 12,
+    "ironman_source": "Purchased from Tenzing on Death Plateau for 12 GP after quest",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Climbing_boots",
+    "highlight": "+2 Melee Strength and +1 Defence, quintessential mid-game ironman footwear"
+  },
+  {
     "id": "dragon-boots",
     "name": "Dragon Boots",
     "slot": "BOOTS",
     "style": "MELEE",
-    "tier": "MID",
+    "tier": "LATE",
     "item_id": 11840,
     "recommended_combat": 70,
     "skill_reqs": [

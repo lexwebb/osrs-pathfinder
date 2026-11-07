@@ -21,17 +21,17 @@
     "style": "MELEE",
     "tier": "MID",
     "description": "Core mid-game melee progression for high-DPS Slayer and bossing",
-    "highlight": "Zombie Axe, Fighter Torso, Dragon Defender, Glory, Fire Cape & Barrows Gloves",
+    "highlight": "Zombie Axe, Fighter Torso, Dragon Defender, Glory, Fire Cape, Barrows Gloves & Climbing Boots",
     "recommended_combat": 85,
     "recommended_skills": {
       "ATTACK": 70,
       "STRENGTH": 70,
       "DEFENCE": 65,
       "PRAYER": 43,
-      "SLAYER": 70
+      "SLAYER": 58
     },
-    "core_item_ids": [28810, 10551, 12954, 7462, 6570, 1704, 11840, 10828],
-    "core_item_names": ["Zombie Axe", "Fighter Torso", "Dragon Defender", "Barrows Gloves", "Fire Cape", "Amulet of Glory", "Dragon Boots", "Helm of Neitiznot"]
+    "core_item_ids": [28810, 10551, 12954, 7462, 6570, 1704, 3105, 10828],
+    "core_item_names": ["Zombie Axe", "Fighter Torso", "Dragon Defender", "Barrows Gloves", "Fire Cape", "Amulet of Glory", "Climbing Boots", "Helm of Neitiznot"]
   },
   {
     "id": "melee-late",
@@ -39,7 +39,7 @@
     "style": "MELEE",
     "tier": "LATE",
     "description": "High-tier melee setup for high-invocation raids and endgame bosses",
-    "highlight": "Abyssal Whip / Fang, Neitiznot Faceguard, Amulet of Fury & Blood Moon Chestplate",
+    "highlight": "Abyssal Whip / Fang, Neitiznot Faceguard, Amulet of Fury, Dragon Boots & Blood Moon Chestplate",
     "recommended_combat": 105,
     "recommended_skills": {
       "ATTACK": 82,
@@ -48,8 +48,8 @@
       "PRAYER": 70,
       "SLAYER": 85
     },
-    "core_item_ids": [4151, 26219, 24271, 29022, 6585, 6737, 12954, 7462],
-    "core_item_names": ["Abyssal Whip", "Osmumten's Fang", "Neitiznot Faceguard", "Blood Moon Chestplate", "Amulet of Fury", "Berserker Ring", "Dragon Defender", "Barrows Gloves"]
+    "core_item_ids": [4151, 26219, 24271, 29022, 6585, 11840, 6737, 12954, 7462],
+    "core_item_names": ["Abyssal Whip", "Osmumten's Fang", "Neitiznot Faceguard", "Blood Moon Chestplate", "Amulet of Fury", "Dragon Boots", "Berserker Ring", "Dragon Defender", "Barrows Gloves"]
   },
   {
     "id": "ranged-early",
@@ -72,15 +72,15 @@
     "style": "RANGED",
     "tier": "MID",
     "description": "Versatile mid-game ranged setup for Zulrah, Vorkath, and Fight Caves",
-    "highlight": "Toxic Blowpipe, Hunter's Sunlight Crossbow, Black D'hide Body & Ava's Assembler",
+    "highlight": "Hunter's Sunlight Crossbow / Rune Crossbow, Black D'hide Body & Ava's Assembler",
     "recommended_combat": 80,
     "recommended_skills": {
       "RANGED": 75,
       "DEFENCE": 70,
       "PRAYER": 44
     },
-    "core_item_ids": [12926, 28869, 9185, 2503, 22109, 7462],
-    "core_item_names": ["Toxic Blowpipe", "Hunter's Sunlight Crossbow", "Rune Crossbow", "Black D'hide Body", "Ava's Assembler", "Barrows Gloves"]
+    "core_item_ids": [28869, 9185, 2503, 22109, 7462],
+    "core_item_names": ["Hunter's Sunlight Crossbow", "Rune Crossbow", "Black D'hide Body", "Ava's Assembler", "Barrows Gloves"]
   },
   {
     "id": "ranged-late",
@@ -88,15 +88,15 @@
     "style": "RANGED",
     "tier": "LATE",
     "description": "Premier long-range powerhouse setup for high-level PvM and Raids",
-    "highlight": "Bow of Faerdhinen, Crystal Armour & Necklace of Anguish",
+    "highlight": "Bow of Faerdhinen, Toxic Blowpipe, Crystal Armour & Necklace of Anguish",
     "recommended_combat": 100,
     "recommended_skills": {
       "RANGED": 85,
       "DEFENCE": 75,
       "PRAYER": 74
     },
-    "core_item_ids": [25865, 19547, 22109, 7462],
-    "core_item_names": ["Bow of Faerdhinen", "Necklace of Anguish", "Ava's Assembler", "Barrows Gloves"]
+    "core_item_ids": [25865, 12926, 19547, 22109, 7462],
+    "core_item_names": ["Bow of Faerdhinen", "Toxic Blowpipe", "Necklace of Anguish", "Ava's Assembler", "Barrows Gloves"]
   },
   {
     "id": "magic-early",
