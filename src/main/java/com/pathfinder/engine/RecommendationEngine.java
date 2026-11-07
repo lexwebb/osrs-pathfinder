@@ -12,6 +12,7 @@ import com.pathfinder.model.SkillRequirement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -104,22 +105,121 @@ public class RecommendationEngine
 		return recommendations;
 	}
 
+	public boolean isItemSatisfied(AccountProfile profile, int itemId)
+	{
+		if (!profile.hasScannedBank())
+		{
+			return false;
+		}
+
+		BankSnapshot snapshot = profile.getBankSnapshot();
+		if (snapshot.ownsItem(itemId))
+		{
+			return true;
+		}
+
+		// Slot tier upgrades: owning an equivalent or higher tier item satisfies lower/mid tier requirements
+		switch (itemId)
+		{
+			case 1704: // Amulet of Glory -> Fury, Blood Fury, Torture
+				return snapshot.ownsItem(6585)
+					|| snapshot.ownsItem(24780)
+					|| snapshot.ownsItem(19553);
+			case 28810: // Zombie Axe -> Whip, Fang, Saeldor, Scythe
+				return snapshot.ownsItem(4151)
+					|| snapshot.ownsItem(26219)
+					|| snapshot.ownsItem(23995)
+					|| snapshot.ownsItem(22325);
+			case 4151: // Abyssal Whip -> Fang, Saeldor, Scythe
+				return snapshot.ownsItem(26219)
+					|| snapshot.ownsItem(23995)
+					|| snapshot.ownsItem(22325);
+			case 6570: // Fire Cape -> Infernal Cape, Dizana's Quiver
+				return snapshot.ownsItem(21295)
+					|| snapshot.ownsItem(28822);
+			case 12954: // Dragon Defender -> Avernic Defender
+				return snapshot.ownsItem(22322);
+			case 11840: // Dragon Boots -> Primordial Boots
+				return snapshot.ownsItem(13239);
+			case 10828: // Helm of Neitiznot -> Faceguard, Torva
+				return snapshot.ownsItem(24271)
+					|| snapshot.ownsItem(26382);
+			case 9185: // Rune Crossbow -> Hunter's Sunlight Crossbow, Dragon Crossbow, Armadyl Crossbow, ZCB, Blowpipe, Bowfa
+				return snapshot.ownsItem(28869)
+					|| snapshot.ownsItem(21902)
+					|| snapshot.ownsItem(11785)
+					|| snapshot.ownsItem(26374)
+					|| snapshot.ownsItem(12926)
+					|| snapshot.ownsItem(25865);
+			case 28585: // Warped Sceptre -> Trident of the Seas, Trident of the Swamp, Sang Staff, Shadow
+				return snapshot.ownsItem(11907)
+					|| snapshot.ownsItem(12899)
+					|| snapshot.ownsItem(22323)
+					|| snapshot.ownsItem(27275);
+			default:
+				return false;
+		}
+	}
+
 	public NorthStarProgress evaluateNorthStar(AccountProfile profile, NorthStarGoal goal)
 	{
-		if (goal == null)
+		if (goal == null || profile == null)
 		{
 			return null;
 		}
 
-		List<NorthStarProgress.SkillGap> skillGaps = new ArrayList<>();
-		List<String> missingQuests = new ArrayList<>();
+		Map<Skill, Integer> effectiveSkills = new LinkedHashMap<>(goal.getTargetSkills());
+		List<String> effectiveQuests = new ArrayList<>(goal.getPrerequisiteQuests());
 		List<NorthStarProgress.ItemGap> missingItems = new ArrayList<>();
 
 		int totalReqs = 0;
 		int satisfiedReqs = 0;
 
-		// 1. Skill Requirements
-		for (Map.Entry<Skill, Integer> entry : goal.getTargetSkills().entrySet())
+		// 1. Process Required Items to check ownership and discover organic requirements
+		for (int i = 0; i < goal.getRequiredItemIds().size(); i++)
+		{
+			int itemId = goal.getRequiredItemIds().get(i);
+			String name = i < goal.getRequiredItemNames().size() ? goal.getRequiredItemNames().get(i) : "Item #" + itemId;
+			totalReqs++;
+
+			boolean isSatisfied = isItemSatisfied(profile, itemId);
+			if (isSatisfied)
+			{
+				satisfiedReqs++;
+			}
+			else
+			{
+				GearUpgrade gear = activityDatabase != null ? activityDatabase.getGearUpgradeByItemId(itemId) : null;
+				boolean isBronzemanUnlocked = profile.isBronzeman() && profile.hasUnlockedItem(itemId);
+
+				// For Ironman, or Bronzeman without organic unlock, extract organic skill & quest dependencies
+				if ((profile.isIronman() || (profile.isBronzeman() && !isBronzemanUnlocked)) && gear != null)
+				{
+					for (SkillRequirement orgReq : gear.getOrganicSkillReqs())
+					{
+						int existingLvl = effectiveSkills.getOrDefault(orgReq.getSkill(), 0);
+						if (orgReq.getLevel() > existingLvl)
+						{
+							effectiveSkills.put(orgReq.getSkill(), orgReq.getLevel());
+						}
+					}
+
+					if (gear.getQuestReq() != null && !gear.getQuestReq().isEmpty() && !effectiveQuests.contains(gear.getQuestReq()))
+					{
+						effectiveQuests.add(gear.getQuestReq());
+					}
+				}
+
+				missingItems.add(NorthStarProgress.ItemGap.builder()
+					.itemId(itemId)
+					.itemName(name)
+					.build());
+			}
+		}
+
+		// 2. Skill Requirements (combining base target skills + organic gear requirements)
+		List<NorthStarProgress.SkillGap> skillGaps = new ArrayList<>();
+		for (Map.Entry<Skill, Integer> entry : effectiveSkills.entrySet())
 		{
 			Skill skill = entry.getKey();
 			int targetLvl = entry.getValue();
@@ -141,8 +241,9 @@ public class RecommendationEngine
 			}
 		}
 
-		// 2. Prerequisite Quests
-		for (String quest : goal.getPrerequisiteQuests())
+		// 3. Prerequisite Quests (combining base quests + gear quest requirements like RFD)
+		List<String> missingQuests = new ArrayList<>();
+		for (String quest : effectiveQuests)
 		{
 			totalReqs++;
 			if (profile.hasCompletedQuest(quest))
@@ -152,26 +253,6 @@ public class RecommendationEngine
 			else
 			{
 				missingQuests.add(quest);
-			}
-		}
-
-		// 3. Required Items
-		for (int i = 0; i < goal.getRequiredItemIds().size(); i++)
-		{
-			int itemId = goal.getRequiredItemIds().get(i);
-			String name = i < goal.getRequiredItemNames().size() ? goal.getRequiredItemNames().get(i) : "Item #" + itemId;
-			totalReqs++;
-
-			if (profile.hasScannedBank() && profile.getBankSnapshot().ownsItem(itemId))
-			{
-				satisfiedReqs++;
-			}
-			else
-			{
-				missingItems.add(NorthStarProgress.ItemGap.builder()
-					.itemId(itemId)
-					.itemName(name)
-					.build());
 			}
 		}
 

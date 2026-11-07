@@ -92,6 +92,18 @@ public class ActivityDatabase
 		return null;
 	}
 
+	public GearUpgrade getGearUpgradeByItemId(int itemId)
+	{
+		for (GearUpgrade g : gearUpgrades)
+		{
+			if (g.getItemId() == itemId)
+			{
+				return g;
+			}
+		}
+		return null;
+	}
+
 	public CombatCheckpoint getCombatCheckpoint(String id)
 	{
 		for (CombatCheckpoint cp : combatCheckpoints)

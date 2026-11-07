@@ -21,7 +21,7 @@
     "style": "MELEE",
     "tier": "MID",
     "description": "Core mid-game melee progression for high-DPS Slayer and bossing",
-    "highlight": "Zombie Axe / Whip, Fighter Torso, Dragon Defender, Fury, Fire Cape & Barrows Gloves",
+    "highlight": "Zombie Axe, Fighter Torso, Dragon Defender, Glory, Fire Cape & Barrows Gloves",
     "recommended_combat": 85,
     "recommended_skills": {
       "ATTACK": 70,
@@ -30,8 +30,8 @@
       "PRAYER": 43,
       "SLAYER": 70
     },
-    "core_item_ids": [28810, 4151, 10551, 12954, 7462, 6570, 6585, 11840, 10828],
-    "core_item_names": ["Zombie Axe", "Abyssal Whip", "Fighter Torso", "Dragon Defender", "Barrows Gloves", "Fire Cape", "Amulet of Fury", "Dragon Boots", "Helm of Neitiznot"]
+    "core_item_ids": [28810, 10551, 12954, 7462, 6570, 1704, 11840, 10828],
+    "core_item_names": ["Zombie Axe", "Fighter Torso", "Dragon Defender", "Barrows Gloves", "Fire Cape", "Amulet of Glory", "Dragon Boots", "Helm of Neitiznot"]
   },
   {
     "id": "melee-late",
@@ -39,16 +39,17 @@
     "style": "MELEE",
     "tier": "LATE",
     "description": "High-tier melee setup for high-invocation raids and endgame bosses",
-    "highlight": "Osmumten's Fang, Neitiznot Faceguard, Blood Moon Chestplate & Berserker Ring (i)",
+    "highlight": "Abyssal Whip / Fang, Neitiznot Faceguard, Amulet of Fury & Blood Moon Chestplate",
     "recommended_combat": 105,
     "recommended_skills": {
       "ATTACK": 82,
       "STRENGTH": 85,
       "DEFENCE": 75,
-      "PRAYER": 70
+      "PRAYER": 70,
+      "SLAYER": 85
     },
-    "core_item_ids": [26219, 24271, 29022, 6737, 12954, 7462],
-    "core_item_names": ["Osmumten's Fang", "Neitiznot Faceguard", "Blood Moon Chestplate", "Berserker Ring", "Dragon Defender", "Barrows Gloves"]
+    "core_item_ids": [4151, 26219, 24271, 29022, 6585, 6737, 12954, 7462],
+    "core_item_names": ["Abyssal Whip", "Osmumten's Fang", "Neitiznot Faceguard", "Blood Moon Chestplate", "Amulet of Fury", "Berserker Ring", "Dragon Defender", "Barrows Gloves"]
   },
   {
     "id": "ranged-early",
@@ -117,30 +118,31 @@
     "name": "Mid-Game Magic Setup",
     "style": "MAGIC",
     "tier": "MID",
-    "description": "Powered staff setup with Mage Arena 2 cape and Occult Necklace",
-    "highlight": "Warped Sceptre / Trident of the Seas, Imbued God Cape, Occult Necklace & Ancient Staff",
-    "recommended_combat": 85,
+    "description": "Powered staff setup with Mage Arena 2 cape and Barrows Gloves",
+    "highlight": "Warped Sceptre, Imbued God Cape, Mystic Robes & Barrows Gloves",
+    "recommended_combat": 80,
     "recommended_skills": {
-      "MAGIC": 75,
-      "DEFENCE": 70,
-      "SLAYER": 87
+      "MAGIC": 70,
+      "DEFENCE": 60,
+      "SLAYER": 56
     },
-    "core_item_ids": [28585, 11907, 21791, 12002, 4675, 7462],
-    "core_item_names": ["Warped Sceptre", "Trident of the Seas", "Imbued God Cape", "Occult Necklace", "Ancient Staff", "Barrows Gloves"]
+    "core_item_ids": [28585, 21791, 1704, 7462],
+    "core_item_names": ["Warped Sceptre", "Imbued God Cape", "Amulet of Glory", "Barrows Gloves"]
   },
   {
     "id": "magic-late",
     "name": "Late-Game Magic Setup",
     "style": "MAGIC",
     "tier": "LATE",
-    "description": "High magic damage bonus setup for Chambers of Xeric and ToA",
-    "highlight": "Trident of the Swamp, Tormented Bracelet, Occult Necklace & Imbued God Cape",
-    "recommended_combat": 105,
+    "description": "High magic damage bonus setup with Trident and Occult Necklace",
+    "highlight": "Trident of the Seas / Swamp, Occult Necklace, Tormented Bracelet & Imbued God Cape",
+    "recommended_combat": 100,
     "recommended_skills": {
       "MAGIC": 85,
-      "DEFENCE": 75
+      "DEFENCE": 75,
+      "SLAYER": 93
     },
-    "core_item_ids": [12899, 19544, 12002, 21791],
-    "core_item_names": ["Trident of the Swamp", "Tormented Bracelet", "Occult Necklace", "Imbued God Cape"]
+    "core_item_ids": [11907, 12002, 19544, 21791],
+    "core_item_names": ["Trident of the Seas", "Occult Necklace", "Tormented Bracelet", "Imbued God Cape"]
   }
 ]

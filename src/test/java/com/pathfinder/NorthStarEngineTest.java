@@ -259,4 +259,114 @@ public class NorthStarEngineTest
 			Assert.assertTrue("Every filtered item must be an active pathway", r.isNorthStarPathway());
 		}
 	}
+
+	@Test
+	public void testBronzemanOrganicGearRequirements()
+	{
+		CombatCheckpoint lateMelee = database.getCombatCheckpoint("melee-late");
+		Assert.assertNotNull(lateMelee);
+
+		NorthStarGoal goal = database.createGoalFromCombatCheckpoint(lateMelee);
+		Assert.assertNotNull(goal);
+
+		// Account is Bronzeman, stats 70 all, missing Amulet of Fury (6585)
+		Map<Skill, Integer> skills = new HashMap<>();
+		for (Skill s : Skill.values())
+		{
+			skills.put(s, 70);
+		}
+
+		AccountProfile bronzeman = AccountProfile.builder()
+			.isBronzeman(true)
+			.skills(skills)
+			.bankSnapshot(BankSnapshot.builder().build())
+			.build();
+
+		NorthStarProgress progress = engine.evaluateNorthStar(bronzeman, goal);
+		Assert.assertNotNull(progress);
+
+		// In Bronzeman mode, Fury's organic requirements (90 Crafting, 87 Magic) must be enforced!
+		Assert.assertTrue("Bronzeman should have Crafting gap for unowned Fury", progress.hasSkillGap(Skill.CRAFTING));
+		Assert.assertEquals("Target Crafting should be 90 for Fury", 90, progress.getSkillGap(Skill.CRAFTING).getTargetLevel());
+
+		Assert.assertTrue("Bronzeman should have Magic gap for unowned Fury", progress.hasSkillGap(Skill.MAGIC));
+		Assert.assertEquals("Target Magic should be 87 for Fury", 87, progress.getSkillGap(Skill.MAGIC).getTargetLevel());
+
+		// Now test if Bronzeman has already unlocked Fury organically
+		Set<Integer> unlocked = new HashSet<>();
+		unlocked.add(6585);
+		AccountProfile unlockedBronzeman = AccountProfile.builder()
+			.isBronzeman(true)
+			.skills(skills)
+			.unlockedItemIds(unlocked)
+			.bankSnapshot(BankSnapshot.builder().build())
+			.build();
+
+		NorthStarProgress unlockedProgress = engine.evaluateNorthStar(unlockedBronzeman, goal);
+		Assert.assertFalse("Unlocked Bronzeman should NOT be forced to 90 Crafting for Fury",
+			unlockedProgress.hasSkillGap(Skill.CRAFTING));
+	}
+
+	@Test
+	public void testSlotUpgradeSatisfaction()
+	{
+		// Mid melee requires Amulet of Glory (1704) and Zombie Axe (28810)
+		CombatCheckpoint midMelee = database.getCombatCheckpoint("melee-mid");
+		Assert.assertNotNull(midMelee);
+
+		NorthStarGoal goal = database.createGoalFromCombatCheckpoint(midMelee);
+
+		// Player owns higher tier: Amulet of Fury (6585) and Abyssal Whip (4151)
+		Set<Integer> owned = new HashSet<>();
+		owned.add(6585);
+		owned.add(4151);
+
+		AccountProfile profile = AccountProfile.builder()
+			.skills(Collections.emptyMap())
+			.bankSnapshot(BankSnapshot.builder()
+				.timestamp(System.currentTimeMillis())
+				.ownedItemIds(owned)
+				.build())
+			.build();
+
+		NorthStarProgress progress = engine.evaluateNorthStar(profile, goal);
+		Assert.assertFalse("Owning Fury should satisfy Glory neck requirement", progress.hasItemGap(1704));
+		Assert.assertFalse("Owning Whip should satisfy Zombie Axe weapon requirement", progress.hasItemGap(28810));
+	}
+
+	@Test
+	public void testSlayerPathwayGeneration()
+	{
+		Map<Skill, Integer> skills = new HashMap<>();
+		for (Skill s : Skill.values())
+		{
+			skills.put(s, 70);
+		}
+		skills.put(Skill.SLAYER, 65); // Slayer 65
+
+		AccountProfile profile = AccountProfile.builder()
+			.combatLevel(100)
+			.skills(skills)
+			.completedQuests(Set.of("Lost City", "Shilo Village"))
+			.build();
+
+		CombatCheckpoint midMelee = database.getCombatCheckpoint("melee-mid"); // requires Slayer 70
+		NorthStarGoal goal = database.createGoalFromCombatCheckpoint(midMelee);
+
+		List<Recommendation> all = engine.evaluateAll(profile, goal);
+		List<Recommendation> pathwaysOnly = engine.filter(all, ActivityCategory.ALL, false, false, false, true);
+
+		boolean foundSlayerMaster = false;
+		for (Recommendation r : pathwaysOnly)
+		{
+			if (r.getActivity().getTrainedSkills().contains(Skill.SLAYER))
+			{
+				foundSlayerMaster = true;
+				Assert.assertTrue("Slayer activity must be tagged as North Star pathway", r.isNorthStarPathway());
+				Assert.assertTrue("Pathway reason should mention Slayer", r.getPathwayReason().contains("Slayer"));
+			}
+		}
+
+		Assert.assertTrue("Pathways must include Slayer training activities when Slayer gap exists", foundSlayerMaster);
+	}
 }

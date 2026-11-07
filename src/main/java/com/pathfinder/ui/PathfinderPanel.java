@@ -58,11 +58,11 @@ public class PathfinderPanel extends PluginPanel
 	private final JComboBox<ActivityCategory> categoryCombo = new JComboBox<>(ActivityCategory.values());
 	private final JComboBox<RecommendationEngine.SortOrder> sortCombo = new JComboBox<>(RecommendationEngine.SortOrder.values());
 
-	private final JCheckBox hideLockedCheck = new JCheckBox("Hide locked goals", true);
-	private final JCheckBox readyOnlyCheck = new JCheckBox("Ready only", false);
-	private final JCheckBox hiddenGemsCheck = new JCheckBox("Hidden gems", false);
+	private final JCheckBox hideLockedCheck = new JCheckBox("Hide locked activities", true);
+	private final JCheckBox readyOnlyCheck = new JCheckBox("Ready to do only", false);
+	private final JCheckBox hiddenGemsCheck = new JCheckBox("Hidden gems only", false);
 
-	private final JButton surpriseBtn = new JButton("🎲 Surprise Me!");
+	private final JButton surpriseBtn = new JButton("🎲 Surprise");
 	private final JButton refreshBtn = new JButton("🔄 Scan");
 
 	private final NorthStarCard northStarCard;
@@ -115,24 +115,25 @@ public class PathfinderPanel extends PluginPanel
 		topContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		topContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		// 1. Header Title Row with Mode Badge
-		JPanel titleRow = new JPanel(new BorderLayout(4, 0));
-		titleRow.setOpaque(false);
-		titleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-		titleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
-
+		// 1. Header Title (Line 1 - full width, no overlap)
 		headerTitle.setFont(FontManager.getRunescapeBoldFont());
 		headerTitle.setForeground(ColorScheme.BRAND_ORANGE);
+		headerTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		// 2. Subtitle Row (Line 2 - Combat & Ready on left, Mode Badge on right)
+		JPanel subtitleRow = new JPanel(new BorderLayout(4, 0));
+		subtitleRow.setOpaque(false);
+		subtitleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+		subtitleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 18));
+
+		statusSummary.setFont(FontManager.getRunescapeSmallFont());
+		statusSummary.setForeground(Color.WHITE);
 
 		modeBadge.setFont(FontManager.getRunescapeSmallFont());
 		modeBadge.setForeground(BRONZE_COLOR);
 
-		titleRow.add(headerTitle, BorderLayout.WEST);
-		titleRow.add(modeBadge, BorderLayout.EAST);
-
-		statusSummary.setFont(FontManager.getRunescapeSmallFont());
-		statusSummary.setForeground(Color.WHITE);
-		statusSummary.setAlignmentX(Component.LEFT_ALIGNMENT);
+		subtitleRow.add(statusSummary, BorderLayout.WEST);
+		subtitleRow.add(modeBadge, BorderLayout.EAST);
 
 		// Bank Banner Box
 		JPanel bankBox = new JPanel(new BorderLayout());
@@ -145,8 +146,8 @@ public class PathfinderPanel extends PluginPanel
 		bankSummary.setForeground(new Color(170, 170, 170));
 		bankBox.add(bankSummary, BorderLayout.CENTER);
 
-		// Action Buttons Row: [ Surprise Me! ] [ Scan ]
-		JPanel actionRow = new JPanel(new BorderLayout(4, 0));
+		// Action Buttons Row: [ 🎲 Surprise ] [ 🔄 Scan ] (Equal 50/50 split)
+		JPanel actionRow = new JPanel(new GridLayout(1, 2, 4, 0));
 		actionRow.setOpaque(false);
 		actionRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 		actionRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
@@ -162,10 +163,10 @@ public class PathfinderPanel extends PluginPanel
 		refreshBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		refreshBtn.addActionListener(e -> plugin.requestAccountScan());
 
-		actionRow.add(surpriseBtn, BorderLayout.CENTER);
-		actionRow.add(refreshBtn, BorderLayout.EAST);
+		actionRow.add(surpriseBtn);
+		actionRow.add(refreshBtn);
 
-		// North Star Goal Selector Dropdown
+		// North Star Goal Selector Dropdown (Full width 200px)
 		populateGoalDropdown();
 		goalCombo.setFont(FontManager.getRunescapeSmallFont());
 		goalCombo.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -178,52 +179,43 @@ public class PathfinderPanel extends PluginPanel
 			}
 		});
 
-		// Filters Row: [ Category ▼ ] [ Sort ▼ ]
-		JPanel filterRow = new JPanel(new GridLayout(1, 2, 4, 0));
-		filterRow.setOpaque(false);
-		filterRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-		filterRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
-
+		// Filters: Category & Sort (Each full width so labels never truncate)
 		categoryCombo.setFont(FontManager.getRunescapeSmallFont());
+		categoryCombo.setAlignmentX(Component.LEFT_ALIGNMENT);
+		categoryCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		categoryCombo.addActionListener(e -> updateDisplay());
 
 		sortCombo.setFont(FontManager.getRunescapeSmallFont());
+		sortCombo.setAlignmentX(Component.LEFT_ALIGNMENT);
+		sortCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		sortCombo.addActionListener(e -> updateDisplay());
 
-		filterRow.add(categoryCombo);
-		filterRow.add(sortCombo);
-
-		// Toggles Row
+		// Toggles: Stacked vertically with full width so labels never truncate
 		hideLockedCheck.setOpaque(false);
 		hideLockedCheck.setForeground(Color.WHITE);
 		hideLockedCheck.setFont(FontManager.getRunescapeSmallFont());
 		hideLockedCheck.setFocusable(false);
+		hideLockedCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
 		hideLockedCheck.addActionListener(e -> updateDisplay());
-
-		JPanel toggleRow = new JPanel(new GridLayout(1, 2, 2, 0));
-		toggleRow.setOpaque(false);
-		toggleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-		toggleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 
 		readyOnlyCheck.setOpaque(false);
 		readyOnlyCheck.setForeground(Color.WHITE);
 		readyOnlyCheck.setFont(FontManager.getRunescapeSmallFont());
 		readyOnlyCheck.setFocusable(false);
+		readyOnlyCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
 		readyOnlyCheck.addActionListener(e -> updateDisplay());
 
 		hiddenGemsCheck.setOpaque(false);
 		hiddenGemsCheck.setForeground(new Color(241, 196, 15));
 		hiddenGemsCheck.setFont(FontManager.getRunescapeSmallFont());
 		hiddenGemsCheck.setFocusable(false);
+		hiddenGemsCheck.setAlignmentX(Component.LEFT_ALIGNMENT);
 		hiddenGemsCheck.addActionListener(e -> updateDisplay());
 
-		toggleRow.add(readyOnlyCheck);
-		toggleRow.add(hiddenGemsCheck);
-
-		// Assemble Header
-		topContainer.add(titleRow);
+		// Assemble Header Controls
+		topContainer.add(headerTitle);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 2)));
-		topContainer.add(statusSummary);
+		topContainer.add(subtitleRow);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(bankBox);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -231,10 +223,13 @@ public class PathfinderPanel extends PluginPanel
 		topContainer.add(Box.createRigidArea(new Dimension(0, 5)));
 		topContainer.add(goalCombo);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
-		topContainer.add(filterRow);
+		topContainer.add(categoryCombo);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 3)));
+		topContainer.add(sortCombo);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(hideLockedCheck);
-		topContainer.add(toggleRow);
+		topContainer.add(readyOnlyCheck);
+		topContainer.add(hiddenGemsCheck);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(northStarCard);
 
@@ -369,10 +364,19 @@ public class PathfinderPanel extends PluginPanel
 
 		SwingUtilities.invokeLater(() -> {
 			boolean isOffline = !plugin.isClientLoggedIn();
-			String prefix = isOffline ? "(Offline: " + profile.getUsername() + ") " : "";
 
-			statusSummary.setText(String.format("Combat %d | %d Ready | %d Near %s",
-				profile.getCombatLevel(), readyCount, nearCount, prefix));
+			statusSummary.setText(String.format("Combat %d • %d Ready",
+				profile.getCombatLevel(), readyCount));
+
+			if (isOffline)
+			{
+				statusSummary.setToolTipText("Viewing cached offline profile for " + profile.getUsername()
+					+ " (" + nearCount + " almost ready)");
+			}
+			else
+			{
+				statusSummary.setToolTipText(String.format("%d ready, %d almost ready", readyCount, nearCount));
+			}
 
 			if (profile.isBronzeman())
 			{

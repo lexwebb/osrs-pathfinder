@@ -801,5 +801,264 @@
       "Battlestaves",
       "Varrock Teleport Grand Exchange"
     ]
+  },
+  {
+    "id": "konar-slayer",
+    "title": "Konar quo Maten (Brimstone Slayer)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Konar_quo_Maten",
+    "category": "SKILLING",
+    "description": "Slayer master located on Mount Karuulm. Assigns location-specific Slayer tasks that award Brimstone Keys for high-value chest loot.",
+    "unlockHighlight": "Brimstone Keys (~100k GP) & 18 Slayer Points per task",
+    "recommendedCombat": 75,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [],
+    "questRequirements": [],
+    "tags": [
+      "Slayer",
+      "Brimstone Keys",
+      "Combat",
+      "Profit"
+    ],
+    "trainedSkills": [
+      "SLAYER",
+      "ATTACK",
+      "STRENGTH",
+      "DEFENCE",
+      "RANGED",
+      "MAGIC"
+    ]
+  },
+  {
+    "id": "chaeldar-slayer",
+    "title": "Chaeldar (Mid-Game Slayer)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Chaeldar",
+    "category": "SKILLING",
+    "description": "Fairy Slayer master located in Zanaris. Premier mid-level Slayer master for players between combat 70 and 85.",
+    "unlockHighlight": "10 Slayer Points per task & steady mid-game Slayer unlock progression",
+    "recommendedCombat": 70,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [],
+    "questRequirements": [
+      "Lost City"
+    ],
+    "tags": [
+      "Slayer",
+      "Zanaris",
+      "Combat",
+      "Points"
+    ],
+    "trainedSkills": [
+      "SLAYER",
+      "ATTACK",
+      "STRENGTH",
+      "DEFENCE",
+      "RANGED"
+    ]
+  },
+  {
+    "id": "nieve-slayer",
+    "title": "Nieve / Steve (High-XP Slayer)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Nieve",
+    "category": "SKILLING",
+    "description": "Premier Slayer master at the Tree Gnome Stronghold. Assigns heavily cannonable and burstable tasks with the highest XP rates in Gielinor.",
+    "unlockHighlight": "15 Slayer Points & premier task list (Bloodvelds, Gargoyles, Nechryael)",
+    "recommendedCombat": 85,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [],
+    "questRequirements": [],
+    "tags": [
+      "Slayer",
+      "Fast XP",
+      "Cannon",
+      "Bursting"
+    ],
+    "trainedSkills": [
+      "SLAYER",
+      "ATTACK",
+      "STRENGTH",
+      "DEFENCE",
+      "RANGED",
+      "MAGIC"
+    ]
+  },
+  {
+    "id": "duradel-slayer",
+    "title": "Duradel (Boss & High-Tier Slayer)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Duradel",
+    "category": "SKILLING",
+    "description": "Master Slayer master in Shilo Village. Offers large task quantities, boss tasks, and the highest point rewards in standard Slayer.",
+    "unlockHighlight": "15 Slayer Points & unlocked Boss Slayer tasks (Cerberus, Kraken, Sire)",
+    "recommendedCombat": 100,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "SLAYER",
+        "level": 50
+      }
+    ],
+    "questRequirements": [
+      "Shilo Village"
+    ],
+    "tags": [
+      "Slayer",
+      "Boss Tasks",
+      "Maximum Points"
+    ],
+    "trainedSkills": [
+      "SLAYER",
+      "ATTACK",
+      "STRENGTH",
+      "DEFENCE",
+      "RANGED"
+    ]
+  },
+  {
+    "id": "catacombs-bursting",
+    "title": "Catacombs of Kourend (Bursting Slayer)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Catacombs_of_Kourend",
+    "category": "SKILLING",
+    "description": "Multi-combat ancient dungeon beneath Kourend. Grouping Dust Devils, Nechryael, and Abyssal Demons for massive AoE Slayer and Magic XP.",
+    "unlockHighlight": "150k+ Magic & 70k+ Slayer XP/hr, Dark Totem pieces for Skotizo",
+    "recommendedCombat": 75,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "MAGIC",
+        "level": 70
+      },
+      {
+        "skill": "SLAYER",
+        "level": 65
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Slayer",
+      "Magic",
+      "High XP",
+      "Ancient Shards"
+    ],
+    "trainedSkills": [
+      "SLAYER",
+      "MAGIC",
+      "HITPOINTS"
+    ]
+  },
+  {
+    "id": "wilderness-slayer",
+    "title": "Wilderness Slayer (Krystilia)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Krystilia",
+    "category": "SKILLING",
+    "description": "High-risk, high-reward Slayer master in Edgeville assigning tasks exclusively in the Wilderness. Earns massive points and Larran keys.",
+    "unlockHighlight": "25 Slayer Points per task & Larran keys for Dagon'hai robes",
+    "recommendedCombat": 60,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [],
+    "questRequirements": [],
+    "tags": [
+      "Slayer",
+      "Wilderness",
+      "Larran's Keys",
+      "Points"
+    ],
+    "trainedSkills": [
+      "SLAYER",
+      "ATTACK",
+      "STRENGTH",
+      "DEFENCE",
+      "RANGED",
+      "MAGIC"
+    ]
+  },
+  {
+    "id": "shooting-stars",
+    "title": "Shooting Stars (AFK Mining & Gem Bags)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Shooting_Stars",
+    "category": "SKILLING",
+    "description": "Fallen stars across Gielinor. Mining stardust to purchase Gem Bags for thousands of uncut sapphires, emeralds, rubies, and diamonds.",
+    "unlockHighlight": "Gem Bags (Crafting XP & jewelry) & Celestial Ring",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [
+      {
+        "skill": "MINING",
+        "level": 10
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Mining",
+      "Crafting",
+      "AFK",
+      "Gems"
+    ],
+    "trainedSkills": [
+      "MINING",
+      "CRAFTING"
+    ]
+  },
+  {
+    "id": "giant-seaweed-farming",
+    "title": "Giant Seaweed Farming (Crafting Supply)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Giant_seaweed",
+    "category": "SKILLING",
+    "description": "Underwater farming patches on Fossil Island. Essential organic source of Giant Seaweed for Superglass Make and 90 Crafting (Fury).",
+    "unlockHighlight": "Fastest organic Crafting progression for Ironman/Bronzeman",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [
+      {
+        "skill": "FARMING",
+        "level": 23
+      }
+    ],
+    "questRequirements": [
+      "Bone Voyage"
+    ],
+    "tags": [
+      "Crafting",
+      "Farming",
+      "Seaweed",
+      "Ironman Favorite"
+    ],
+    "trainedSkills": [
+      "FARMING",
+      "CRAFTING"
+    ]
+  },
+  {
+    "id": "mage-training-arena",
+    "title": "Mage Training Arena (Magic Training)",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Mage_Training_Arena",
+    "category": "MINIGAME",
+    "description": "Magic minigame at the Duel Arena with four distinct puzzle chambers for training Magic efficiently without combat.",
+    "unlockHighlight": "Bones to Peaches (Lumbridge Hard Diary), Master Wand & Infinity Boots",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "MAGIC",
+        "level": 33
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Magic",
+      "Minigame",
+      "Diary Req",
+      "Infinity"
+    ],
+    "trainedSkills": [
+      "MAGIC"
+    ]
   }
 ]

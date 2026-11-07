@@ -98,7 +98,7 @@ public class NorthStarCard extends JPanel
 		add(progressBar);
 
 		// 4. Missing Gaps Chips
-		gapsPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 2));
+		gapsPanel.setLayout(new WrapLayout(FlowLayout.LEFT, 3, 3));
 		gapsPanel.setOpaque(false);
 		add(gapsPanel);
 
@@ -156,12 +156,13 @@ public class NorthStarCard extends JPanel
 
 		// Populate gap chips
 		gapsPanel.removeAll();
+		int maxChips = 12;
 		int chipsAdded = 0;
 
 		// Skills
 		for (NorthStarProgress.SkillGap gap : progress.getMissingSkills())
 		{
-			if (chipsAdded >= 4) break;
+			if (chipsAdded >= maxChips) break;
 			String text = gap.getSkill().getName() + " " + gap.getCurrentLevel() + "/" + gap.getTargetLevel();
 			gapsPanel.add(createGapChip(text, new Color(255, 179, 0), new Color(55, 40, 10)));
 			chipsAdded++;
@@ -170,7 +171,7 @@ public class NorthStarCard extends JPanel
 		// Quests
 		for (String q : progress.getMissingQuests())
 		{
-			if (chipsAdded >= 5) break;
+			if (chipsAdded >= maxChips) break;
 			String text = "Quest: " + q;
 			gapsPanel.add(createGapChip(text, new Color(229, 57, 53), new Color(50, 20, 20)));
 			chipsAdded++;
@@ -179,10 +180,17 @@ public class NorthStarCard extends JPanel
 		// Items
 		for (NorthStarProgress.ItemGap item : progress.getMissingItems())
 		{
-			if (chipsAdded >= 5) break;
+			if (chipsAdded >= maxChips) break;
 			String text = "Gear: " + item.getItemName();
 			gapsPanel.add(createGapChip(text, new Color(77, 208, 225), new Color(15, 45, 50)));
 			chipsAdded++;
+		}
+
+		int totalGaps = progress.getMissingSkills().size() + progress.getMissingQuests().size() + progress.getMissingItems().size();
+		if (totalGaps > chipsAdded)
+		{
+			int remaining = totalGaps - chipsAdded;
+			gapsPanel.add(createGapChip("+" + remaining + " more", ColorScheme.LIGHT_GRAY_COLOR, ColorScheme.DARKER_GRAY_COLOR));
 		}
 
 		if (progress.isFullyReady())
