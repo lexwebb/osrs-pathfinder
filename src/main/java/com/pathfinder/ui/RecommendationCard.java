@@ -7,13 +7,18 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
+import net.runelite.client.util.LinkBrowser;
 
 public class RecommendationCard extends JPanel
 {
@@ -21,6 +26,7 @@ public class RecommendationCard extends JPanel
 	private static final Color ALMOST_READY_COLOR = new Color(255, 167, 38);
 	private static final Color LOCKED_COLOR = new Color(229, 57, 53);
 	private static final Color UNLOCK_COLOR = new Color(241, 196, 15);
+	private static final Color HOVER_COLOR = new Color(48, 48, 48);
 
 	public RecommendationCard(Recommendation rec)
 	{
@@ -29,24 +35,60 @@ public class RecommendationCard extends JPanel
 		setLayout(new BorderLayout(5, 5));
 		setBackground(ColorScheme.DARKER_GRAY_COLOR);
 		setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createMatteBorder(0, 3, 0, 0, getStatusColor(rec.getStatus())),
+			BorderFactory.createMatteBorder(0, 4, 0, 0, getStatusColor(rec.getStatus())),
 			new EmptyBorder(8, 8, 8, 8)
 		));
 
-		// Top header: Title & Status badge
+		// Top header: Title + Status badge + Wiki link button
 		JPanel headerPanel = new JPanel(new BorderLayout(5, 0));
 		headerPanel.setOpaque(false);
 
-		JLabel titleLabel = new JLabel(activity.getTitle());
+		JLabel titleLabel = new JLabel("<html><u>" + activity.getTitle() + "</u></html>");
 		titleLabel.setFont(FontManager.getRunescapeBoldFont());
 		titleLabel.setForeground(Color.WHITE);
+		titleLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		titleLabel.setToolTipText("Open OSRS Wiki article: " + activity.getSafeWikiUrl());
+		titleLabel.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				LinkBrowser.browse(activity.getSafeWikiUrl());
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				titleLabel.setForeground(ColorScheme.BRAND_ORANGE);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				titleLabel.setForeground(Color.WHITE);
+			}
+		});
+
+		JPanel rightHeader = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
+		rightHeader.setOpaque(false);
 
 		JLabel statusBadge = new JLabel(getStatusText(rec.getStatus()));
 		statusBadge.setFont(FontManager.getRunescapeSmallFont());
 		statusBadge.setForeground(getStatusColor(rec.getStatus()));
 
+		JButton wikiBtn = new JButton("Wiki ↗");
+		wikiBtn.setFont(FontManager.getRunescapeSmallFont());
+		wikiBtn.setMargin(new java.awt.Insets(1, 4, 1, 4));
+		wikiBtn.setFocusable(false);
+		wikiBtn.setToolTipText("View guide on OSRS Wiki");
+		wikiBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		wikiBtn.addActionListener(e -> LinkBrowser.browse(activity.getSafeWikiUrl()));
+
+		rightHeader.add(statusBadge);
+		rightHeader.add(wikiBtn);
+
 		headerPanel.add(titleLabel, BorderLayout.CENTER);
-		headerPanel.add(statusBadge, BorderLayout.EAST);
+		headerPanel.add(rightHeader, BorderLayout.EAST);
 
 		// Center body: Highlight unlock & description
 		JPanel contentPanel = new JPanel();
@@ -58,7 +100,7 @@ public class RecommendationCard extends JPanel
 			JLabel unlockLabel = new JLabel("<html><b>★ " + activity.getUnlockHighlight() + "</b></html>");
 			unlockLabel.setFont(FontManager.getRunescapeSmallFont());
 			unlockLabel.setForeground(UNLOCK_COLOR);
-			unlockLabel.setBorder(new EmptyBorder(2, 0, 4, 0));
+			unlockLabel.setBorder(new EmptyBorder(3, 0, 4, 0));
 			contentPanel.add(unlockLabel);
 		}
 
@@ -74,7 +116,7 @@ public class RecommendationCard extends JPanel
 			reqPanel.setOpaque(false);
 			reqPanel.setBorder(new EmptyBorder(6, 0, 2, 0));
 
-			JLabel reqHeader = new JLabel("Missing requirements:");
+			JLabel reqHeader = new JLabel("Requirements / Prerequisites:");
 			reqHeader.setFont(FontManager.getRunescapeSmallFont());
 			reqHeader.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
 			reqPanel.add(reqHeader);
@@ -94,7 +136,7 @@ public class RecommendationCard extends JPanel
 		{
 			JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 2));
 			tagPanel.setOpaque(false);
-			tagPanel.setBorder(new EmptyBorder(4, 0, 0, 0));
+			tagPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
 
 			for (String tag : activity.getTags())
 			{

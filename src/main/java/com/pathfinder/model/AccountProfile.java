@@ -17,6 +17,8 @@ public class AccountProfile
 	int totalLevel;
 	boolean isIronman;
 
+	BankSnapshot bankSnapshot;
+
 	@Builder.Default
 	Map<Skill, Integer> skills = new HashMap<>();
 
@@ -31,5 +33,10 @@ public class AccountProfile
 	public boolean hasCompletedQuest(String questName)
 	{
 		return completedQuests.contains(questName);
+	}
+
+	public boolean hasScannedBank()
+	{
+		return bankSnapshot != null && bankSnapshot.hasScanned();
 	}
 }

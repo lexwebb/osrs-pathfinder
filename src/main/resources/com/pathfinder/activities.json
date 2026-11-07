@@ -1,0 +1,595 @@
+[
+  {
+    "id": "mahogany-homes",
+    "title": "Mahogany Homes",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Mahogany_Homes",
+    "category": "SKILLING",
+    "description": "Mahogany Homes is a Construction minigame in which players complete contracts for various NPCs throughout Falador, Varrock, East Ardougne, and Hosidius. The player is assigned a contract by contractors working for the Mahogany Homes company, with the location of the contract chosen at random. Completing the contract involves travelling to the home ",
+    "unlockHighlight": "Carpenter Outfit (+2.5% XP) & Plank Sack",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [
+      {
+        "skill": "CONSTRUCTION",
+        "level": 20
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Construction",
+      "Contract",
+      "Chill",
+      "Cost-effective"
+    ]
+  },
+  {
+    "id": "giants-foundry",
+    "title": "Giants' Foundry",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Giants%27_Foundry",
+    "category": "SKILLING",
+    "description": "Giants' Foundry is a Smithing minigame in which players are tasked with creating giant weapons for Kovac. To participate in the minigame, players must complete the Sleeping Giants quest.",
+    "unlockHighlight": "Smithing Outfit & Colossal Blade",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "SMITHING",
+        "level": 15
+      }
+    ],
+    "questRequirements": [
+      "Sleeping Giants"
+    ],
+    "tags": [
+      "Smithing",
+      "Minigame",
+      "Profit",
+      "Ironman Favorite"
+    ]
+  },
+  {
+    "id": "guardians-of-the-rift",
+    "title": "Guardians of the Rift",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Guardians_of_the_Rift",
+    "category": "MINIGAME",
+    "description": "Guardians of the Rift is a non-combat minigame that takes place within the Temple of the Eye. The main goal of the game is to assist The Great Guardian in closing an abyssal rift to the Scar, the most dangerous part of Abyssal Space, by supplying it with guardian stones while protecting it from the abyssal creatures that come through the rift.",
+    "unlockHighlight": "Raiments of the Eye (+60% runes) & Abyssal Needle",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "RUNECRAFT",
+        "level": 27
+      }
+    ],
+    "questRequirements": [
+      "Temple of the Eye"
+    ],
+    "tags": [
+      "Runecraft",
+      "Co-op",
+      "Outfit",
+      "High Profit"
+    ]
+  },
+  {
+    "id": "tempoross",
+    "title": "Tempoross",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Tempoross",
+    "category": "BOSSING",
+    "description": "Tempoross is a cooperative minigame-style boss that is fought using skills rather than combat. 35 Fishing is required to fight it, with players assisting the Spirit Anglers in depleting its energy by fishing for and cooking harpoonfish to be loaded as cannon ammunition, then reducing its essence by fishing for energised fish.",
+    "unlockHighlight": "Fish Barrel (stores 28 raw fish) & Tackle Box",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "FISHING",
+        "level": 35
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Fishing",
+      "Boss",
+      "Safe Death",
+      "Food Supplies"
+    ]
+  },
+  {
+    "id": "hunter-rumours",
+    "title": "Hunter Guild",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Hunter_Guild",
+    "category": "SKILLING",
+    "description": "The Hunter Guild is a members-only guild located within the north-western part of the Avium Savannah, just outside Civitas illa Fortis. To access the guild's amenities, a minimum Hunter level of 46 (not boostable) is required.",
+    "unlockHighlight": "Huntsman's Kit, Guild Hunter Outfit & Quetzal Whistle",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [
+      {
+        "skill": "HUNTER",
+        "level": 46
+      }
+    ],
+    "questRequirements": [
+      "Children of the Sun"
+    ],
+    "tags": [
+      "Hunter",
+      "Varlamore",
+      "Variety",
+      "Whistle"
+    ]
+  },
+  {
+    "id": "volcanic-mine",
+    "title": "Volcanic Mine",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Volcanic_Mine",
+    "category": "MINIGAME",
+    "description": "The Volcanic Mine is a large volcanic chamber found underneath the Fossil Island Volcano. The mine entrance is located in the north-east corner of the volcano, with Petrified Pete guarding its entrance. Players can participate in the eponymous minigame inside the mine.",
+    "unlockHighlight": "Ash Covered Tome & 80k+ Mining XP/hr",
+    "recommendedCombat": 50,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [
+      {
+        "skill": "MINING",
+        "level": 50
+      }
+    ],
+    "questRequirements": [
+      "Bone Voyage"
+    ],
+    "tags": [
+      "Mining",
+      "High XP",
+      "Teamwork",
+      "Alternative"
+    ]
+  },
+  {
+    "id": "hallowed-sepulchre",
+    "title": "Hallowed Sepulchre",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Hallowed_Sepulchre",
+    "category": "SKILLING",
+    "description": "The Hallowed Sepulchre is an Agility minigame set in an ancient Saradominist burial ground of the city Hallowvale, located beneath Darkmeyer available to players with level 52 Agility and completion of Sins of the Father. There are five floors available scaling with the player's Agility level. In order to receive hallowed marks, the coffins must be",
+    "unlockHighlight": "Ring of Endurance & Best Agility XP/GP in game",
+    "recommendedCombat": 60,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "AGILITY",
+        "level": 52
+      },
+      {
+        "skill": "THIEVING",
+        "level": 52
+      }
+    ],
+    "questRequirements": [
+      "Sins of the Father"
+    ],
+    "tags": [
+      "Agility",
+      "High Skill",
+      "Huge Profit",
+      "Action"
+    ]
+  },
+  {
+    "id": "shades-of-mortton",
+    "title": "Shades of Mort'ton",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Shades_of_Mort%27ton_%28minigame%29",
+    "category": "MINIGAME",
+    "description": "Shades of Mort'ton is a combat and skilling minigame that takes place in Mort'ton. Players are to defend and build the Flamtaer temple and create pyre logs to cremate shade remains, which have a chance to yield keys used for unlocking special chests. The minigame can also yield Combat, Crafting, Firemaking, and Prayer experience.",
+    "unlockHighlight": "Zealot's Robes (save bones/ensouled heads) & Amulet of the Damned",
+    "recommendedCombat": 40,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [
+      {
+        "skill": "CRAFTING",
+        "level": 20
+      },
+      {
+        "skill": "HERBLORE",
+        "level": 15
+      }
+    ],
+    "questRequirements": [
+      "Shades of Mort'ton"
+    ],
+    "tags": [
+      "Prayer",
+      "Unique Rewards",
+      "Morytania",
+      "Classic"
+    ]
+  },
+  {
+    "id": "wintertodt",
+    "title": "Wintertodt",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Wintertodt",
+    "category": "BOSSING",
+    "description": "The Wintertodt ( win-ter-tod) is a cooperative minigame-style boss that is fought using skills rather than combat. It is imprisoned behind the Doors of Dinh within the Northern Tundras of Great Kourend. 50 Firemaking is required to fight the Wintertodt, with players assisting the Order of the Sacred Flame by keeping braziers lit and pyromancers ali",
+    "unlockHighlight": "Tome of Fire & Pyromancer Warm Outfit (+2.5% Firemaking XP)",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "FIREMAKING",
+        "level": 50
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Firemaking",
+      "Skilling Boss",
+      "Supplies",
+      "Fast XP"
+    ]
+  },
+  {
+    "id": "scurrius",
+    "title": "Scurrius",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Scurrius",
+    "category": "BOSSING",
+    "description": "Scurrius, the Rat King is a boss residing in the Varrock Sewers. As a mid-level boss meant for players with a combat level of 60-90, Scurrius is meant to introduce various mechanics that are present in higher-level play, such as switching protection prayers quickly during combat as well as dodging attacks and managing multiple monsters mid-fight.",
+    "unlockHighlight": "Bone Weapons (massive combat XP) & Scurrius' Spine",
+    "recommendedCombat": 40,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "PRAYER",
+        "level": 43
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "PvM Tutorial",
+      "Prayer Flicking",
+      "Fast XP",
+      "Solo"
+    ]
+  },
+  {
+    "id": "barrows",
+    "title": "Barrows",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Barrows",
+    "category": "BOSSING",
+    "description": "The Barrows is a series of six burial mounds east of Mort'ton in which the Barrows brothers were entombed after their deaths during the Third Age. 'Barrows' also commonly refers to the minigame-like dungeon-delving experience of looting the chest at the centre of the tunnels beneath the crypts, released on 9 May 2005.",
+    "unlockHighlight": "Iconic Barrows Sets (Dharok, Ahrim, Karil, Guthan)",
+    "recommendedCombat": 60,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "MAGIC",
+        "level": 50
+      },
+      {
+        "skill": "PRAYER",
+        "level": 43
+      }
+    ],
+    "questRequirements": [
+      "Priest in Peril"
+    ],
+    "tags": [
+      "Classic",
+      "Midgame Armor",
+      "High Value",
+      "Solo"
+    ]
+  },
+  {
+    "id": "perilous-moons",
+    "title": "Moons of Peril",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Moons_of_Peril",
+    "category": "BOSSING",
+    "description": "The Moons of Peril are three nagua bosses imprisoned in Neypotzli, a prison located beneath Cam Torum. Aimed at mid-level players of at least level 75 combat, players may fight each boss one-by-one, using the powerful resources within Neypotzli to restock between fights. Completing the Perilous Moons quest acts as an introduction to Neypotzli and t",
+    "unlockHighlight": "Blood, Blue & Eclipse Moon Armor Sets (Level 75 Gear)",
+    "recommendedCombat": 75,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "ATTACK",
+        "level": 65
+      },
+      {
+        "skill": "DEFENCE",
+        "level": 70
+      }
+    ],
+    "questRequirements": [
+      "Perilous Moons",
+      "Children of the Sun"
+    ],
+    "tags": [
+      "Varlamore",
+      "Boss Trio",
+      "Free Supplies",
+      "Midgame BiS"
+    ]
+  },
+  {
+    "id": "sarachnis",
+    "title": "Sarachnis",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Sarachnis",
+    "category": "BOSSING",
+    "description": "Sarachnis, the mother of the temple spiders, is a mid-level boss found in the Forthos Dungeon, in a former burial tomb south of the Spider Den. ",
+    "unlockHighlight": "Sarachnis Cudgel (Crush Weapon) & Red Spider Egg Sacks",
+    "recommendedCombat": 70,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [
+      {
+        "skill": "PRAYER",
+        "level": 43
+      },
+      {
+        "skill": "ATTACK",
+        "level": 60
+      },
+      {
+        "skill": "STRENGTH",
+        "level": 60
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Spider",
+      "Herblore Supplies",
+      "Crush Weapon",
+      "Midgame"
+    ]
+  },
+  {
+    "id": "dagannoth-kings",
+    "title": "Dagannoth Kings",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dagannoth_Kings",
+    "category": "BOSSING",
+    "description": "The Dagannoth Kings (commonly abbreviated DKs) are a group of three dagannoth that live deep in the cave on Waterbirth Island which is a multiway combat area. They are all level 303, and also represent the combat triangle. Each of the kings uses a different combat style, is weak against the type that defeats them on the combat triangle, and has a h",
+    "unlockHighlight": "Berserker Ring, Archers Ring & Seers Ring",
+    "recommendedCombat": 80,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "PRAYER",
+        "level": 43
+      },
+      {
+        "skill": "MAGIC",
+        "level": 60
+      },
+      {
+        "skill": "RANGED",
+        "level": 60
+      }
+    ],
+    "questRequirements": [
+      "The Fremennik Trials",
+      "Waterbirth Island"
+    ],
+    "tags": [
+      "Trio Boss",
+      "BiS Rings",
+      "Fremennik",
+      "Team or Solo"
+    ]
+  },
+  {
+    "id": "fairy-rings",
+    "title": "Fairytale II - Cure a Queen",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Fairytale_II_-_Cure_a_Queen",
+    "category": "QUEST",
+    "description": "Fairytale II - Cure a Queen is a sequel quest to Fairytale I - Growing Pains, continuing the Fairy Tale quest series. The quest sees the adventurer gain access to fairy rings, which are used to find the true location of the Fairy Queen to cure her from her sickness.",
+    "unlockHighlight": "Instant teleportation access across almost all corners of Gielinor",
+    "recommendedCombat": 30,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [],
+    "questRequirements": [
+      "Lost City",
+      "Nature Spirit",
+      "Fairytale I - Growing Pains"
+    ],
+    "tags": [
+      "Essential",
+      "Teleportation",
+      "Huge QoL"
+    ]
+  },
+  {
+    "id": "bone-voyage",
+    "title": "Bone Voyage",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Bone_Voyage",
+    "category": "QUEST",
+    "description": "Bone Voyage is a quest involving the construction of a barge for the Varrock museum. Completion of this quest unlocks access to Fossil Island, which is of archaeological interest to the museum Curator Haig Halen.",
+    "unlockHighlight": "Fossil Island: Birdhouse Runs, Ammonite Crabs & Volcanic Mine",
+    "recommendedCombat": 25,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [],
+    "questRequirements": [
+      "The Dig Site"
+    ],
+    "tags": [
+      "Birdhouses",
+      "Passive Hunter",
+      "Top Skilling Hub"
+    ]
+  },
+  {
+    "id": "dragon-slayer-i",
+    "title": "Dragon Slayer I",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Dragon_Slayer_I",
+    "category": "QUEST",
+    "description": "Dragon Slayer I is a quest that focuses on the player's journey to slay Elvarg, the dragon of Crandor. Often described as the hardest, yet most rewarding quest available to free-to-play players, those who successfully complete it gain the ability to equip the rune platebody and green d'hide body (as well as their many variations), in addition to th",
+    "unlockHighlight": "Wear Rune Platebody, Green D'hide Body & Anti-Dragon Shield",
+    "recommendedCombat": 35,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "CRAFTING",
+        "level": 8
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Free-to-Play Finale",
+      "Armor Unlock",
+      "Iconic"
+    ]
+  },
+  {
+    "id": "monkey-madness-i",
+    "title": "Monkey Madness I",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Monkey_Madness_I",
+    "category": "QUEST",
+    "description": "Monkey Madness I is the fourth quest in the gnome quest series, and one of the most well-known quests in RuneScape. The quest brings the player to Ape Atoll, an island inhabited by civilised but unfriendly and high-level monkeys, in order to help Narnode Shareen track down his missing 10th Squad military unit.",
+    "unlockHighlight": "Wield Dragon Scimitar & Ape Atoll Access (great chinning dungeon)",
+    "recommendedCombat": 50,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [],
+    "questRequirements": [
+      "The Grand Tree",
+      "Tree Gnome Village"
+    ],
+    "tags": [
+      "Dragon Scimitar",
+      "Ape Atoll",
+      "Iconic Quest"
+    ]
+  },
+  {
+    "id": "recipe-for-disaster",
+    "title": "Recipe for Disaster",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Recipe_for_Disaster",
+    "category": "QUEST",
+    "description": "Recipe for Disaster is the 100th quest released by Jagex, being a sequel to the Cook's Assistant quest. It is composed of 10 parts: the introduction, followed by 8 subquests, then culminating in a grand finale where the player must face-off with the Culinaromancer. The subquests range in difficulty from very easy to very hard. It is intended to be ",
+    "unlockHighlight": "Barrows Gloves (+12 all offensive, +12 defense, +12 strength)",
+    "recommendedCombat": 70,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "COOKING",
+        "level": 70
+      },
+      {
+        "skill": "AGILITY",
+        "level": 48
+      },
+      {
+        "skill": "MINING",
+        "level": 50
+      },
+      {
+        "skill": "FISHING",
+        "level": 53
+      },
+      {
+        "skill": "THIEVING",
+        "level": 53
+      },
+      {
+        "skill": "HERBLORE",
+        "level": 25
+      },
+      {
+        "skill": "MAGIC",
+        "level": 59
+      }
+    ],
+    "questRequirements": [
+      "Cook's Assistant",
+      "Desert Treasure I",
+      "Legends' Quest"
+    ],
+    "tags": [
+      "Barrows Gloves",
+      "Best-in-Slot",
+      "Culinaromancer"
+    ]
+  },
+  {
+    "id": "ardougne-easy-diary",
+    "title": "Ardougne Diary",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Ardougne_Diary",
+    "category": "DIARY",
+    "description": "The Ardougne Diary is an Achievement Diary whose tasks revolve around areas in and near Ardougne, such as Yanille and Port Khazard.",
+    "unlockHighlight": "Ardougne Cloak 1: Unlimited teleports near an altar & fairy ring",
+    "recommendedCombat": 20,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "THIEVING",
+        "level": 15
+      },
+      {
+        "skill": "FISHING",
+        "level": 15
+      }
+    ],
+    "questRequirements": [
+      "Biohazard",
+      "Rune Mysteries"
+    ],
+    "tags": [
+      "Diary",
+      "Unlimited Teleport",
+      "Early Game Game-Changer"
+    ]
+  },
+  {
+    "id": "varrock-medium-diary",
+    "title": "Varrock Diary",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Varrock_Diary",
+    "category": "DIARY",
+    "description": "The Varrock Diary is an Achievement Diary whose tasks revolve around areas in and near Varrock, such as the Barbarian Village and Edgeville.",
+    "unlockHighlight": "30 Discounted Battlestaves daily from Zaff (~60k GP daily passive profit)",
+    "recommendedCombat": 40,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "AGILITY",
+        "level": 30
+      },
+      {
+        "skill": "FARMING",
+        "level": 30
+      },
+      {
+        "skill": "FIREMAKING",
+        "level": 40
+      },
+      {
+        "skill": "THIEVING",
+        "level": 25
+      }
+    ],
+    "questRequirements": [
+      "Garden of Tranquillity",
+      "A Soul's Bane"
+    ],
+    "tags": [
+      "Daily GP",
+      "Battlestaves",
+      "Varrock Teleport Grand Exchange"
+    ]
+  }
+]

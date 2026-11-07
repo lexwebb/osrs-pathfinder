@@ -1,0 +1,175 @@
+[
+  {
+    "id": "dragon-scimitar",
+    "name": "Dragon Scimitar",
+    "slot": "WEAPON",
+    "item_id": 4587,
+    "recommended_combat": 50,
+    "skill_reqs": [
+      {
+        "skill": "ATTACK",
+        "level": 60
+      }
+    ],
+    "quest_req": "Monkey Madness I",
+    "estimated_price": 100000,
+    "ironman_source": "Purchased from Daga's Scimitar Smithy on Ape Atoll for 100,000 coins",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Dragon_scimitar",
+    "highlight": "The premier mid-game slash weapon for training Strength"
+  },
+  {
+    "id": "fighter-torso",
+    "name": "Fighter Torso",
+    "slot": "BODY",
+    "item_id": 10551,
+    "recommended_combat": 60,
+    "skill_reqs": [
+      {
+        "skill": "DEFENCE",
+        "level": 40
+      }
+    ],
+    "quest_req": "",
+    "estimated_price": 0,
+    "ironman_source": "Earned by playing Barbarian Assault minigame (375 points in all roles + Penance Queen kill)",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Fighter_torso",
+    "highlight": "+4 Melee Strength bonus (equivalent to Bandos Chestplate!) without spending millions"
+  },
+  {
+    "id": "dragon-defender",
+    "name": "Dragon Defender",
+    "slot": "SHIELD",
+    "item_id": 12954,
+    "recommended_combat": 65,
+    "skill_reqs": [
+      {
+        "skill": "ATTACK",
+        "level": 60
+      },
+      {
+        "skill": "DEFENCE",
+        "level": 60
+      }
+    ],
+    "quest_req": "",
+    "estimated_price": 0,
+    "ironman_source": "Warriors' Guild basement cyclopes drop (requires 130 combined Attack + Strength to enter guild)",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Dragon_defender",
+    "highlight": "+6 Melee Strength and massive offensive accuracy in shield slot"
+  },
+  {
+    "id": "abyssal-whip",
+    "name": "Abyssal Whip",
+    "slot": "WEAPON",
+    "item_id": 4151,
+    "recommended_combat": 75,
+    "skill_reqs": [
+      {
+        "skill": "ATTACK",
+        "level": 70
+      }
+    ],
+    "quest_req": "",
+    "estimated_price": 1800000,
+    "ironman_source": "Slayer drop from Abyssal Demons (85 Slayer required) or Abyssal Sire",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Abyssal_whip",
+    "highlight": "Essential high-DPS 4-tick weapon for general melee and Slayer"
+  },
+  {
+    "id": "barrows-gloves",
+    "name": "Barrows Gloves",
+    "slot": "HANDS",
+    "item_id": 7462,
+    "recommended_combat": 70,
+    "skill_reqs": [
+      {
+        "skill": "DEFENCE",
+        "level": 40
+      }
+    ],
+    "quest_req": "Recipe for Disaster",
+    "estimated_price": 130000,
+    "ironman_source": "Purchased from the Culinaromancer's Chest for 130,000 coins after completing Recipe for Disaster",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Barrows_gloves",
+    "highlight": "Best-in-slot all-around hybrid gloves (+12 Strength, +12 ranged/magic accuracy, high defensive stats)"
+  },
+  {
+    "id": "fire-cape",
+    "name": "Fire Cape",
+    "slot": "CAPE",
+    "item_id": 6570,
+    "recommended_combat": 75,
+    "skill_reqs": [
+      {
+        "skill": "RANGED",
+        "level": 70
+      },
+      {
+        "skill": "PRAYER",
+        "level": 43
+      },
+      {
+        "skill": "DEFENCE",
+        "level": 40
+      }
+    ],
+    "quest_req": "",
+    "estimated_price": 0,
+    "ironman_source": "Defeat TzTok-Jad in the TzHaar Fight Cave (requires ~63 waves of prayer/ranged combat)",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Fire_cape",
+    "highlight": "+4 Melee Strength and high defensive bonuses, iconic rite of passage"
+  },
+  {
+    "id": "amulet-of-fury",
+    "name": "Amulet of Fury",
+    "slot": "NECK",
+    "item_id": 6585,
+    "recommended_combat": 60,
+    "skill_reqs": [],
+    "quest_req": "",
+    "estimated_price": 2800000,
+    "ironman_source": "Buy Onyx with Tokkul in TzHaar shop (or Zulrah drop) and enchant with 87 Magic + 90 Crafting",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Amulet_of_fury",
+    "highlight": "Supreme hybrid amulet with +8 Melee/Ranged/Magic attack, +15 defense, and +8 Melee Strength"
+  },
+  {
+    "id": "toxic-blowpipe",
+    "name": "Toxic Blowpipe",
+    "slot": "WEAPON",
+    "item_id": 12926,
+    "recommended_combat": 80,
+    "skill_reqs": [
+      {
+        "skill": "RANGED",
+        "level": 75
+      },
+      {
+        "skill": "AGILITY",
+        "level": 56
+      }
+    ],
+    "quest_req": "Regicide",
+    "estimated_price": 3200000,
+    "ironman_source": "Zulrah boss drop (Tanzanite fang crafted with 53 Fletching)",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Toxic_blowpipe",
+    "highlight": "Extremely fast 2-tick ranged weapon with venom and healing special attack"
+  },
+  {
+    "id": "trident-of-the-seas",
+    "name": "Trident of the Seas",
+    "slot": "WEAPON",
+    "item_id": 11907,
+    "recommended_combat": 75,
+    "skill_reqs": [
+      {
+        "skill": "MAGIC",
+        "level": 75
+      }
+    ],
+    "quest_req": "",
+    "estimated_price": 750000,
+    "ironman_source": "Cave Kraken slayer drop (87 Slayer required)",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Trident_of_the_seas",
+    "highlight": "Powered staff that attacks at 4-tick speed without needing standard spellbook casts"
+  }
+]

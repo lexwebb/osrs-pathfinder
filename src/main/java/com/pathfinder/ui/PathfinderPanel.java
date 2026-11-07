@@ -4,13 +4,13 @@ import com.pathfinder.PathfinderPlugin;
 import com.pathfinder.engine.RecommendationEngine;
 import com.pathfinder.model.AccountProfile;
 import com.pathfinder.model.ActivityCategory;
+import com.pathfinder.model.BankSnapshot;
 import com.pathfinder.model.Recommendation;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -29,6 +29,7 @@ import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.util.LinkBrowser;
 
 public class PathfinderPanel extends PluginPanel
 {
@@ -37,14 +38,20 @@ public class PathfinderPanel extends PluginPanel
 
 	private final JLabel headerTitle = new JLabel("OSRS Pathfinder");
 	private final JLabel statusSummary = new JLabel("Please log in to scan account");
+	private final JLabel bankSummary = new JLabel("Open bank to enable gear/GP recommendations");
+
 	private final JComboBox<ActivityCategory> categoryCombo = new JComboBox<>(ActivityCategory.values());
+	private final JComboBox<RecommendationEngine.SortOrder> sortCombo = new JComboBox<>(RecommendationEngine.SortOrder.values());
+
 	private final JCheckBox readyOnlyCheck = new JCheckBox("Ready to do now", false);
 	private final JCheckBox hiddenGemsCheck = new JCheckBox("Hidden gems only", false);
+
 	private final JButton surpriseBtn = new JButton("🎲 Surprise Me!");
-	private final JButton refreshBtn = new JButton("🔄 Scan Now");
+	private final JButton refreshBtn = new JButton("🔄 Scan");
 
 	private final JPanel cardsContainer = new JPanel();
 	private List<Recommendation> currentEvaluations = new ArrayList<>();
+	private AccountProfile currentProfile;
 
 	public PathfinderPanel(PathfinderPlugin plugin, RecommendationEngine engine)
 	{
@@ -57,23 +64,46 @@ public class PathfinderPanel extends PluginPanel
 
 		JPanel topContainer = new JPanel();
 		topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
-		topContainer.setBorder(new EmptyBorder(10, 10, 10, 10));
+		topContainer.setBorder(new EmptyBorder(10, 10, 8, 10));
 		topContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-		// Header
+		// Header Title
 		headerTitle.setFont(FontManager.getRunescapeBoldFont());
 		headerTitle.setForeground(ColorScheme.BRAND_ORANGE);
 		headerTitle.setAlignmentX(LEFT_ALIGNMENT);
 
+		// Status summary
 		statusSummary.setFont(FontManager.getRunescapeSmallFont());
 		statusSummary.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
 		statusSummary.setAlignmentX(LEFT_ALIGNMENT);
 
-		// Category Combo
+		// Bank summary banner
+		bankSummary.setFont(FontManager.getRunescapeSmallFont());
+		bankSummary.setForeground(new Color(170, 170, 170));
+		bankSummary.setAlignmentX(LEFT_ALIGNMENT);
+
+		JPanel bankBanner = new JPanel(new BorderLayout());
+		bankBanner.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		bankBanner.setBorder(new EmptyBorder(4, 6, 4, 6));
+		bankBanner.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+		bankBanner.setAlignmentX(LEFT_ALIGNMENT);
+		bankBanner.add(bankSummary, BorderLayout.CENTER);
+
+		// Category & Sort row
 		categoryCombo.setAlignmentX(LEFT_ALIGNMENT);
 		categoryCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
 		categoryCombo.addActionListener(e -> updateDisplay());
 
+		sortCombo.setAlignmentX(LEFT_ALIGNMENT);
+		sortCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+		sortCombo.addActionListener(e -> updateDisplay());
+
+		JLabel filterLabel = new JLabel("Category & Sorting:");
+		filterLabel.setFont(FontManager.getRunescapeSmallFont());
+		filterLabel.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+		filterLabel.setAlignmentX(LEFT_ALIGNMENT);
+
+		// Toggles
 		readyOnlyCheck.setOpaque(false);
 		readyOnlyCheck.setForeground(Color.WHITE);
 		readyOnlyCheck.setFont(FontManager.getRunescapeSmallFont());
@@ -98,11 +128,18 @@ public class PathfinderPanel extends PluginPanel
 		buttonRow.add(surpriseBtn, BorderLayout.CENTER);
 		buttonRow.add(refreshBtn, BorderLayout.EAST);
 
+		// Assemble top panel
 		topContainer.add(headerTitle);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
+		topContainer.add(Box.createRigidArea(new Dimension(0, 3)));
 		topContainer.add(statusSummary);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 6)));
+		topContainer.add(bankBanner);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 8)));
+		topContainer.add(filterLabel);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 2)));
 		topContainer.add(categoryCombo);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
+		topContainer.add(sortCombo);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(readyOnlyCheck);
 		topContainer.add(hiddenGemsCheck);
@@ -128,6 +165,7 @@ public class PathfinderPanel extends PluginPanel
 
 	public void updateProfile(AccountProfile profile)
 	{
+		this.currentProfile = profile;
 		this.currentEvaluations = engine.evaluateAll(profile);
 
 		long readyCount = currentEvaluations.stream()
@@ -140,6 +178,21 @@ public class PathfinderPanel extends PluginPanel
 		SwingUtilities.invokeLater(() -> {
 			statusSummary.setText(String.format("Combat %d | %d Ready | %d Near Unlock",
 				profile.getCombatLevel(), readyCount, nearCount));
+
+			if (profile.hasScannedBank())
+			{
+				BankSnapshot bs = profile.getBankSnapshot();
+				bankSummary.setText(String.format("💰 Cash: %s | Bank: ~%s GP",
+					BankSnapshot.formatGpValue(bs.getTotalLiquidCash()),
+					BankSnapshot.formatGpValue(bs.getEstimatedTotalValue())));
+				bankSummary.setForeground(new Color(241, 196, 15));
+			}
+			else
+			{
+				bankSummary.setText("Open bank to enable gear/GP recommendations");
+				bankSummary.setForeground(new Color(170, 170, 170));
+			}
+
 			updateDisplay();
 		});
 	}
@@ -160,10 +213,12 @@ public class PathfinderPanel extends PluginPanel
 		}
 
 		ActivityCategory selectedCategory = (ActivityCategory) categoryCombo.getSelectedItem();
+		RecommendationEngine.SortOrder selectedSort = (RecommendationEngine.SortOrder) sortCombo.getSelectedItem();
 		boolean readyOnly = readyOnlyCheck.isSelected();
 		boolean hiddenGemsOnly = hiddenGemsCheck.isSelected();
 
 		List<Recommendation> filtered = engine.filter(currentEvaluations, selectedCategory, readyOnly, hiddenGemsOnly);
+		engine.sort(filtered, selectedSort != null ? selectedSort : RecommendationEngine.SortOrder.SMART_SCORE);
 
 		if (filtered.isEmpty())
 		{
@@ -193,18 +248,35 @@ public class PathfinderPanel extends PluginPanel
 		}
 
 		Recommendation picked = engine.pickSurprise(currentEvaluations);
-		if (picked != null)
+		if (picked == null)
 		{
-			JOptionPane.showMessageDialog(
-				this,
-				"<html><body style='width: 250px;'>" +
-					"<h2>🎲 Next Adventure: " + picked.getActivity().getTitle() + "</h2>" +
-					"<p><b>" + (picked.getActivity().getUnlockHighlight() != null ? picked.getActivity().getUnlockHighlight() : "") + "</b></p>" +
-					"<p>" + picked.getActivity().getDescription() + "</p>" +
-					"</body></html>",
-				"Pathfinder Roulette",
-				JOptionPane.INFORMATION_MESSAGE
-			);
+			return;
+		}
+
+		String[] options = {"Open Wiki Guide", "Roll Again 🎲", "Close"};
+		int choice = JOptionPane.showOptionDialog(
+			this,
+			"<html><body style='width: 260px;'>" +
+				"<h2 style='color:#f39c12; margin-bottom: 2px;'>🎲 Next Adventure</h2>" +
+				"<h3 style='margin-top:0;'>" + picked.getActivity().getTitle() + "</h3>" +
+				"<p style='color:#f1c40f;'><b>" + (picked.getActivity().getUnlockHighlight() != null ? picked.getActivity().getUnlockHighlight() : "") + "</b></p>" +
+				"<p style='color:#ccc;'>" + picked.getActivity().getDescription() + "</p>" +
+				"</body></html>",
+			"Pathfinder Roulette",
+			JOptionPane.DEFAULT_OPTION,
+			JOptionPane.PLAIN_MESSAGE,
+			null,
+			options,
+			options[0]
+		);
+
+		if (choice == 0)
+		{
+			LinkBrowser.browse(picked.getActivity().getSafeWikiUrl());
+		}
+		else if (choice == 1)
+		{
+			triggerSurprise();
 		}
 	}
 }

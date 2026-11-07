@@ -3,6 +3,7 @@ package com.pathfinder.model;
 public enum ActivityCategory
 {
 	ALL("All Activities"),
+	GEAR("Gear Upgrades"),
 	QUEST("Quests & Unlocks"),
 	SKILLING("Engaging Skilling"),
 	BOSSING("Entry & Mid Bossing"),
@@ -17,6 +18,12 @@ public enum ActivityCategory
 	}
 
 	public String getDisplayName()
+	{
+		return displayName;
+	}
+
+	@Override
+	public String toString()
 	{
 		return displayName;
 	}

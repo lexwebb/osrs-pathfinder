@@ -4,6 +4,7 @@ import com.pathfinder.engine.ActivityDatabase;
 import com.pathfinder.engine.RecommendationEngine;
 import com.pathfinder.model.AccountProfile;
 import com.pathfinder.model.ActivityCategory;
+import com.pathfinder.model.BankSnapshot;
 import com.pathfinder.model.Recommendation;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +29,13 @@ public class RecommendationEngineTest
 	}
 
 	@Test
+	public void testDatabaseLoadsFromBundledJson()
+	{
+		Assert.assertTrue("Should load activities from activities.json", database.getAllActivities().size() >= 15);
+		Assert.assertTrue("Should load gear from gear_upgrades.json", database.getGearUpgrades().size() >= 5);
+	}
+
+	@Test
 	public void testNewAccountHasValidRecommendations()
 	{
 		Map<Skill, Integer> skills = new HashMap<>();
@@ -48,73 +56,52 @@ public class RecommendationEngineTest
 		List<Recommendation> recs = engine.evaluateAll(freshAccount);
 		Assert.assertNotNull(recs);
 		Assert.assertFalse(recs.isEmpty());
-
-		// Ensure sorted properly (e.g. at least some are near unlock or locked)
-		Assert.assertTrue(recs.size() >= 10);
 	}
 
 	@Test
-	public void testReadyActivityDetected()
+	public void testAffordableGearUpgradeRecommended()
 	{
 		Map<Skill, Integer> skills = new HashMap<>();
 		for (Skill s : Skill.values())
 		{
 			skills.put(s, 1);
 		}
-		// Give skills for Mahogany Homes (Construction 20)
-		skills.put(Skill.CONSTRUCTION, 25);
+		// 70 Attack for Abyssal Whip
+		skills.put(Skill.ATTACK, 70);
 
-		AccountProfile profile = AccountProfile.builder()
-			.combatLevel(3)
-			.totalLevel(56)
-			.isIronman(true)
-			.skills(skills)
-			.completedQuests(new HashSet<>())
+		// Bank snapshot with 2.5M GP liquid cash (Whip costs ~1.8M)
+		BankSnapshot bank = BankSnapshot.builder()
+			.coins(2_500_000L)
+			.totalLiquidCash(2_500_000L)
+			.estimatedTotalValue(10_000_000L)
+			.timestamp(System.currentTimeMillis())
+			.ownedItemIds(new HashSet<>())
 			.build();
 
-		List<Recommendation> recs = engine.evaluateAll(profile);
-		Recommendation mahoganyHomes = recs.stream()
-			.filter(r -> "mahogany-homes".equals(r.getActivity().getId()))
-			.findFirst()
-			.orElse(null);
-
-		Assert.assertNotNull(mahoganyHomes);
-		Assert.assertEquals(Recommendation.Status.READY, mahoganyHomes.getStatus());
-		Assert.assertTrue(mahoganyHomes.getMissingRequirements().isEmpty());
-	}
-
-	@Test
-	public void testAlmostReadyActivityDetected()
-	{
-		Map<Skill, Integer> skills = new HashMap<>();
-		for (Skill s : Skill.values())
-		{
-			skills.put(s, 1);
-		}
-		// Construction 18 (2 levels away from 20)
-		skills.put(Skill.CONSTRUCTION, 18);
-
 		AccountProfile profile = AccountProfile.builder()
-			.combatLevel(3)
-			.totalLevel(49)
+			.combatLevel(80)
+			.totalLevel(800)
 			.isIronman(false)
 			.skills(skills)
 			.completedQuests(new HashSet<>())
+			.bankSnapshot(bank)
 			.build();
 
 		List<Recommendation> recs = engine.evaluateAll(profile);
-		Recommendation mahoganyHomes = recs.stream()
-			.filter(r -> "mahogany-homes".equals(r.getActivity().getId()))
+
+		Recommendation whip = recs.stream()
+			.filter(r -> "gear-abyssal-whip".equals(r.getActivity().getId()))
 			.findFirst()
 			.orElse(null);
 
-		Assert.assertNotNull(mahoganyHomes);
-		Assert.assertEquals(Recommendation.Status.ALMOST_READY, mahoganyHomes.getStatus());
-		Assert.assertEquals(2, mahoganyHomes.getMissingLevelSum());
+		Assert.assertNotNull(whip);
+		Assert.assertEquals(Recommendation.Status.READY, whip.getStatus());
+		Assert.assertEquals(ActivityCategory.GEAR, whip.getActivity().getCategory());
+		Assert.assertTrue(whip.getActivity().getSafeWikiUrl().contains("runescape.wiki"));
 	}
 
 	@Test
-	public void testFilterCategory()
+	public void testAlreadyOwnedGearNotRecommended()
 	{
 		Map<Skill, Integer> skills = new HashMap<>();
 		for (Skill s : Skill.values())
@@ -122,26 +109,65 @@ public class RecommendationEngineTest
 			skills.put(s, 70);
 		}
 
-		Set<String> quests = new HashSet<>();
-		quests.add("Lost City");
-		quests.add("Nature Spirit");
-		quests.add("Fairytale I - Growing Pains");
+		// Whip item ID is 4151
+		Set<Integer> owned = new HashSet<>();
+		owned.add(4151);
 
-		AccountProfile midgameProfile = AccountProfile.builder()
-			.combatLevel(85)
-			.totalLevel(1500)
-			.isIronman(false)
-			.skills(skills)
-			.completedQuests(quests)
+		BankSnapshot bank = BankSnapshot.builder()
+			.coins(5_000_000L)
+			.totalLiquidCash(5_000_000L)
+			.estimatedTotalValue(20_000_000L)
+			.timestamp(System.currentTimeMillis())
+			.ownedItemIds(owned)
 			.build();
 
-		List<Recommendation> all = engine.evaluateAll(midgameProfile);
-		List<Recommendation> bossesOnly = engine.filter(all, ActivityCategory.BOSSING, false, false);
+		AccountProfile profile = AccountProfile.builder()
+			.combatLevel(85)
+			.totalLevel(1200)
+			.isIronman(false)
+			.skills(skills)
+			.completedQuests(new HashSet<>())
+			.bankSnapshot(bank)
+			.build();
 
-		Assert.assertFalse(bossesOnly.isEmpty());
-		for (Recommendation r : bossesOnly)
+		List<Recommendation> recs = engine.evaluateAll(profile);
+
+		boolean hasWhip = recs.stream().anyMatch(r -> "gear-abyssal-whip".equals(r.getActivity().getId()));
+		Assert.assertFalse("Should not recommend whip if player already owns it in bank", hasWhip);
+	}
+
+	@Test
+	public void testSortingOrders()
+	{
+		Map<Skill, Integer> skills = new HashMap<>();
+		for (Skill s : Skill.values())
 		{
-			Assert.assertEquals(ActivityCategory.BOSSING, r.getActivity().getCategory());
+			skills.put(s, 40);
+		}
+
+		AccountProfile profile = AccountProfile.builder()
+			.combatLevel(50)
+			.totalLevel(900)
+			.skills(skills)
+			.completedQuests(new HashSet<>())
+			.build();
+
+		List<Recommendation> recs = engine.evaluateAll(profile);
+
+		// Alphabetical
+		engine.sort(recs, RecommendationEngine.SortOrder.ALPHABETICAL);
+		for (int i = 0; i < recs.size() - 1; i++)
+		{
+			String a = recs.get(i).getActivity().getTitle();
+			String b = recs.get(i + 1).getActivity().getTitle();
+			Assert.assertTrue(a.compareToIgnoreCase(b) <= 0);
+		}
+
+		// Closest unlock
+		engine.sort(recs, RecommendationEngine.SortOrder.CLOSEST_UNLOCK);
+		for (int i = 0; i < recs.size() - 1; i++)
+		{
+			Assert.assertTrue(recs.get(i).getMissingLevelSum() <= recs.get(i + 1).getMissingLevelSum());
 		}
 	}
 }

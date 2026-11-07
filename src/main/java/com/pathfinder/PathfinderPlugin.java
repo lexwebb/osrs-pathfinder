@@ -3,6 +3,7 @@ package com.pathfinder;
 import com.google.inject.Provides;
 import com.pathfinder.engine.RecommendationEngine;
 import com.pathfinder.model.AccountProfile;
+import com.pathfinder.model.BankSnapshot;
 import com.pathfinder.ui.PathfinderPanel;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -12,21 +13,23 @@ import java.util.Set;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.vars.AccountType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
+import net.runelite.api.ItemID;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.StatChanged;
+import net.runelite.api.vars.AccountType;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
+import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
@@ -37,7 +40,7 @@ import net.runelite.client.util.ImageUtil;
 @PluginDescriptor(
 	name = "Pathfinder",
 	description = "Intelligent next-step adventure advisor and unlock discovery engine",
-	tags = {"pathfinder", "quests", "goals", "suggestions", "skilling", "bossing"}
+	tags = {"pathfinder", "quests", "goals", "suggestions", "skilling", "bossing", "gear"}
 )
 public class PathfinderPlugin extends Plugin
 {
@@ -51,6 +54,9 @@ public class PathfinderPlugin extends Plugin
 	private ClientToolbar clientToolbar;
 
 	@Inject
+	private ItemManager itemManager;
+
+	@Inject
 	private PathfinderConfig config;
 
 	@Inject
@@ -58,6 +64,7 @@ public class PathfinderPlugin extends Plugin
 
 	private PathfinderPanel panel;
 	private NavigationButton navButton;
+	private BankSnapshot lastBankSnapshot;
 
 	@Override
 	protected void startUp() throws Exception
@@ -92,6 +99,7 @@ public class PathfinderPlugin extends Plugin
 		clientToolbar.removeNavigation(navButton);
 		panel = null;
 		navButton = null;
+		lastBankSnapshot = null;
 	}
 
 	@Subscribe
@@ -106,7 +114,7 @@ public class PathfinderPlugin extends Plugin
 	@Subscribe
 	public void onStatChanged(StatChanged statChanged)
 	{
-		// Live refresh when skill levels increase
+		// Refresh recommendations dynamically when a stat levels up
 		if (client.getGameState() == GameState.LOGGED_IN)
 		{
 			clientThread.invokeLater(this::scanAccount);
@@ -116,16 +124,61 @@ public class PathfinderPlugin extends Plugin
 	@Subscribe
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
-		// Cache bank contents when the player accesses their bank
 		if (event.getContainerId() == InventoryID.BANK.getId())
 		{
 			ItemContainer bankContainer = event.getItemContainer();
 			if (bankContainer != null)
 			{
-				log.debug("Pathfinder cached {} bank items", bankContainer.getItems().length);
-				// Bank snapshot can be wired into economy-aware recommendations
+				processBankSnapshot(bankContainer);
+				scanAccount();
 			}
 		}
+	}
+
+	private void processBankSnapshot(ItemContainer bankContainer)
+	{
+		long coins = 0;
+		long platinumTokens = 0;
+		long estimatedTotal = 0;
+		Set<Integer> ownedItemIds = new HashSet<>();
+
+		for (Item item : bankContainer.getItems())
+		{
+			if (item == null || item.getId() <= 0)
+			{
+				continue;
+			}
+
+			int id = item.getId();
+			int qty = item.getQuantity();
+
+			ownedItemIds.add(id);
+
+			if (id == ItemID.COINS_995)
+			{
+				coins += qty;
+			}
+			else if (id == ItemID.PLATINUM_TOKEN)
+			{
+				platinumTokens += qty;
+			}
+
+			long price = itemManager.getItemPrice(id);
+			estimatedTotal += (price * qty);
+		}
+
+		long liquidCash = coins + (platinumTokens * 1000L);
+
+		lastBankSnapshot = BankSnapshot.builder()
+			.coins(coins)
+			.platinumTokens(platinumTokens)
+			.totalLiquidCash(liquidCash)
+			.estimatedTotalValue(estimatedTotal)
+			.ownedItemIds(ownedItemIds)
+			.timestamp(System.currentTimeMillis())
+			.build();
+
+		log.debug("Pathfinder bank scanned: Cash {}, Bank Total {}", liquidCash, estimatedTotal);
 	}
 
 	public void requestAccountScan()
@@ -168,8 +221,26 @@ public class PathfinderPlugin extends Plugin
 			}
 			catch (Exception e)
 			{
-				// Some quest states may not be initialized depending on server state
+				// Ignored
 			}
+		}
+
+		// Also collect inventory & equipment into owned items if bank snapshot exists
+		BankSnapshot snapshot = lastBankSnapshot;
+		if (snapshot != null)
+		{
+			Set<Integer> allOwned = new HashSet<>(snapshot.getOwnedItemIds());
+			addItemsFromContainer(InventoryID.INVENTORY, allOwned);
+			addItemsFromContainer(InventoryID.EQUIPMENT, allOwned);
+
+			snapshot = BankSnapshot.builder()
+				.coins(snapshot.getCoins())
+				.platinumTokens(snapshot.getPlatinumTokens())
+				.totalLiquidCash(snapshot.getTotalLiquidCash())
+				.estimatedTotalValue(snapshot.getEstimatedTotalValue())
+				.ownedItemIds(allOwned)
+				.timestamp(snapshot.getTimestamp())
+				.build();
 		}
 
 		AccountProfile profile = AccountProfile.builder()
@@ -178,14 +249,27 @@ public class PathfinderPlugin extends Plugin
 			.isIronman(isIronman)
 			.skills(skills)
 			.completedQuests(completedQuests)
+			.bankSnapshot(snapshot)
 			.build();
-
-		log.debug("Scanned account profile: Combat {}, Total {}, Quests completed: {}",
-			combatLevel, totalLevel, completedQuests.size());
 
 		if (panel != null)
 		{
 			panel.updateProfile(profile);
+		}
+	}
+
+	private void addItemsFromContainer(InventoryID containerId, Set<Integer> targetSet)
+	{
+		ItemContainer container = client.getItemContainer(containerId);
+		if (container != null)
+		{
+			for (Item item : container.getItems())
+			{
+				if (item != null && item.getId() > 0)
+				{
+					targetSet.add(item.getId());
+				}
+			}
 		}
 	}
 
