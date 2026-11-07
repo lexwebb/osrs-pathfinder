@@ -41,9 +41,9 @@ import net.runelite.client.util.ImageUtil;
 
 @Slf4j
 @PluginDescriptor(
-	name = "Pathfinder",
-	description = "Intelligent next-step adventure advisor and unlock discovery engine",
-	tags = {"pathfinder", "quests", "goals", "suggestions", "skilling", "bossing", "gear", "bronzeman"}
+	name = "OSRS Pathfinder",
+	description = "Intelligent next-step adventure advisor, North Star goal pathfinder, and unlock discovery engine",
+	tags = {"pathfinder", "quests", "goals", "suggestions", "skilling", "bossing", "gear", "bronzeman", "ironman"}
 )
 public class PathfinderPlugin extends Plugin
 {
