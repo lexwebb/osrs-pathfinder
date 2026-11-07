@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 OSRS Pathfinder - Wiki Scraper & Data Pipeline
-Extracts structured game activities, minigames, bosses, and gear milestones
+Extracts structured game activities, minigames, bosses, and extensive gear tier milestones
 from the official Old School RuneScape Wiki API and Weird Gloop price API.
 """
 
@@ -124,6 +124,30 @@ CURATED_ACTIVITIES = [
         "quest_reqs": [],
         "tags": ["Firemaking", "Skilling Boss", "Supplies", "Fast XP"]
     },
+    {
+        "id": "tithe-farm",
+        "wiki_title": "Tithe Farm",
+        "category": "MINIGAME",
+        "unlock_highlight": "Herb Sack, Seed Box & Farmer's Outfit",
+        "recommended_combat": 1,
+        "is_hidden_gem": True,
+        "ironman_friendly": True,
+        "skill_reqs": [{"skill": "FARMING", "level": 34}],
+        "quest_reqs": [],
+        "tags": ["Farming", "Active Farming", "Herb Sack", "Seed Box"]
+    },
+    {
+        "id": "blast-furnace",
+        "wiki_title": "Blast Furnace",
+        "category": "SKILLING",
+        "unlock_highlight": "Cuts coal cost in half & creates bars at 5,000+ bars/hr",
+        "recommended_combat": 1,
+        "is_hidden_gem": False,
+        "ironman_friendly": True,
+        "skill_reqs": [{"skill": "SMITHING", "level": 30}],
+        "quest_reqs": ["The Giant Dwarf"],
+        "tags": ["Smithing", "Huge Profit", "Keldagrim", "Efficient"]
+    },
     # Bossing & Combat Milestones
     {
         "id": "scurrius",
@@ -184,6 +208,30 @@ CURATED_ACTIVITIES = [
         "skill_reqs": [{"skill": "PRAYER", "level": 43}, {"skill": "MAGIC", "level": 60}, {"skill": "RANGED", "level": 60}],
         "quest_reqs": ["The Fremennik Trials", "Waterbirth Island"],
         "tags": ["Trio Boss", "BiS Rings", "Fremennik", "Team or Solo"]
+    },
+    {
+        "id": "vorkath",
+        "wiki_title": "Vorkath",
+        "category": "BOSSING",
+        "unlock_highlight": "Vorkath's Head (Ava's Assembler) & Draconic Visage",
+        "recommended_combat": 95,
+        "is_hidden_gem": False,
+        "ironman_friendly": True,
+        "skill_reqs": [{"skill": "RANGED", "level": 80}, {"skill": "PRAYER", "level": 74}],
+        "quest_reqs": ["Dragon Slayer II"],
+        "tags": ["Dragon", "High Profit", "Assembler", "Solo"]
+    },
+    {
+        "id": "zulrah",
+        "wiki_title": "Zulrah",
+        "category": "BOSSING",
+        "unlock_highlight": "Blowpipe, Magic Fang (Trident swamp) & Serpentine Helm",
+        "recommended_combat": 85,
+        "is_hidden_gem": False,
+        "ironman_friendly": True,
+        "skill_reqs": [{"skill": "MAGIC", "level": 75}, {"skill": "RANGED", "level": 75}, {"skill": "AGILITY", "level": 56}],
+        "quest_reqs": ["Regicide"],
+        "tags": ["Snake Boss", "BiS Weapons", "Morytania", "Solo"]
     },
     # Quests & Crucial Unlocks
     {
@@ -254,6 +302,44 @@ CURATED_ACTIVITIES = [
         "quest_reqs": ["Cook's Assistant", "Desert Treasure I", "Legends' Quest"],
         "tags": ["Barrows Gloves", "Best-in-Slot", "Culinaromancer"]
     },
+    {
+        "id": "desert-treasure-i",
+        "wiki_title": "Desert Treasure I",
+        "category": "QUEST",
+        "unlock_highlight": "Ancient Magicks Spellbook (Ice Barrage, Smoke & Shadow Spells)",
+        "recommended_combat": 60,
+        "is_hidden_gem": False,
+        "ironman_friendly": True,
+        "skill_reqs": [
+            {"skill": "MAGIC", "level": 50},
+            {"skill": "THIEVING", "level": 53},
+            {"skill": "FIREMAKING", "level": 50},
+            {"skill": "SLAYER", "level": 10}
+        ],
+        "quest_reqs": ["The Dig Site", "Temple of Ikov", "The Tourist Trap", "Priest in Peril", "Waterfall Quest"],
+        "tags": ["Ancient Magicks", "Bursting", "Iconic Quest"]
+    },
+    {
+        "id": "song-of-the-elves",
+        "wiki_title": "Song of the Elves",
+        "category": "QUEST",
+        "unlock_highlight": "Prifddinas Elven City: The Gauntlet, Zalcano & Crystal Armour/BofA",
+        "recommended_combat": 85,
+        "is_hidden_gem": False,
+        "ironman_friendly": True,
+        "skill_reqs": [
+            {"skill": "AGILITY", "level": 70},
+            {"skill": "CONSTRUCTION", "level": 70},
+            {"skill": "FARMING", "level": 70},
+            {"skill": "HERBLORE", "level": 70},
+            {"skill": "HUNTER", "level": 70},
+            {"skill": "MINING", "level": 70},
+            {"skill": "SMITHING", "level": 70},
+            {"skill": "WOODCUTTING", "level": 70}
+        ],
+        "quest_reqs": ["Mourning's End Part II", "Making History"],
+        "tags": ["Prifddinas", "Grandmaster", "Gauntlet", "Crystal Equipment"]
+    },
     # Diaries
     {
         "id": "ardougne-easy-diary",
@@ -281,50 +367,95 @@ CURATED_ACTIVITIES = [
     }
 ]
 
+# Comprehensive OSRS Combat Gear Milestones & Tiers
 GEAR_MILESTONES = [
+    # --- MELEE WEAPONS ---
+    {
+        "id": "rune-scimitar",
+        "name": "Rune Scimitar",
+        "slot": "WEAPON",
+        "style": "MELEE",
+        "tier": "EARLY",
+        "item_id": 1333,
+        "recommended_combat": 30,
+        "skill_reqs": [{"skill": "ATTACK", "level": 40}],
+        "organic_skill_reqs": [{"skill": "ATTACK", "level": 40}],
+        "quest_req": "",
+        "estimated_price": 15000,
+        "ironman_source": "Drop from Fire Giants in Waterfall Dungeon or bought in Al Kharid Scimitar Shop",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Rune_scimitar",
+        "highlight": "Premier early-game slash weapon for training Attack and Strength"
+    },
     {
         "id": "dragon-scimitar",
         "name": "Dragon Scimitar",
         "slot": "WEAPON",
+        "style": "MELEE",
+        "tier": "MID",
         "item_id": 4587,
         "recommended_combat": 50,
         "skill_reqs": [{"skill": "ATTACK", "level": 60}],
+        "organic_skill_reqs": [{"skill": "ATTACK", "level": 60}],
         "quest_req": "Monkey Madness I",
         "estimated_price": 100000,
         "ironman_source": "Purchased from Daga's Scimitar Smithy on Ape Atoll for 100,000 coins",
         "wiki_url": "https://oldschool.runescape.wiki/w/Dragon_scimitar",
-        "highlight": "The premier mid-game slash weapon for training Strength"
+        "highlight": "Premier mid-game slash weapon with 4-tick speed"
     },
     {
-        "id": "fighter-torso",
-        "name": "Fighter Torso",
-        "slot": "BODY",
-        "item_id": 10551,
-        "recommended_combat": 60,
-        "skill_reqs": [{"skill": "DEFENCE", "level": 40}],
-        "quest_req": "",
-        "estimated_price": 0,
-        "ironman_source": "Earned by playing Barbarian Assault minigame (375 points in all roles + Penance Queen kill)",
-        "wiki_url": "https://oldschool.runescape.wiki/w/Fighter_torso",
-        "highlight": "+4 Melee Strength bonus (equivalent to Bandos Chestplate!) without spending millions"
-    },
-    {
-        "id": "dragon-defender",
-        "name": "Dragon Defender",
-        "slot": "SHIELD",
-        "item_id": 12954,
+        "id": "zombie-axe",
+        "name": "Zombie Axe",
+        "slot": "WEAPON",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 28987,
         "recommended_combat": 65,
-        "skill_reqs": [{"skill": "ATTACK", "level": 60}, {"skill": "DEFENCE", "level": 60}],
+        "skill_reqs": [{"skill": "ATTACK", "level": 65}],
+        "organic_skill_reqs": [{"skill": "ATTACK", "level": 65}, {"skill": "SMITHING", "level": 70}],
+        "quest_req": "Defender of Varrock",
+        "estimated_price": 1400000,
+        "ironman_source": "Broken zombie axe drop from Armoured Zombies; repaired with 70 Smithing",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Zombie_axe",
+        "highlight": "Heavy 5-tick crush/slash axe with massive melee Strength bonus"
+    },
+    {
+        "id": "dragon-dagger-p-plus-plus",
+        "name": "Dragon Dagger (p++)",
+        "slot": "WEAPON",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 5698,
+        "recommended_combat": 50,
+        "skill_reqs": [{"skill": "ATTACK", "level": 60}],
+        "organic_skill_reqs": [{"skill": "ATTACK", "level": 60}],
+        "quest_req": "Lost City",
+        "estimated_price": 20000,
+        "ironman_source": "Buy dragon dagger in Zanaris shop and poison with Weapon poison(++)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Dragon_dagger(p%2B%2B)",
+        "highlight": "Iconic spec weapon: 25% special attack costs for 4 double-hit bursts"
+    },
+    {
+        "id": "sarachnis-cudgel",
+        "name": "Sarachnis Cudgel",
+        "slot": "WEAPON",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 23544,
+        "recommended_combat": 70,
+        "skill_reqs": [{"skill": "ATTACK", "level": 60}],
+        "organic_skill_reqs": [{"skill": "ATTACK", "level": 60}],
         "quest_req": "",
-        "estimated_price": 0,
-        "ironman_source": "Warriors' Guild basement cyclopes drop (requires 130 combined Attack + Strength to enter guild)",
-        "wiki_url": "https://oldschool.runescape.wiki/w/Dragon_defender",
-        "highlight": "+6 Melee Strength and massive offensive accuracy in shield slot"
+        "estimated_price": 400000,
+        "ironman_source": "Drop from Sarachnis in Forthos Dungeon",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Sarachnis_cudgel",
+        "highlight": "Fast 4-tick crush weapon, excellent for Gargoyles and Calvar'ion"
     },
     {
         "id": "abyssal-whip",
         "name": "Abyssal Whip",
         "slot": "WEAPON",
+        "style": "MELEE",
+        "tier": "LATE",
         "item_id": 4151,
         "recommended_combat": 75,
         "skill_reqs": [{"skill": "ATTACK", "level": 70}],
@@ -336,23 +467,157 @@ GEAR_MILESTONES = [
         "highlight": "Essential high-DPS 4-tick weapon for general melee and Slayer"
     },
     {
+        "id": "osmumtens-fang",
+        "name": "Osmumten's Fang",
+        "slot": "WEAPON",
+        "style": "MELEE",
+        "tier": "ENDGAME",
+        "item_id": 26219,
+        "recommended_combat": 95,
+        "skill_reqs": [{"skill": "ATTACK", "level": 82}],
+        "organic_skill_reqs": [{"skill": "ATTACK", "level": 82}],
+        "quest_req": "Beneath Cursed Sands",
+        "estimated_price": 15000000,
+        "ironman_source": "Raid drop from Tombs of Amascut (Raid 3)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Osmumten%27s_fang",
+        "highlight": "Rolls accuracy twice per attack; premier stab weapon for high-defence bosses"
+    },
+    # --- MELEE SHIELDS & DEFENDERS ---
+    {
+        "id": "rune-defender",
+        "name": "Rune Defender",
+        "slot": "SHIELD",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 8850,
+        "recommended_combat": 60,
+        "skill_reqs": [{"skill": "ATTACK", "level": 40}, {"skill": "DEFENCE", "level": 40}],
+        "organic_skill_reqs": [{"skill": "ATTACK", "level": 65}, {"skill": "STRENGTH", "level": 65}],
+        "quest_req": "",
+        "estimated_price": 0,
+        "ironman_source": "Warriors' Guild cyclopes drop (requires 130 combined Attack + Strength to enter)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Rune_defender",
+        "highlight": "+5 Melee Strength and offensive accuracy in shield slot"
+    },
+    {
+        "id": "dragon-defender",
+        "name": "Dragon Defender",
+        "slot": "SHIELD",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 12954,
+        "recommended_combat": 65,
+        "skill_reqs": [{"skill": "ATTACK", "level": 60}, {"skill": "DEFENCE", "level": 60}],
+        "organic_skill_reqs": [{"skill": "ATTACK", "level": 65}, {"skill": "STRENGTH", "level": 65}, {"skill": "DEFENCE", "level": 60}],
+        "quest_req": "",
+        "estimated_price": 0,
+        "ironman_source": "Warriors' Guild basement cyclopes drop after showing a Rune Defender",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Dragon_defender",
+        "highlight": "+6 Melee Strength and high offensive stats in shield slot"
+    },
+    # --- MELEE ARMOUR & ACCESSORIES ---
+    {
+        "id": "helm-of-neitiznot",
+        "name": "Helm of Neitiznot",
+        "slot": "HEAD",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 10828,
+        "recommended_combat": 55,
+        "skill_reqs": [{"skill": "DEFENCE", "level": 44}],
+        "organic_skill_reqs": [{"skill": "DEFENCE", "level": 44}],
+        "quest_req": "The Fremennik Isles",
+        "estimated_price": 50000,
+        "ironman_source": "Quest reward from The Fremennik Isles",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Helm_of_neitiznot",
+        "highlight": "+3 Melee Strength, +3 Prayer, with zero negative combat penalties"
+    },
+    {
+        "id": "neitiznot-faceguard",
+        "name": "Neitiznot Faceguard",
+        "slot": "HEAD",
+        "style": "MELEE",
+        "tier": "LATE",
+        "item_id": 24271,
+        "recommended_combat": 85,
+        "skill_reqs": [{"skill": "DEFENCE", "level": 70}],
+        "organic_skill_reqs": [{"skill": "SLAYER", "level": 60}, {"skill": "DEFENCE", "level": 70}],
+        "quest_req": "The Fremennik Exiles",
+        "estimated_price": 18000000,
+        "ironman_source": "Basilisk jaw drop from Basilisk Knights (60 Slayer); combined with Helm of Neitiznot",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Neitiznot_faceguard",
+        "highlight": "+6 Melee Strength non-degrading best-in-slot melee helmet"
+    },
+    {
+        "id": "fighter-torso",
+        "name": "Fighter Torso",
+        "slot": "BODY",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 10551,
+        "recommended_combat": 60,
+        "skill_reqs": [{"skill": "DEFENCE", "level": 40}],
+        "organic_skill_reqs": [{"skill": "DEFENCE", "level": 40}],
+        "quest_req": "",
+        "estimated_price": 0,
+        "ironman_source": "Barbarian Assault minigame (375 honor points in all 4 roles + Penance Queen kill)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Fighter_torso",
+        "highlight": "+4 Melee Strength bonus (same as Bandos Chestplate!) without spending millions"
+    },
+    {
+        "id": "blood-moon-chestplate",
+        "name": "Blood Moon Chestplate",
+        "slot": "BODY",
+        "style": "MELEE",
+        "tier": "LATE",
+        "item_id": 28929,
+        "recommended_combat": 75,
+        "skill_reqs": [{"skill": "DEFENCE", "level": 70}, {"skill": "ATTACK", "level": 65}],
+        "organic_skill_reqs": [{"skill": "DEFENCE", "level": 70}, {"skill": "ATTACK", "level": 65}],
+        "quest_req": "Perilous Moons",
+        "estimated_price": 6000000,
+        "ironman_source": "Drop from the Blood Moon boss in Moons of Peril dungeon",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Blood_moon_chestplate",
+        "highlight": "+4 Melee Strength with high slash defence and set bonus healing"
+    },
+    {
+        "id": "dragon-boots",
+        "name": "Dragon Boots",
+        "slot": "BOOTS",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 11840,
+        "recommended_combat": 70,
+        "skill_reqs": [{"skill": "DEFENCE", "level": 60}],
+        "organic_skill_reqs": [{"skill": "SLAYER", "level": 83}, {"skill": "DEFENCE", "level": 60}],
+        "quest_req": "",
+        "estimated_price": 140000,
+        "ironman_source": "Drop from Spiritual Mages inside God Wars Dungeon (83 Slayer required)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Dragon_boots",
+        "highlight": "+4 Melee Strength bonus in the footwear slot"
+    },
+    {
         "id": "barrows-gloves",
         "name": "Barrows Gloves",
         "slot": "HANDS",
+        "style": "HYBRID",
+        "tier": "MID",
         "item_id": 7462,
         "recommended_combat": 70,
         "skill_reqs": [{"skill": "DEFENCE", "level": 40}],
-        "organic_skill_reqs": [{"skill": "COOKING", "level": 70}, {"skill": "MAGIC", "level": 59}],
+        "organic_skill_reqs": [{"skill": "COOKING", "level": 70}, {"skill": "MAGIC", "level": 59}, {"skill": "DEFENCE", "level": 40}],
         "quest_req": "Recipe for Disaster",
         "estimated_price": 130000,
-        "ironman_source": "Purchased from the Culinaromancer's Chest for 130,000 coins after completing Recipe for Disaster",
+        "ironman_source": "Culinaromancer's Chest for 130,000 coins after completing all RFD subquests",
         "wiki_url": "https://oldschool.runescape.wiki/w/Barrows_gloves",
-        "highlight": "Best-in-slot all-around hybrid gloves (+12 Strength, +12 ranged/magic accuracy, high defensive stats)"
+        "highlight": "Supreme hybrid gloves (+12 Melee Strength, +12 ranged/magic accuracy, +12 defences)"
     },
     {
         "id": "fire-cape",
         "name": "Fire Cape",
         "slot": "CAPE",
+        "style": "MELEE",
+        "tier": "MID",
         "item_id": 6570,
         "recommended_combat": 75,
         "skill_reqs": [{"skill": "RANGED", "level": 70}, {"skill": "PRAYER", "level": 43}, {"skill": "DEFENCE", "level": 40}],
@@ -364,9 +629,27 @@ GEAR_MILESTONES = [
         "highlight": "+4 Melee Strength and high defensive bonuses, iconic rite of passage"
     },
     {
+        "id": "amulet-of-glory",
+        "name": "Amulet of Glory",
+        "slot": "NECK",
+        "style": "HYBRID",
+        "tier": "EARLY",
+        "item_id": 1704,
+        "recommended_combat": 40,
+        "skill_reqs": [],
+        "organic_skill_reqs": [{"skill": "CRAFTING", "level": 80}, {"skill": "MAGIC", "level": 68}],
+        "quest_req": "",
+        "estimated_price": 12000,
+        "ironman_source": "Craft dragonstone amulet (80 Crafting) and enchant with Lvl-5 Enchant (68 Magic) or Crystal chest",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Amulet_of_glory",
+        "highlight": "+10 all offensive bonuses, +3 Melee Strength, +3 Prayer, and Edgeville/Draynor teleports"
+    },
+    {
         "id": "amulet-of-fury",
         "name": "Amulet of Fury",
         "slot": "NECK",
+        "style": "HYBRID",
+        "tier": "MID",
         "item_id": 6585,
         "recommended_combat": 60,
         "skill_reqs": [],
@@ -378,9 +661,77 @@ GEAR_MILESTONES = [
         "highlight": "Supreme hybrid amulet with +8 Melee/Ranged/Magic attack, +15 defense, and +8 Melee Strength"
     },
     {
+        "id": "berserker-ring",
+        "name": "Berserker Ring",
+        "slot": "RING",
+        "style": "MELEE",
+        "tier": "MID",
+        "item_id": 6737,
+        "recommended_combat": 70,
+        "skill_reqs": [],
+        "organic_skill_reqs": [],
+        "quest_req": "The Fremennik Trials",
+        "estimated_price": 3500000,
+        "ironman_source": "Dagannoth Rex boss drop on Waterbirth Island (soloable with Iban Blast)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Berserker_ring",
+        "highlight": "+4 Melee Strength (+8 when imbued at Nightmare Zone or Soul Wars!)"
+    },
+
+    # --- RANGED WEAPONS ---
+    {
+        "id": "magic-shortbow-i",
+        "name": "Magic Shortbow (i)",
+        "slot": "WEAPON",
+        "style": "RANGED",
+        "tier": "EARLY",
+        "item_id": 12788,
+        "recommended_combat": 40,
+        "skill_reqs": [{"skill": "RANGED", "level": 50}],
+        "organic_skill_reqs": [{"skill": "RANGED", "level": 50}],
+        "quest_req": "",
+        "estimated_price": 1000,
+        "ironman_source": "Fletch magic shortbow (80 Fletching or hard clue) and imbue with LMS scroll",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Magic_shortbow_(i)",
+        "highlight": "Fast 3-tick bow firing Rune/Amethyst arrows with 35% special attack cost"
+    },
+    {
+        "id": "rune-crossbow",
+        "name": "Rune Crossbow",
+        "slot": "WEAPON",
+        "style": "RANGED",
+        "tier": "EARLY",
+        "item_id": 9185,
+        "recommended_combat": 50,
+        "skill_reqs": [{"skill": "RANGED", "level": 61}],
+        "organic_skill_reqs": [{"skill": "RANGED", "level": 61}],
+        "quest_req": "",
+        "estimated_price": 9000,
+        "ironman_source": "Drop from Crazy Archaeologist in Ruins of Uzer, or Iron/Steel Dragons",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Rune_crossbow",
+        "highlight": "Essential bossing crossbow; fires enchanted Ruby and Diamond bolts"
+    },
+    {
+        "id": "hunters-sunlight-crossbow",
+        "name": "Hunter's Sunlight Crossbow",
+        "slot": "WEAPON",
+        "style": "RANGED",
+        "tier": "MID",
+        "item_id": 28869,
+        "recommended_combat": 50,
+        "skill_reqs": [{"skill": "RANGED", "level": 50}],
+        "organic_skill_reqs": [{"skill": "HUNTER", "level": 57}, {"skill": "FLETCHING", "level": 53}, {"skill": "RANGED", "level": 50}],
+        "quest_req": "Children of the Sun",
+        "estimated_price": 20000,
+        "ironman_source": "Fletch from sunlight antelope horn (57 Hunter in Varlamore)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Hunters%27_sunlight_crossbow",
+        "highlight": "Extremely fast 3-tick crossbow firing sunlight bolts with high DPS"
+    },
+    {
         "id": "toxic-blowpipe",
         "name": "Toxic Blowpipe",
         "slot": "WEAPON",
+        "style": "RANGED",
+        "tier": "LATE",
         "item_id": 12926,
         "recommended_combat": 80,
         "skill_reqs": [{"skill": "RANGED", "level": 75}, {"skill": "AGILITY", "level": 56}],
@@ -389,12 +740,146 @@ GEAR_MILESTONES = [
         "estimated_price": 3200000,
         "ironman_source": "Zulrah boss drop (Tanzanite fang crafted with 53 Fletching)",
         "wiki_url": "https://oldschool.runescape.wiki/w/Toxic_blowpipe",
-        "highlight": "Extremely fast 2-tick ranged weapon with venom and healing special attack"
+        "highlight": "Extremely fast 2-tick rapid weapon with venom and healing special attack"
+    },
+    {
+        "id": "bow-of-faerdhinen",
+        "name": "Bow of Faerdhinen",
+        "slot": "WEAPON",
+        "style": "RANGED",
+        "tier": "LATE",
+        "item_id": 25865,
+        "recommended_combat": 90,
+        "skill_reqs": [{"skill": "RANGED", "level": 75}, {"skill": "AGILITY", "level": 70}],
+        "organic_skill_reqs": [{"skill": "SMITHING", "level": 82}, {"skill": "CRAFTING", "level": 82}, {"skill": "RANGED", "level": 75}],
+        "quest_req": "Song of the Elves",
+        "estimated_price": 125000000,
+        "ironman_source": "Enhanced Crystal Weapon Seed from The Corrupted Gauntlet in Prifddinas",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Bow_of_faerdhinen",
+        "highlight": "Massive 10-tile range, supreme accuracy; pairs with Crystal Armour"
+    },
+
+    # --- RANGED ARMOUR & ACCESSORIES ---
+    {
+        "id": "black-dhide-body",
+        "name": "Black D'hide Body",
+        "slot": "BODY",
+        "style": "RANGED",
+        "tier": "MID",
+        "item_id": 2503,
+        "recommended_combat": 60,
+        "skill_reqs": [{"skill": "RANGED", "level": 70}, {"skill": "DEFENCE", "level": 40}],
+        "organic_skill_reqs": [{"skill": "CRAFTING", "level": 84}, {"skill": "RANGED", "level": 70}, {"skill": "DEFENCE", "level": 40}],
+        "quest_req": "",
+        "estimated_price": 8000,
+        "ironman_source": "Craft with 84 Crafting from Black dragon leather, or drop from Deranged Archaeologist",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Black_d%27hide_body",
+        "highlight": "+30 Ranged attack bonus with excellent magical and ranged defence"
+    },
+    {
+        "id": "avas-accumulator",
+        "name": "Ava's Accumulator",
+        "slot": "CAPE",
+        "style": "RANGED",
+        "tier": "EARLY",
+        "item_id": 10499,
+        "recommended_combat": 35,
+        "skill_reqs": [{"skill": "RANGED", "level": 50}],
+        "organic_skill_reqs": [{"skill": "RANGED", "level": 50}],
+        "quest_req": "Animal Magnetism",
+        "estimated_price": 999,
+        "ironman_source": "Purchased from Ava in Draynor Manor after Animal Magnetism",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Ava%27s_accumulator",
+        "highlight": "Automatically retrieves 72% of fired arrows and bolts to your quiver"
+    },
+    {
+        "id": "avas-assembler",
+        "name": "Ava's Assembler",
+        "slot": "CAPE",
+        "style": "RANGED",
+        "tier": "LATE",
+        "item_id": 22109,
+        "recommended_combat": 90,
+        "skill_reqs": [{"skill": "RANGED", "level": 70}],
+        "organic_skill_reqs": [{"skill": "RANGED", "level": 70}],
+        "quest_req": "Dragon Slayer II",
+        "estimated_price": 0,
+        "ironman_source": "Combine Ava's Accumulator with Vorkath's Head (guaranteed on 50th Vorkath kill)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Ava%27s_assembler",
+        "highlight": "Best-in-slot ranged cape: +2 Ranged Strength and retrieves 80% of ammo"
+    },
+    {
+        "id": "necklace-of-anguish",
+        "name": "Necklace of Anguish",
+        "slot": "NECK",
+        "style": "RANGED",
+        "tier": "LATE",
+        "item_id": 19547,
+        "recommended_combat": 85,
+        "skill_reqs": [{"skill": "HITPOINTS", "level": 75}],
+        "organic_skill_reqs": [{"skill": "CRAFTING", "level": 98}, {"skill": "MAGIC", "level": 93}, {"skill": "SLAYER", "level": 69}],
+        "quest_req": "Monkey Madness II",
+        "estimated_price": 14000000,
+        "ironman_source": "Zenyte shard from Demonic Gorillas; cut with 98 Crafting and enchant with 93 Magic",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Necklace_of_anguish",
+        "highlight": "Best-in-slot ranged necklace: +5 Ranged Strength and +15 Ranged attack"
+    },
+
+    # --- MAGIC WEAPONS ---
+    {
+        "id": "ibans-staff-u",
+        "name": "Iban's Staff (u)",
+        "slot": "WEAPON",
+        "style": "MAGIC",
+        "tier": "EARLY",
+        "item_id": 1409,
+        "recommended_combat": 40,
+        "skill_reqs": [{"skill": "MAGIC", "level": 50}, {"skill": "ATTACK", "level": 50}],
+        "organic_skill_reqs": [{"skill": "MAGIC", "level": 50}],
+        "quest_req": "Underground Pass",
+        "estimated_price": 200000,
+        "ironman_source": "Reward from Underground Pass; upgrade to (u) with 200k coins at Dark Mage in West Ardougne",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Iban%27s_staff_(u)",
+        "highlight": "Iban Blast hits 25 base damage at only level 50 Magic! Premier early bossing weapon"
+    },
+    {
+        "id": "ancient-staff",
+        "name": "Ancient Staff",
+        "slot": "WEAPON",
+        "style": "MAGIC",
+        "tier": "MID",
+        "item_id": 4675,
+        "recommended_combat": 60,
+        "skill_reqs": [{"skill": "MAGIC", "level": 50}, {"skill": "ATTACK", "level": 50}],
+        "organic_skill_reqs": [{"skill": "MAGIC", "level": 50}, {"skill": "ATTACK", "level": 50}],
+        "quest_req": "Desert Treasure I",
+        "estimated_price": 60000,
+        "ironman_source": "Purchased from Eblis after Desert Treasure I, or drop from Chaos Druids in wilderness",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Ancient_staff",
+        "highlight": "Autocasts Ancient Magicks (Ice Burst, Smoke Barrage) for Slayer bursting"
+    },
+    {
+        "id": "warped-sceptre",
+        "name": "Warped Sceptre",
+        "slot": "WEAPON",
+        "style": "MAGIC",
+        "tier": "MID",
+        "item_id": 28581,
+        "recommended_combat": 65,
+        "skill_reqs": [{"skill": "MAGIC", "level": 62}],
+        "organic_skill_reqs": [{"skill": "SLAYER", "level": 56}, {"skill": "MAGIC", "level": 62}],
+        "quest_req": "The Path of Glouphrie",
+        "estimated_price": 350000,
+        "ironman_source": "Drop from Warped Creatures in Poison Waste Sewer (56 Slayer required)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Warped_sceptre",
+        "highlight": "Accessible mid-game powered staff with built-in spell and 4-tick speed"
     },
     {
         "id": "trident-of-the-seas",
         "name": "Trident of the Seas",
         "slot": "WEAPON",
+        "style": "MAGIC",
+        "tier": "LATE",
         "item_id": 11907,
         "recommended_combat": 75,
         "skill_reqs": [{"skill": "MAGIC", "level": 75}],
@@ -403,7 +888,123 @@ GEAR_MILESTONES = [
         "estimated_price": 750000,
         "ironman_source": "Cave Kraken slayer drop (requires 87 Slayer)",
         "wiki_url": "https://oldschool.runescape.wiki/w/Trident_of_the_seas",
-        "highlight": "Powered staff that attacks at 4-tick speed without needing standard spellbook casts"
+        "highlight": "Essential powered staff that attacks at 4-tick speed for bossing and raids"
+    },
+    {
+        "id": "trident-of-the-swamp",
+        "name": "Trident of the Swamp",
+        "slot": "WEAPON",
+        "style": "MAGIC",
+        "tier": "LATE",
+        "item_id": 12899,
+        "recommended_combat": 80,
+        "skill_reqs": [{"skill": "MAGIC", "level": 78}],
+        "organic_skill_reqs": [{"skill": "SLAYER", "level": 87}, {"skill": "MAGIC", "level": 78}],
+        "quest_req": "",
+        "estimated_price": 4500000,
+        "ironman_source": "Combine Magic Fang from Zulrah with Trident of the Seas (requires 59 Crafting)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Trident_of_the_swamp",
+        "highlight": "+3 max hits over Trident of the Seas, +15 magic accuracy, and inflicts venom"
+    },
+
+    # --- MAGIC ARMOUR & ACCESSORIES ---
+    {
+        "id": "god-cape-imbued",
+        "name": "Imbued God Cape",
+        "slot": "CAPE",
+        "style": "MAGIC",
+        "tier": "MID",
+        "item_id": 21791,
+        "recommended_combat": 75,
+        "skill_reqs": [{"skill": "MAGIC", "level": 75}],
+        "organic_skill_reqs": [{"skill": "MAGIC", "level": 75}],
+        "quest_req": "",
+        "estimated_price": 0,
+        "ironman_source": "Complete Mage Arena II miniquest in the deep Wilderness",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Imbued_saradomin_cape",
+        "highlight": "Best-in-slot magic cape: +2% Magic damage bonus and +15 Magic attack"
+    },
+    {
+        "id": "occult-necklace",
+        "name": "Occult Necklace",
+        "slot": "NECK",
+        "style": "MAGIC",
+        "tier": "LATE",
+        "item_id": 12002,
+        "recommended_combat": 85,
+        "skill_reqs": [{"skill": "MAGIC", "level": 70}],
+        "organic_skill_reqs": [{"skill": "SLAYER", "level": 93}, {"skill": "MAGIC", "level": 70}],
+        "quest_req": "",
+        "estimated_price": 750000,
+        "ironman_source": "Drop from Smoke Devils in Smoke Devil Dungeon (requires 93 Slayer)",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Occult_necklace",
+        "highlight": "Premier magic damage amulet: +5% Magic damage and +12 Magic attack"
+    },
+    {
+        "id": "tormented-bracelet",
+        "name": "Tormented Bracelet",
+        "slot": "HANDS",
+        "style": "MAGIC",
+        "tier": "LATE",
+        "item_id": 19544,
+        "recommended_combat": 85,
+        "skill_reqs": [{"skill": "HITPOINTS", "level": 75}],
+        "organic_skill_reqs": [{"skill": "CRAFTING", "level": 98}, {"skill": "MAGIC", "level": 93}, {"skill": "SLAYER", "level": 69}],
+        "quest_req": "Monkey Madness II",
+        "estimated_price": 12000000,
+        "ironman_source": "Zenyte shard from Demonic Gorillas; cut with 98 Crafting and enchant with 93 Magic",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Tormented_bracelet",
+        "highlight": "Best-in-slot magic bracelet: +5% Magic damage and +10 Magic attack"
+    },
+
+    # --- PRAYER & UTILITY GEAR ---
+    {
+        "id": "proselyte-armour",
+        "name": "Proselyte Armour Set",
+        "slot": "BODY",
+        "style": "UTILITY",
+        "tier": "EARLY",
+        "item_id": 9674,
+        "recommended_combat": 45,
+        "skill_reqs": [{"skill": "DEFENCE", "level": 30}],
+        "organic_skill_reqs": [{"skill": "DEFENCE", "level": 30}],
+        "quest_req": "The Slug Menace",
+        "estimated_price": 25000,
+        "ironman_source": "Purchased from Sir Tiffy Cashien in Falador park after The Slug Menace",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Proselyte_armour",
+        "highlight": "Highest prayer bonus per slot in the entire game (+31 Prayer bonus with helm/body/legs!)"
+    },
+    {
+        "id": "rune-pouch",
+        "name": "Rune Pouch",
+        "slot": "UTILITY",
+        "style": "UTILITY",
+        "tier": "MID",
+        "item_id": 12791,
+        "recommended_combat": 40,
+        "skill_reqs": [],
+        "organic_skill_reqs": [],
+        "quest_req": "",
+        "estimated_price": 3800000,
+        "ironman_source": "750 Slayer reward points from any Slayer Master, or 75 Last Man Standing (LMS) points",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Rune_pouch",
+        "highlight": "Holds up to 16,000 of 3 different rune types in just 1 inventory space"
+    },
+    {
+        "id": "herb-sack",
+        "name": "Herb Sack",
+        "slot": "UTILITY",
+        "style": "UTILITY",
+        "tier": "MID",
+        "item_id": 13226,
+        "recommended_combat": 50,
+        "skill_reqs": [{"skill": "HERBLORE", "level": 58}],
+        "organic_skill_reqs": [{"skill": "HERBLORE", "level": 58}],
+        "quest_req": "",
+        "estimated_price": 0,
+        "ironman_source": "Purchased for 750 Slayer reward points from any Slayer master, or 250 Tithe Farm points",
+        "wiki_url": "https://oldschool.runescape.wiki/w/Herb_sack",
+        "highlight": "Stores up to 420 grimy herbs (30 of each type), invaluable for Slayer runs"
     }
 ]
 
@@ -429,7 +1030,6 @@ def fetch_wiki_extract(wiki_title: str) -> str:
             for page in pages.values():
                 extract = page.get("extract", "").strip()
                 if extract:
-                    # Clean up first 1-2 sentences
                     first_para = extract.split("\n")[0]
                     return first_para[:350]
     except Exception as e:
@@ -465,7 +1065,6 @@ def main():
         }
         enriched_activities.append(activity_record)
 
-    # Output directory in RuneLite plugin resources
     res_dir = os.path.join(os.path.dirname(__file__), "..", "src", "main", "resources", "com", "pathfinder")
     os.makedirs(res_dir, exist_ok=True)
 

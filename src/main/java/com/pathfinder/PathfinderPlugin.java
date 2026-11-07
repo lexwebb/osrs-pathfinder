@@ -1,5 +1,6 @@
 package com.pathfinder;
 
+import com.google.gson.Gson;
 import com.google.inject.Provides;
 import com.pathfinder.engine.RecommendationEngine;
 import com.pathfinder.model.AccountProfile;
@@ -67,6 +68,7 @@ public class PathfinderPlugin extends Plugin
 	@Inject
 	private RecommendationEngine recommendationEngine;
 
+	private final Gson gson = new Gson();
 	private PathfinderPanel panel;
 	private NavigationButton navButton;
 	private BankSnapshot lastBankSnapshot;
@@ -88,6 +90,9 @@ public class PathfinderPlugin extends Plugin
 			.build();
 
 		clientToolbar.addNavigation(navButton);
+
+		// Load cached profile from previous session if available
+		loadCachedProfile();
 
 		clientThread.invokeLater(() -> {
 			if (client.getGameState() == GameState.LOGGED_IN)
@@ -130,6 +135,10 @@ public class PathfinderPlugin extends Plugin
 	{
 		if ("pathfinder".equals(event.getGroup()))
 		{
+			if ("cachedProfile".equals(event.getKey()))
+			{
+				return;
+			}
 			clientThread.invokeLater(this::scanAccount);
 		}
 	}
@@ -201,7 +210,13 @@ public class PathfinderPlugin extends Plugin
 
 	private void scanAccount()
 	{
-		if (client.getGameState() != GameState.LOGGED_IN)
+		if (client.getGameState() != GameState.LOGGED_IN || client.getLocalPlayer() == null)
+		{
+			return;
+		}
+
+		String username = client.getLocalPlayer().getName();
+		if (username == null || username.trim().isEmpty())
 		{
 			return;
 		}
@@ -215,9 +230,13 @@ public class PathfinderPlugin extends Plugin
 			totalLevel += level;
 		}
 
-		int combatLevel = client.getLocalPlayer() != null
-			? client.getLocalPlayer().getCombatLevel()
-			: 3;
+		// Don't save uninitialized skill sets (fresh accounts have min total level ~32)
+		if (totalLevel < 32)
+		{
+			return;
+		}
+
+		int combatLevel = client.getLocalPlayer().getCombatLevel();
 
 		AccountType accountType = client.getAccountType();
 
@@ -307,6 +326,8 @@ public class PathfinderPlugin extends Plugin
 		}
 
 		AccountProfile profile = AccountProfile.builder()
+			.username(username)
+			.cachedTimestamp(System.currentTimeMillis())
 			.combatLevel(combatLevel)
 			.totalLevel(totalLevel)
 			.isIronman(isIronman)
@@ -318,9 +339,52 @@ public class PathfinderPlugin extends Plugin
 			.bankSnapshot(snapshot)
 			.build();
 
+		saveCachedProfile(profile);
+
 		if (panel != null)
 		{
 			panel.updateProfile(profile);
+		}
+	}
+
+	public boolean isClientLoggedIn()
+	{
+		return client != null && client.getGameState() == GameState.LOGGED_IN;
+	}
+
+	private void saveCachedProfile(AccountProfile profile)
+	{
+		try
+		{
+			String json = gson.toJson(profile);
+			configManager.setConfiguration("pathfinder", "cachedProfile", json);
+			log.debug("Saved cached Pathfinder profile for {}", profile.getUsername());
+		}
+		catch (Exception e)
+		{
+			log.error("Failed to save cached profile", e);
+		}
+	}
+
+	private void loadCachedProfile()
+	{
+		try
+		{
+			String json = configManager.getConfiguration("pathfinder", "cachedProfile");
+			if (json != null && !json.isEmpty())
+			{
+				AccountProfile profile = gson.fromJson(json, AccountProfile.class);
+				if (profile != null && panel != null)
+				{
+					log.info("Loaded cached Pathfinder profile for {} (Combat {})",
+						profile.getUsername(), profile.getCombatLevel());
+					panel.updateProfile(profile);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			log.error("Failed to load cached profile", e);
 		}
 	}
 

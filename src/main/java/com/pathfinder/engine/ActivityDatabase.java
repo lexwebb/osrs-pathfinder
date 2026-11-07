@@ -140,6 +140,8 @@ public class ActivityDatabase
 						.id(obj.get("id").getAsString())
 						.name(obj.get("name").getAsString())
 						.slot(obj.get("slot").getAsString())
+						.style(obj.has("style") ? obj.get("style").getAsString() : "ALL")
+						.tier(obj.has("tier") ? obj.get("tier").getAsString() : "MID")
 						.itemId(obj.get("item_id").getAsInt())
 						.recommendedCombat(obj.has("recommended_combat") ? obj.get("recommended_combat").getAsInt() : 1)
 						.estimatedPrice(obj.has("estimated_price") ? obj.get("estimated_price").getAsLong() : 0)

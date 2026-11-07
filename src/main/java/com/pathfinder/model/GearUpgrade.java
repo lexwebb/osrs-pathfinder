@@ -12,6 +12,8 @@ public class GearUpgrade
 	String id;
 	String name;
 	String slot;
+	String style; // MELEE, RANGED, MAGIC, HYBRID, UTILITY
+	String tier;  // EARLY, MID, LATE, ENDGAME
 	int itemId;
 	int recommendedCombat;
 	long estimatedPrice;

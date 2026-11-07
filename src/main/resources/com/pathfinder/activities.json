@@ -236,6 +236,56 @@
     ]
   },
   {
+    "id": "tithe-farm",
+    "title": "Tithe Farm",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Tithe_Farm",
+    "category": "MINIGAME",
+    "description": "The Tithe Farm is a Farming based minigame that is located in Hosidius, requiring level 34 Farming to play. The minigame revolves around intensively planting special seeds into farming patches, tending them until harvest, and depositing the produce into sacks in order to earn points. Players can speak to Farmer Gricoller for information on how to p",
+    "unlockHighlight": "Herb Sack, Seed Box & Farmer's Outfit",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": true,
+    "skillRequirements": [
+      {
+        "skill": "FARMING",
+        "level": 34
+      }
+    ],
+    "questRequirements": [],
+    "tags": [
+      "Farming",
+      "Active Farming",
+      "Herb Sack",
+      "Seed Box"
+    ]
+  },
+  {
+    "id": "blast-furnace",
+    "title": "Blast Furnace",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Blast_Furnace",
+    "category": "SKILLING",
+    "description": "The Blast Furnace is a members-only minigame situated in Keldagrim that involves smelting bars in bulk. The furnace here only requires half as much coal compared to a standard one, which is useful when smelting high-tier ores that require more coal.",
+    "unlockHighlight": "Cuts coal cost in half & creates bars at 5,000+ bars/hr",
+    "recommendedCombat": 1,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "SMITHING",
+        "level": 30
+      }
+    ],
+    "questRequirements": [
+      "The Giant Dwarf"
+    ],
+    "tags": [
+      "Smithing",
+      "Huge Profit",
+      "Keldagrim",
+      "Efficient"
+    ]
+  },
+  {
     "id": "scurrius",
     "title": "Scurrius",
     "wikiUrl": "https://oldschool.runescape.wiki/w/Scurrius",
@@ -388,6 +438,70 @@
     ]
   },
   {
+    "id": "vorkath",
+    "title": "Vorkath",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Vorkath",
+    "category": "BOSSING",
+    "description": "Vorkath (roughly translated as pathetic failure/weakling/runt in the dragonkin's language) is a draconic boss-monster first encountered during the Dragon Slayer II quest as the penultimate boss. Created by Zorgoth during the Fourth Age's Dragonkin Conflicts, the blue dragon is one of his subjects that has survived his experiments in the laboratory ",
+    "unlockHighlight": "Vorkath's Head (Ava's Assembler) & Draconic Visage",
+    "recommendedCombat": 95,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "RANGED",
+        "level": 80
+      },
+      {
+        "skill": "PRAYER",
+        "level": 74
+      }
+    ],
+    "questRequirements": [
+      "Dragon Slayer II"
+    ],
+    "tags": [
+      "Dragon",
+      "High Profit",
+      "Assembler",
+      "Solo"
+    ]
+  },
+  {
+    "id": "zulrah",
+    "title": "Zulrah",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Zulrah",
+    "category": "BOSSING",
+    "description": "Zulrah is a level 725 solo-only snake boss. Before the player can fight Zulrah, players must have completed Regicide to the point of reaching Port Tyras, as well as having spoken with High Priestess Zul-Harcinqa to offer themselves as the sacrifice in place of the gnome child, as Zul-Gwenwynig will prevent the player from boarding the boat until Zu",
+    "unlockHighlight": "Blowpipe, Magic Fang (Trident swamp) & Serpentine Helm",
+    "recommendedCombat": 85,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "MAGIC",
+        "level": 75
+      },
+      {
+        "skill": "RANGED",
+        "level": 75
+      },
+      {
+        "skill": "AGILITY",
+        "level": 56
+      }
+    ],
+    "questRequirements": [
+      "Regicide"
+    ],
+    "tags": [
+      "Snake Boss",
+      "BiS Weapons",
+      "Morytania",
+      "Solo"
+    ]
+  },
+  {
     "id": "fairy-rings",
     "title": "Fairytale II - Cure a Queen",
     "wikiUrl": "https://oldschool.runescape.wiki/w/Fairytale_II_-_Cure_a_Queen",
@@ -522,6 +636,102 @@
       "Barrows Gloves",
       "Best-in-Slot",
       "Culinaromancer"
+    ]
+  },
+  {
+    "id": "desert-treasure-i",
+    "title": "Desert Treasure I",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Desert_Treasure_I",
+    "category": "QUEST",
+    "description": "Desert Treasure I is a master-difficulty quest surrounding the Mahjarrat Azzanadra's escape from his pyramid prison in the Kharidian Desert. The quest is known for rewarding players with the powerful Ancient Magicks spellbook.",
+    "unlockHighlight": "Ancient Magicks Spellbook (Ice Barrage, Smoke & Shadow Spells)",
+    "recommendedCombat": 60,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "MAGIC",
+        "level": 50
+      },
+      {
+        "skill": "THIEVING",
+        "level": 53
+      },
+      {
+        "skill": "FIREMAKING",
+        "level": 50
+      },
+      {
+        "skill": "SLAYER",
+        "level": 10
+      }
+    ],
+    "questRequirements": [
+      "The Dig Site",
+      "Temple of Ikov",
+      "The Tourist Trap",
+      "Priest in Peril",
+      "Waterfall Quest"
+    ],
+    "tags": [
+      "Ancient Magicks",
+      "Bursting",
+      "Iconic Quest"
+    ]
+  },
+  {
+    "id": "song-of-the-elves",
+    "title": "Song of the Elves",
+    "wikiUrl": "https://oldschool.runescape.wiki/w/Song_of_the_Elves",
+    "category": "QUEST",
+    "description": "Song of the Elves is the eighth and final quest in the Elf quest series. The quest was announced at RuneFest 2018 and was released on 25 July 2019. Completion of the quest unlocks access to the elven city of Prifddinas.",
+    "unlockHighlight": "Prifddinas Elven City: The Gauntlet, Zalcano & Crystal Armour/BofA",
+    "recommendedCombat": 85,
+    "ironmanFriendly": true,
+    "hiddenGem": false,
+    "skillRequirements": [
+      {
+        "skill": "AGILITY",
+        "level": 70
+      },
+      {
+        "skill": "CONSTRUCTION",
+        "level": 70
+      },
+      {
+        "skill": "FARMING",
+        "level": 70
+      },
+      {
+        "skill": "HERBLORE",
+        "level": 70
+      },
+      {
+        "skill": "HUNTER",
+        "level": 70
+      },
+      {
+        "skill": "MINING",
+        "level": 70
+      },
+      {
+        "skill": "SMITHING",
+        "level": 70
+      },
+      {
+        "skill": "WOODCUTTING",
+        "level": 70
+      }
+    ],
+    "questRequirements": [
+      "Mourning's End Part II",
+      "Making History"
+    ],
+    "tags": [
+      "Prifddinas",
+      "Grandmaster",
+      "Gauntlet",
+      "Crystal Equipment"
     ]
   },
   {

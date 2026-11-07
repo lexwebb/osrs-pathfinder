@@ -208,8 +208,12 @@ public class PathfinderPanel extends PluginPanel
 			.count();
 
 		SwingUtilities.invokeLater(() -> {
-			statusSummary.setText(String.format("Combat %d • %d Ready • %d Near",
-				profile.getCombatLevel(), readyCount, nearCount));
+			String user = profile.getUsername() != null && !profile.getUsername().isEmpty()
+				? profile.getUsername()
+				: "Account";
+			boolean isLive = plugin.isClientLoggedIn();
+			statusSummary.setText(String.format("Combat %d • %d Ready • %d Near (%s%s)",
+				profile.getCombatLevel(), readyCount, nearCount, isLive ? "" : "Offline: ", user));
 
 			if (profile.isBronzeman())
 			{

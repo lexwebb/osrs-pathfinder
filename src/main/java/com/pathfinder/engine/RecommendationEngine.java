@@ -174,11 +174,32 @@ public class RecommendationEngine
 
 		boolean isBronzemanUnlocked = profile.isBronzeman() && profile.hasUnlockedItem(gear.getItemId());
 
-		// In Bronzeman (unlocked=false) and Ironman mode, enforce the organic requirements to obtain the drop/craft it
-		List<SkillRequirement> reqsToCheck = (profile.isIronman() || (profile.isBronzeman() && !isBronzemanUnlocked))
-			&& !gear.getOrganicSkillReqs().isEmpty()
-			? gear.getOrganicSkillReqs()
-			: gear.getSkillReqs();
+		// In Bronzeman (unlocked=false) and Ironman mode, enforce BOTH equip and organic drop requirements
+		List<SkillRequirement> reqsToCheck = new ArrayList<>(gear.getSkillReqs());
+		if ((profile.isIronman() || (profile.isBronzeman() && !isBronzemanUnlocked))
+			&& !gear.getOrganicSkillReqs().isEmpty())
+		{
+			for (SkillRequirement orgReq : gear.getOrganicSkillReqs())
+			{
+				boolean exists = false;
+				for (int i = 0; i < reqsToCheck.size(); i++)
+				{
+					if (reqsToCheck.get(i).getSkill() == orgReq.getSkill())
+					{
+						if (orgReq.getLevel() > reqsToCheck.get(i).getLevel())
+						{
+							reqsToCheck.set(i, orgReq);
+						}
+						exists = true;
+						break;
+					}
+				}
+				if (!exists)
+				{
+					reqsToCheck.add(orgReq);
+				}
+			}
+		}
 
 		for (SkillRequirement req : reqsToCheck)
 		{
@@ -204,7 +225,13 @@ public class RecommendationEngine
 		}
 
 		boolean canAfford = true;
-		List<String> tags = new ArrayList<>(Arrays.asList("Gear", gear.getSlot()));
+		List<String> tags = new ArrayList<>();
+		tags.add("Gear");
+		if (gear.getStyle() != null && !gear.getStyle().isEmpty())
+		{
+			tags.add(gear.getStyle());
+		}
+		tags.add(gear.getSlot());
 
 		String desc;
 		if (profile.isBronzeman() && !isBronzemanUnlocked)

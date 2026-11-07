@@ -1,5 +1,6 @@
 package com.pathfinder;
 
+import com.google.gson.Gson;
 import com.pathfinder.engine.ActivityDatabase;
 import com.pathfinder.engine.RecommendationEngine;
 import com.pathfinder.model.AccountProfile;
@@ -20,6 +21,7 @@ public class RecommendationEngineTest
 {
 	private RecommendationEngine engine;
 	private ActivityDatabase database;
+	private final Gson gson = new Gson();
 
 	@Before
 	public void setUp()
@@ -31,8 +33,43 @@ public class RecommendationEngineTest
 	@Test
 	public void testDatabaseLoadsFromBundledJson()
 	{
-		Assert.assertTrue("Should load activities from activities.json", database.getAllActivities().size() >= 15);
-		Assert.assertTrue("Should load gear from gear_upgrades.json", database.getGearUpgrades().size() >= 5);
+		Assert.assertTrue("Should load activities from activities.json", database.getAllActivities().size() >= 25);
+		Assert.assertTrue("Should load gear from gear_upgrades.json", database.getGearUpgrades().size() >= 35);
+	}
+
+	@Test
+	public void testProfileSerializationAndOfflineRestore()
+	{
+		Map<Skill, Integer> skills = new HashMap<>();
+		skills.put(Skill.ATTACK, 80);
+		skills.put(Skill.STRENGTH, 85);
+		skills.put(Skill.DEFENCE, 75);
+
+		Set<String> quests = new HashSet<>();
+		quests.add("Dragon Slayer I");
+		quests.add("Monkey Madness I");
+
+		AccountProfile profile = AccountProfile.builder()
+			.username("IronLegend")
+			.cachedTimestamp(System.currentTimeMillis())
+			.combatLevel(104)
+			.totalLevel(1550)
+			.isIronman(false)
+			.isBronzeman(true)
+			.skills(skills)
+			.completedQuests(quests)
+			.build();
+
+		String json = gson.toJson(profile);
+		Assert.assertNotNull(json);
+
+		AccountProfile restored = gson.fromJson(json, AccountProfile.class);
+		Assert.assertNotNull(restored);
+		Assert.assertEquals("IronLegend", restored.getUsername());
+		Assert.assertEquals(104, restored.getCombatLevel());
+		Assert.assertTrue(restored.isBronzeman());
+		Assert.assertTrue(restored.hasCompletedQuest("Dragon Slayer I"));
+		Assert.assertEquals(80, restored.getSkillLevel(Skill.ATTACK));
 	}
 
 	@Test
@@ -45,7 +82,6 @@ public class RecommendationEngineTest
 		}
 
 		Set<String> completedQuests = new HashSet<>();
-		// Player has completed Dragon Slayer I and Bone Voyage
 		completedQuests.add("Dragon Slayer I");
 		completedQuests.add("Bone Voyage");
 
@@ -167,5 +203,40 @@ public class RecommendationEngineTest
 			Assert.assertNotEquals("Should not contain LOCKED items when hideLocked is true",
 				Recommendation.Status.LOCKED, r.getStatus());
 		}
+	}
+
+	@Test
+	public void testBronzemanUnlockedItemAllowsEquipWithoutOrganicSlayer()
+	{
+		Map<Skill, Integer> skills = new HashMap<>();
+		for (Skill s : Skill.values())
+		{
+			skills.put(s, 70);
+		}
+		skills.put(Skill.ATTACK, 75);
+		skills.put(Skill.SLAYER, 50); // Under 85 Slayer!
+
+		Set<Integer> unlocked = new HashSet<>();
+		unlocked.add(4151); // Abyssal Whip unlocked organically in Bronzeman mode
+
+		AccountProfile profile = AccountProfile.builder()
+			.combatLevel(104)
+			.totalLevel(1500)
+			.isIronman(false)
+			.isBronzeman(true)
+			.skills(skills)
+			.completedQuests(new HashSet<>())
+			.unlockedItemIds(unlocked)
+			.build();
+
+		List<Recommendation> recs = engine.evaluateAll(profile);
+		Recommendation whipRec = recs.stream()
+			.filter(r -> "gear-abyssal-whip".equals(r.getActivity().getId()))
+			.findFirst()
+			.orElse(null);
+
+		Assert.assertNotNull(whipRec);
+		// Since it is already unlocked in Bronzeman, it only requires Attack 70 to equip
+		Assert.assertEquals(Recommendation.Status.READY, whipRec.getStatus());
 	}
 }

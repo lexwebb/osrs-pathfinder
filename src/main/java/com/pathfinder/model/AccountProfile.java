@@ -13,6 +13,9 @@ import net.runelite.api.Skill;
 @Builder
 public class AccountProfile
 {
+	String username;
+	long cachedTimestamp;
+
 	int combatLevel;
 	int totalLevel;
 	boolean isIronman;
