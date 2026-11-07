@@ -46,6 +46,15 @@ tasks.register('run', JavaExec) {
 	environment "WEBKIT_DISABLE_COMPOSITING_MODE", "1"
 }
 
+tasks.register('preview', JavaExec) {
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'com.pathfinder.ui.PathfinderPreview'
+
+	jvmArgs "-ea"
+	environment "WEBKIT_DISABLE_DMABUF_RENDERER", "1"
+	environment "WEBKIT_DISABLE_COMPOSITING_MODE", "1"
+}
+
 tasks.register('shadowJar', Jar) {
 	dependsOn configurations.testRuntimeClasspath
 	manifest {

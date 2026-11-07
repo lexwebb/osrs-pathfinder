@@ -109,12 +109,10 @@ public class PathfinderPanel extends PluginPanel
 		// Initialize North Star Card widget
 		this.northStarCard = new NorthStarCard(this::setNorthStar, this::updateDisplay);
 
-		// Top Control Container
-		JPanel topContainer = new JPanel();
-		topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
+		// Top Control Container using DynamicGridLayout (fills 100% width, zero left offset bugs)
+		JPanel topContainer = new JPanel(new DynamicGridLayout(0, 1, 0, 3));
 		topContainer.setBorder(new EmptyBorder(6, 6, 4, 6));
 		topContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		topContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		// 1. Header Title (Line 1)
 		headerTitle.setFont(FontManager.getRunescapeBoldFont());
@@ -159,7 +157,12 @@ public class PathfinderPanel extends PluginPanel
 		refreshBtn.setMargin(new Insets(2, 2, 2, 2));
 		refreshBtn.setFocusable(false);
 		refreshBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		refreshBtn.addActionListener(e -> plugin.requestAccountScan());
+		refreshBtn.addActionListener(e -> {
+			if (plugin != null)
+			{
+				plugin.requestAccountScan();
+			}
+		});
 
 		actionRow.add(surpriseBtn);
 		actionRow.add(refreshBtn);
@@ -212,25 +215,16 @@ public class PathfinderPanel extends PluginPanel
 
 		// Assemble Header Controls
 		topContainer.add(headerTitle);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 2)));
 		topContainer.add(modeBadge);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 2)));
 		topContainer.add(statusSummary);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(bankBox);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 5)));
 		topContainer.add(actionRow);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 5)));
 		topContainer.add(goalCombo);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(categoryCombo);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 3)));
 		topContainer.add(sortCombo);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(hideLockedCheck);
 		topContainer.add(readyOnlyCheck);
 		topContainer.add(hiddenGemsCheck);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(northStarCard);
 
 		// Card Container inside ScrollPane
@@ -363,7 +357,7 @@ public class PathfinderPanel extends PluginPanel
 			.count();
 
 		SwingUtilities.invokeLater(() -> {
-			boolean isOffline = !plugin.isClientLoggedIn();
+			boolean isOffline = plugin == null || !plugin.isClientLoggedIn();
 
 			if (profile.isBronzeman())
 			{
