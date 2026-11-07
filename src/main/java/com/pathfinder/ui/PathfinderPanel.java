@@ -8,8 +8,9 @@ import com.pathfinder.model.BankSnapshot;
 import com.pathfinder.model.Recommendation;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,21 +38,20 @@ public class PathfinderPanel extends PluginPanel
 	private final RecommendationEngine engine;
 
 	private final JLabel headerTitle = new JLabel("OSRS Pathfinder");
-	private final JLabel statusSummary = new JLabel("Please log in to scan account");
-	private final JLabel bankSummary = new JLabel("Open bank to enable gear/GP recommendations");
+	private final JLabel statusSummary = new JLabel("Log in to scan account");
+	private final JLabel bankSummary = new JLabel("💰 Open bank to scan wealth & gear");
 
 	private final JComboBox<ActivityCategory> categoryCombo = new JComboBox<>(ActivityCategory.values());
 	private final JComboBox<RecommendationEngine.SortOrder> sortCombo = new JComboBox<>(RecommendationEngine.SortOrder.values());
 
-	private final JCheckBox readyOnlyCheck = new JCheckBox("Ready to do now", false);
-	private final JCheckBox hiddenGemsCheck = new JCheckBox("Hidden gems only", false);
+	private final JCheckBox readyOnlyCheck = new JCheckBox("Ready now", false);
+	private final JCheckBox hiddenGemsCheck = new JCheckBox("Hidden gems", false);
 
 	private final JButton surpriseBtn = new JButton("🎲 Surprise Me!");
 	private final JButton refreshBtn = new JButton("🔄 Scan");
 
 	private final JPanel cardsContainer = new JPanel();
 	private List<Recommendation> currentEvaluations = new ArrayList<>();
-	private AccountProfile currentProfile;
 
 	public PathfinderPanel(PathfinderPlugin plugin, RecommendationEngine engine)
 	{
@@ -62,100 +62,112 @@ public class PathfinderPanel extends PluginPanel
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
 
+		// Top Control Container
 		JPanel topContainer = new JPanel();
 		topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
-		topContainer.setBorder(new EmptyBorder(10, 10, 8, 10));
+		topContainer.setBorder(new EmptyBorder(8, 8, 6, 8));
 		topContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		topContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		// Header Title
+		// 1. Header Title & Subtitle
 		headerTitle.setFont(FontManager.getRunescapeBoldFont());
 		headerTitle.setForeground(ColorScheme.BRAND_ORANGE);
-		headerTitle.setAlignmentX(LEFT_ALIGNMENT);
+		headerTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		// Status summary
 		statusSummary.setFont(FontManager.getRunescapeSmallFont());
-		statusSummary.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
-		statusSummary.setAlignmentX(LEFT_ALIGNMENT);
+		statusSummary.setForeground(Color.WHITE);
+		statusSummary.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		// Bank summary banner
+		// Bank Banner Box
+		JPanel bankBox = new JPanel(new BorderLayout());
+		bankBox.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		bankBox.setBorder(new EmptyBorder(3, 5, 3, 5));
+		bankBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+		bankBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
+
 		bankSummary.setFont(FontManager.getRunescapeSmallFont());
 		bankSummary.setForeground(new Color(170, 170, 170));
-		bankSummary.setAlignmentX(LEFT_ALIGNMENT);
+		bankBox.add(bankSummary, BorderLayout.CENTER);
 
-		JPanel bankBanner = new JPanel(new BorderLayout());
-		bankBanner.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		bankBanner.setBorder(new EmptyBorder(4, 6, 4, 6));
-		bankBanner.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
-		bankBanner.setAlignmentX(LEFT_ALIGNMENT);
-		bankBanner.add(bankSummary, BorderLayout.CENTER);
+		// Action Buttons Row: [ Surprise Me! ] [ Scan ]
+		JPanel actionRow = new JPanel(new BorderLayout(4, 0));
+		actionRow.setOpaque(false);
+		actionRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+		actionRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
 
-		// Category & Sort row
-		categoryCombo.setAlignmentX(LEFT_ALIGNMENT);
-		categoryCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+		surpriseBtn.setFont(FontManager.getRunescapeBoldFont());
+		surpriseBtn.setForeground(new Color(241, 196, 15));
+		surpriseBtn.setFocusable(false);
+		surpriseBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		surpriseBtn.addActionListener(e -> triggerSurprise());
+
+		refreshBtn.setFont(FontManager.getRunescapeSmallFont());
+		refreshBtn.setFocusable(false);
+		refreshBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		refreshBtn.addActionListener(e -> plugin.requestAccountScan());
+
+		actionRow.add(surpriseBtn, BorderLayout.CENTER);
+		actionRow.add(refreshBtn, BorderLayout.EAST);
+
+		// Category & Sort Dropdowns
+		categoryCombo.setFont(FontManager.getRunescapeSmallFont());
+		categoryCombo.setAlignmentX(Component.LEFT_ALIGNMENT);
+		categoryCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		categoryCombo.addActionListener(e -> updateDisplay());
 
-		sortCombo.setAlignmentX(LEFT_ALIGNMENT);
-		sortCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+		sortCombo.setFont(FontManager.getRunescapeSmallFont());
+		sortCombo.setAlignmentX(Component.LEFT_ALIGNMENT);
+		sortCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		sortCombo.addActionListener(e -> updateDisplay());
 
-		JLabel filterLabel = new JLabel("Category & Sorting:");
-		filterLabel.setFont(FontManager.getRunescapeSmallFont());
-		filterLabel.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
-		filterLabel.setAlignmentX(LEFT_ALIGNMENT);
+		// Toggles Row (2 checkboxes side by side)
+		JPanel toggleRow = new JPanel(new GridLayout(1, 2, 2, 0));
+		toggleRow.setOpaque(false);
+		toggleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+		toggleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
 
-		// Toggles
 		readyOnlyCheck.setOpaque(false);
 		readyOnlyCheck.setForeground(Color.WHITE);
 		readyOnlyCheck.setFont(FontManager.getRunescapeSmallFont());
+		readyOnlyCheck.setFocusable(false);
 		readyOnlyCheck.addActionListener(e -> updateDisplay());
 
 		hiddenGemsCheck.setOpaque(false);
 		hiddenGemsCheck.setForeground(new Color(241, 196, 15));
 		hiddenGemsCheck.setFont(FontManager.getRunescapeSmallFont());
+		hiddenGemsCheck.setFocusable(false);
 		hiddenGemsCheck.addActionListener(e -> updateDisplay());
 
-		// Action buttons panel
-		JPanel buttonRow = new JPanel(new BorderLayout(5, 0));
-		buttonRow.setOpaque(false);
-		buttonRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+		toggleRow.add(readyOnlyCheck);
+		toggleRow.add(hiddenGemsCheck);
 
-		surpriseBtn.setFont(FontManager.getRunescapeSmallFont());
-		surpriseBtn.addActionListener(e -> triggerSurprise());
-
-		refreshBtn.setFont(FontManager.getRunescapeSmallFont());
-		refreshBtn.addActionListener(e -> plugin.requestAccountScan());
-
-		buttonRow.add(surpriseBtn, BorderLayout.CENTER);
-		buttonRow.add(refreshBtn, BorderLayout.EAST);
-
-		// Assemble top panel
+		// Assemble Header
 		topContainer.add(headerTitle);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 3)));
-		topContainer.add(statusSummary);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 6)));
-		topContainer.add(bankBanner);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 8)));
-		topContainer.add(filterLabel);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 2)));
+		topContainer.add(statusSummary);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
+		topContainer.add(bankBox);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 6)));
+		topContainer.add(actionRow);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 6)));
 		topContainer.add(categoryCombo);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
+		topContainer.add(Box.createRigidArea(new Dimension(0, 3)));
 		topContainer.add(sortCombo);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
-		topContainer.add(readyOnlyCheck);
-		topContainer.add(hiddenGemsCheck);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 8)));
-		topContainer.add(buttonRow);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 3)));
+		topContainer.add(toggleRow);
 
-		// Scrollable cards list
+		// Card Container inside ScrollPane
 		cardsContainer.setLayout(new BoxLayout(cardsContainer, BoxLayout.Y_AXIS));
 		cardsContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		cardsContainer.setBorder(new EmptyBorder(4, 6, 6, 6));
 
-		JPanel wrapper = new JPanel(new BorderLayout());
-		wrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		wrapper.add(cardsContainer, BorderLayout.NORTH);
+		JPanel listWrapper = new JPanel(new BorderLayout());
+		listWrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		listWrapper.add(cardsContainer, BorderLayout.NORTH);
 
-		JScrollPane scrollPane = new JScrollPane(wrapper);
+		JScrollPane scrollPane = new JScrollPane(listWrapper);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setBorder(null);
 		scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
@@ -165,7 +177,6 @@ public class PathfinderPanel extends PluginPanel
 
 	public void updateProfile(AccountProfile profile)
 	{
-		this.currentProfile = profile;
 		this.currentEvaluations = engine.evaluateAll(profile);
 
 		long readyCount = currentEvaluations.stream()
@@ -176,7 +187,7 @@ public class PathfinderPanel extends PluginPanel
 			.count();
 
 		SwingUtilities.invokeLater(() -> {
-			statusSummary.setText(String.format("Combat %d | %d Ready | %d Near Unlock",
+			statusSummary.setText(String.format("Combat %d • %d Ready • %d Near",
 				profile.getCombatLevel(), readyCount, nearCount));
 
 			if (profile.hasScannedBank())
@@ -189,7 +200,7 @@ public class PathfinderPanel extends PluginPanel
 			}
 			else
 			{
-				bankSummary.setText("Open bank to enable gear/GP recommendations");
+				bankSummary.setText("💰 Open bank to scan wealth & gear");
 				bankSummary.setForeground(new Color(170, 170, 170));
 			}
 
@@ -205,7 +216,7 @@ public class PathfinderPanel extends PluginPanel
 		{
 			JLabel emptyLabel = new JLabel("<html><center style='color:#888;'><br/>Log into the game to<br/>view your pathfinder guide.</center></html>");
 			emptyLabel.setFont(FontManager.getRunescapeSmallFont());
-			emptyLabel.setAlignmentX(CENTER_ALIGNMENT);
+			emptyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			cardsContainer.add(emptyLabel);
 			cardsContainer.revalidate();
 			cardsContainer.repaint();
@@ -217,22 +228,29 @@ public class PathfinderPanel extends PluginPanel
 		boolean readyOnly = readyOnlyCheck.isSelected();
 		boolean hiddenGemsOnly = hiddenGemsCheck.isSelected();
 
-		List<Recommendation> filtered = engine.filter(currentEvaluations, selectedCategory, readyOnly, hiddenGemsOnly);
+		List<Recommendation> filtered = engine.filter(
+			currentEvaluations,
+			selectedCategory != null ? selectedCategory : ActivityCategory.ALL,
+			readyOnly,
+			hiddenGemsOnly
+		);
+
 		engine.sort(filtered, selectedSort != null ? selectedSort : RecommendationEngine.SortOrder.SMART_SCORE);
 
 		if (filtered.isEmpty())
 		{
-			JLabel noMatchLabel = new JLabel("<html><center style='color:#888;'><br/>No activities found for current filters.</center></html>");
+			JLabel noMatchLabel = new JLabel("<html><center style='color:#888;'><br/>No activities match<br/>your current filters.</center></html>");
 			noMatchLabel.setFont(FontManager.getRunescapeSmallFont());
-			noMatchLabel.setAlignmentX(CENTER_ALIGNMENT);
+			noMatchLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			cardsContainer.add(noMatchLabel);
 		}
 		else
 		{
 			for (Recommendation rec : filtered)
 			{
-				cardsContainer.add(new RecommendationCard(rec));
-				cardsContainer.add(Box.createRigidArea(new Dimension(0, 8)));
+				RecommendationCard card = new RecommendationCard(rec);
+				cardsContainer.add(card);
+				cardsContainer.add(Box.createRigidArea(new Dimension(0, 6)));
 			}
 		}
 
@@ -253,14 +271,14 @@ public class PathfinderPanel extends PluginPanel
 			return;
 		}
 
-		String[] options = {"Open Wiki Guide", "Roll Again 🎲", "Close"};
+		String[] options = {"Open Wiki Guide ↗", "Roll Again 🎲", "Close"};
 		int choice = JOptionPane.showOptionDialog(
 			this,
-			"<html><body style='width: 260px;'>" +
+			"<html><body style='width: 250px; font-family: sans-serif;'>" +
 				"<h2 style='color:#f39c12; margin-bottom: 2px;'>🎲 Next Adventure</h2>" +
-				"<h3 style='margin-top:0;'>" + picked.getActivity().getTitle() + "</h3>" +
+				"<h3 style='margin-top:0; color:#ffffff;'>" + picked.getActivity().getTitle() + "</h3>" +
 				"<p style='color:#f1c40f;'><b>" + (picked.getActivity().getUnlockHighlight() != null ? picked.getActivity().getUnlockHighlight() : "") + "</b></p>" +
-				"<p style='color:#ccc;'>" + picked.getActivity().getDescription() + "</p>" +
+				"<p style='color:#cccccc; line-height: 1.2;'>" + picked.getActivity().getDescription() + "</p>" +
 				"</body></html>",
 			"Pathfinder Roulette",
 			JOptionPane.DEFAULT_OPTION,
