@@ -36,33 +36,25 @@ public class RecommendationEngineTest
 	}
 
 	@Test
-	public void testBronzemanModeForcesOrganicDropObjective()
+	public void testBronzemanRequires85SlayerForWhip()
 	{
 		Map<Skill, Integer> skills = new HashMap<>();
 		for (Skill s : Skill.values())
 		{
-			skills.put(s, 75);
+			skills.put(s, 70);
 		}
-
-		// Whip item ID is 4151
-		// Player has 10M cash, but has NEVER unlocked Abyssal Whip in Bronzeman mode
-		BankSnapshot bank = BankSnapshot.builder()
-			.coins(10_000_000L)
-			.totalLiquidCash(10_000_000L)
-			.estimatedTotalValue(50_000_000L)
-			.timestamp(System.currentTimeMillis())
-			.ownedItemIds(new HashSet<>())
-			.build();
+		// Attack 75, but Slayer only 65 (needs 85 for Whip drop)
+		skills.put(Skill.ATTACK, 75);
+		skills.put(Skill.SLAYER, 65);
 
 		AccountProfile bronzemanProfile = AccountProfile.builder()
-			.combatLevel(100)
+			.combatLevel(104)
 			.totalLevel(1500)
 			.isIronman(false)
 			.isBronzeman(true)
 			.skills(skills)
 			.completedQuests(new HashSet<>())
 			.unlockedItemIds(new HashSet<>())
-			.bankSnapshot(bank)
 			.build();
 
 		List<Recommendation> recs = engine.evaluateAll(bronzemanProfile);
@@ -73,55 +65,70 @@ public class RecommendationEngineTest
 			.orElse(null);
 
 		Assert.assertNotNull(whipRec);
-		// Should have Bronzeman Unlock tag
-		Assert.assertTrue("Should contain Bronzeman Unlock tag",
-			whipRec.getActivity().getTags().contains("Bronzeman Unlock"));
-		// Should mention the organic drop source rather than just buying on GE
+		// Must be LOCKED because Slayer is 65 vs 85 (20 levels away)
+		Assert.assertEquals(Recommendation.Status.LOCKED, whipRec.getStatus());
 		Assert.assertTrue(whipRec.getMissingRequirements().stream()
-			.anyMatch(req -> req.contains("Abyssal Demons")));
+			.anyMatch(req -> req.contains("Slayer")));
 	}
 
 	@Test
-	public void testBronzemanModeAllowsGEPurchaseOnceUnlocked()
+	public void testBronzemanRequiresCraftingAndMagicForFury()
 	{
 		Map<Skill, Integer> skills = new HashMap<>();
 		for (Skill s : Skill.values())
 		{
-			skills.put(s, 75);
+			skills.put(s, 60);
 		}
 
-		// Player has unlocked Whip (4151) previously, but doesn't currently own it in bank
-		Set<Integer> unlocked = new HashSet<>();
-		unlocked.add(4151);
-
-		BankSnapshot bank = BankSnapshot.builder()
-			.coins(5_000_000L)
-			.totalLiquidCash(5_000_000L)
-			.estimatedTotalValue(20_000_000L)
-			.timestamp(System.currentTimeMillis())
-			.ownedItemIds(new HashSet<>())
-			.build();
-
 		AccountProfile bronzemanProfile = AccountProfile.builder()
-			.combatLevel(100)
+			.combatLevel(104)
 			.totalLevel(1500)
 			.isIronman(false)
 			.isBronzeman(true)
 			.skills(skills)
 			.completedQuests(new HashSet<>())
-			.unlockedItemIds(unlocked)
-			.bankSnapshot(bank)
+			.unlockedItemIds(new HashSet<>())
 			.build();
 
 		List<Recommendation> recs = engine.evaluateAll(bronzemanProfile);
 
-		Recommendation whipRec = recs.stream()
-			.filter(r -> "gear-abyssal-whip".equals(r.getActivity().getId()))
+		Recommendation furyRec = recs.stream()
+			.filter(r -> "gear-amulet-of-fury".equals(r.getActivity().getId()))
 			.findFirst()
 			.orElse(null);
 
-		Assert.assertNotNull(whipRec);
-		// Once unlocked, it is READY to buy on GE
-		Assert.assertEquals(Recommendation.Status.READY, whipRec.getStatus());
+		Assert.assertNotNull(furyRec);
+		// Must be LOCKED because Crafting is 60 vs 90 and Magic is 60 vs 87
+		Assert.assertEquals(Recommendation.Status.LOCKED, furyRec.getStatus());
+		Assert.assertTrue(furyRec.getMissingRequirements().stream()
+			.anyMatch(req -> req.contains("Crafting") || req.contains("Magic")));
+	}
+
+	@Test
+	public void testHideLockedFilter()
+	{
+		Map<Skill, Integer> skills = new HashMap<>();
+		for (Skill s : Skill.values())
+		{
+			skills.put(s, 30);
+		}
+
+		AccountProfile profile = AccountProfile.builder()
+			.combatLevel(40)
+			.totalLevel(600)
+			.isIronman(false)
+			.isBronzeman(true)
+			.skills(skills)
+			.completedQuests(new HashSet<>())
+			.build();
+
+		List<Recommendation> all = engine.evaluateAll(profile);
+		List<Recommendation> unlockedOnly = engine.filter(all, ActivityCategory.ALL, false, true, false);
+
+		for (Recommendation r : unlockedOnly)
+		{
+			Assert.assertNotEquals("Should not contain LOCKED items when hideLocked is true",
+				Recommendation.Status.LOCKED, r.getStatus());
+		}
 	}
 }

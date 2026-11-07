@@ -158,8 +158,15 @@ public class RecommendationEngine
 		List<String> missing = new ArrayList<>();
 		int missingLevelSum = 0;
 
-		// Skill requirements
-		for (SkillRequirement req : gear.getSkillReqs())
+		boolean isBronzemanUnlocked = profile.isBronzeman() && profile.hasUnlockedItem(gear.getItemId());
+
+		// In Bronzeman (unlocked=false) and Ironman mode, enforce the organic requirements to obtain the drop/craft it
+		List<SkillRequirement> reqsToCheck = (profile.isIronman() || (profile.isBronzeman() && !isBronzemanUnlocked))
+			&& !gear.getOrganicSkillReqs().isEmpty()
+			? gear.getOrganicSkillReqs()
+			: gear.getSkillReqs();
+
+		for (SkillRequirement req : reqsToCheck)
 		{
 			int current = profile.getSkillLevel(req.getSkill());
 			if (current < req.getLevel())
@@ -182,7 +189,6 @@ public class RecommendationEngine
 			}
 		}
 
-		boolean isBronzemanUnlocked = profile.isBronzeman() && profile.hasUnlockedItem(gear.getItemId());
 		boolean canAfford = true;
 		List<String> tags = new ArrayList<>(Arrays.asList("Gear", gear.getSlot()));
 
@@ -190,7 +196,7 @@ public class RecommendationEngine
 		if (profile.isBronzeman() && !isBronzemanUnlocked)
 		{
 			tags.add("Bronzeman Unlock");
-			desc = "Bronzeman Unlock: Obtain organically to unlock GE purchases!";
+			desc = "Bronzeman Goal: Obtain organically to unlock GE purchases!";
 			if (gear.getIronmanSource() != null && !gear.getIronmanSource().isEmpty())
 			{
 				missing.add("Source: " + gear.getIronmanSource());
@@ -252,7 +258,7 @@ public class RecommendationEngine
 			.ironmanFriendly(true)
 			.hiddenGem(false)
 			.wikiUrl(gear.getWikiUrl())
-			.skillRequirements(gear.getSkillReqs())
+			.skillRequirements(reqsToCheck)
 			.questRequirements(gear.getQuestReq() != null && !gear.getQuestReq().isEmpty() ? List.of(gear.getQuestReq()) : Collections.emptyList())
 			.tags(tags)
 			.build();
@@ -269,7 +275,7 @@ public class RecommendationEngine
 
 		if (profile.isBronzeman() && !isBronzemanUnlocked)
 		{
-			score += 20; // High priority milestone for Bronzeman accounts
+			score += 20;
 		}
 
 		return Recommendation.builder()
@@ -313,11 +319,13 @@ public class RecommendationEngine
 		List<Recommendation> list,
 		ActivityCategory category,
 		boolean readyOnly,
+		boolean hideLocked,
 		boolean hiddenGemsOnly)
 	{
 		return list.stream()
 			.filter(r -> category == ActivityCategory.ALL || r.getActivity().getCategory() == category)
 			.filter(r -> !readyOnly || r.getStatus() == Recommendation.Status.READY)
+			.filter(r -> !hideLocked || r.getStatus() != Recommendation.Status.LOCKED)
 			.filter(r -> !hiddenGemsOnly || r.getActivity().isHiddenGem())
 			.collect(Collectors.toList());
 	}

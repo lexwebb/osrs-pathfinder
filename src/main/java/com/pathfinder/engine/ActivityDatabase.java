@@ -161,6 +161,19 @@ public class ActivityDatabase
 					}
 					builder.skillReqs(skillReqs);
 
+					List<SkillRequirement> organicReqs = new ArrayList<>();
+					if (obj.has("organic_skill_reqs"))
+					{
+						for (JsonElement reqEl : obj.getAsJsonArray("organic_skill_reqs"))
+						{
+							JsonObject reqObj = reqEl.getAsJsonObject();
+							Skill skill = Skill.valueOf(reqObj.get("skill").getAsString());
+							int level = reqObj.get("level").getAsInt();
+							organicReqs.add(new SkillRequirement(skill, level));
+						}
+					}
+					builder.organicSkillReqs(organicReqs);
+
 					gearUpgrades.add(builder.build());
 				}
 				log.info("Loaded {} gear milestones from gear_upgrades.json", gearUpgrades.size());

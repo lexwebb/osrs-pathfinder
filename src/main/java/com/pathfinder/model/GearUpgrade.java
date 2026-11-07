@@ -22,4 +22,7 @@ public class GearUpgrade
 
 	@Builder.Default
 	List<SkillRequirement> skillReqs = Collections.emptyList();
+
+	@Builder.Default
+	List<SkillRequirement> organicSkillReqs = Collections.emptyList(); // Required for Bronzeman/Ironman to obtain drop
 }

@@ -47,7 +47,8 @@ public class PathfinderPanel extends PluginPanel
 	private final JComboBox<ActivityCategory> categoryCombo = new JComboBox<>(ActivityCategory.values());
 	private final JComboBox<RecommendationEngine.SortOrder> sortCombo = new JComboBox<>(RecommendationEngine.SortOrder.values());
 
-	private final JCheckBox readyOnlyCheck = new JCheckBox("Ready now", false);
+	private final JCheckBox hideLockedCheck = new JCheckBox("Hide locked goals", true);
+	private final JCheckBox readyOnlyCheck = new JCheckBox("Ready only", false);
 	private final JCheckBox hiddenGemsCheck = new JCheckBox("Hidden gems", false);
 
 	private final JButton surpriseBtn = new JButton("🎲 Surprise Me!");
@@ -68,7 +69,7 @@ public class PathfinderPanel extends PluginPanel
 		// Top Control Container
 		JPanel topContainer = new JPanel();
 		topContainer.setLayout(new BoxLayout(topContainer, BoxLayout.Y_AXIS));
-		topContainer.setBorder(new EmptyBorder(8, 8, 6, 8));
+		topContainer.setBorder(new EmptyBorder(6, 6, 4, 6));
 		topContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		topContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
@@ -133,7 +134,13 @@ public class PathfinderPanel extends PluginPanel
 		sortCombo.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
 		sortCombo.addActionListener(e -> updateDisplay());
 
-		// Toggles Row (2 checkboxes side by side)
+		// Toggles Row
+		hideLockedCheck.setOpaque(false);
+		hideLockedCheck.setForeground(Color.WHITE);
+		hideLockedCheck.setFont(FontManager.getRunescapeSmallFont());
+		hideLockedCheck.setFocusable(false);
+		hideLockedCheck.addActionListener(e -> updateDisplay());
+
 		JPanel toggleRow = new JPanel(new GridLayout(1, 2, 2, 0));
 		toggleRow.setOpaque(false);
 		toggleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -160,19 +167,20 @@ public class PathfinderPanel extends PluginPanel
 		topContainer.add(statusSummary);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(bankBox);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 6)));
+		topContainer.add(Box.createRigidArea(new Dimension(0, 5)));
 		topContainer.add(actionRow);
-		topContainer.add(Box.createRigidArea(new Dimension(0, 6)));
+		topContainer.add(Box.createRigidArea(new Dimension(0, 5)));
 		topContainer.add(categoryCombo);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 3)));
 		topContainer.add(sortCombo);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 3)));
+		topContainer.add(hideLockedCheck);
 		topContainer.add(toggleRow);
 
 		// Card Container inside ScrollPane
 		cardsContainer.setLayout(new BoxLayout(cardsContainer, BoxLayout.Y_AXIS));
 		cardsContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		cardsContainer.setBorder(new EmptyBorder(4, 6, 6, 6));
+		cardsContainer.setBorder(new EmptyBorder(3, 4, 6, 2));
 
 		JPanel listWrapper = new JPanel(new BorderLayout());
 		listWrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -251,6 +259,7 @@ public class PathfinderPanel extends PluginPanel
 
 		ActivityCategory selectedCategory = (ActivityCategory) categoryCombo.getSelectedItem();
 		RecommendationEngine.SortOrder selectedSort = (RecommendationEngine.SortOrder) sortCombo.getSelectedItem();
+		boolean hideLocked = hideLockedCheck.isSelected();
 		boolean readyOnly = readyOnlyCheck.isSelected();
 		boolean hiddenGemsOnly = hiddenGemsCheck.isSelected();
 
@@ -258,6 +267,7 @@ public class PathfinderPanel extends PluginPanel
 			currentEvaluations,
 			selectedCategory != null ? selectedCategory : ActivityCategory.ALL,
 			readyOnly,
+			hideLocked,
 			hiddenGemsOnly
 		);
 

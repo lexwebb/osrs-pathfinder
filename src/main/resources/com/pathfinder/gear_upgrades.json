@@ -69,9 +69,19 @@
         "level": 70
       }
     ],
+    "organic_skill_reqs": [
+      {
+        "skill": "SLAYER",
+        "level": 85
+      },
+      {
+        "skill": "ATTACK",
+        "level": 70
+      }
+    ],
     "quest_req": "",
     "estimated_price": 1800000,
-    "ironman_source": "Slayer drop from Abyssal Demons (85 Slayer required) or Abyssal Sire",
+    "ironman_source": "Slayer drop from Abyssal Demons (requires 85 Slayer) or Abyssal Sire",
     "wiki_url": "https://oldschool.runescape.wiki/w/Abyssal_whip",
     "highlight": "Essential high-DPS 4-tick weapon for general melee and Slayer"
   },
@@ -85,6 +95,16 @@
       {
         "skill": "DEFENCE",
         "level": 40
+      }
+    ],
+    "organic_skill_reqs": [
+      {
+        "skill": "COOKING",
+        "level": 70
+      },
+      {
+        "skill": "MAGIC",
+        "level": 59
       }
     ],
     "quest_req": "Recipe for Disaster",
@@ -113,6 +133,16 @@
         "level": 40
       }
     ],
+    "organic_skill_reqs": [
+      {
+        "skill": "RANGED",
+        "level": 70
+      },
+      {
+        "skill": "PRAYER",
+        "level": 43
+      }
+    ],
     "quest_req": "",
     "estimated_price": 0,
     "ironman_source": "Defeat TzTok-Jad in the TzHaar Fight Cave (requires ~63 waves of prayer/ranged combat)",
@@ -126,9 +156,19 @@
     "item_id": 6585,
     "recommended_combat": 60,
     "skill_reqs": [],
+    "organic_skill_reqs": [
+      {
+        "skill": "CRAFTING",
+        "level": 90
+      },
+      {
+        "skill": "MAGIC",
+        "level": 87
+      }
+    ],
     "quest_req": "",
     "estimated_price": 2800000,
-    "ironman_source": "Buy Onyx with Tokkul in TzHaar shop (or Zulrah drop) and enchant with 87 Magic + 90 Crafting",
+    "ironman_source": "Cut an Onyx (90 Crafting) purchased with Tokkul, and enchant with Lvl-6 Enchant (87 Magic)",
     "wiki_url": "https://oldschool.runescape.wiki/w/Amulet_of_fury",
     "highlight": "Supreme hybrid amulet with +8 Melee/Ranged/Magic attack, +15 defense, and +8 Melee Strength"
   },
@@ -146,6 +186,20 @@
       {
         "skill": "AGILITY",
         "level": 56
+      }
+    ],
+    "organic_skill_reqs": [
+      {
+        "skill": "RANGED",
+        "level": 75
+      },
+      {
+        "skill": "MAGIC",
+        "level": 75
+      },
+      {
+        "skill": "FLETCHING",
+        "level": 53
       }
     ],
     "quest_req": "Regicide",
@@ -166,9 +220,19 @@
         "level": 75
       }
     ],
+    "organic_skill_reqs": [
+      {
+        "skill": "SLAYER",
+        "level": 87
+      },
+      {
+        "skill": "MAGIC",
+        "level": 75
+      }
+    ],
     "quest_req": "",
     "estimated_price": 750000,
-    "ironman_source": "Cave Kraken slayer drop (87 Slayer required)",
+    "ironman_source": "Cave Kraken slayer drop (requires 87 Slayer)",
     "wiki_url": "https://oldschool.runescape.wiki/w/Trident_of_the_seas",
     "highlight": "Powered staff that attacks at 4-tick speed without needing standard spellbook casts"
   }

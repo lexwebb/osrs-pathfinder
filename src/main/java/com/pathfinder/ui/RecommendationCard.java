@@ -4,14 +4,11 @@ import com.pathfinder.model.Activity;
 import com.pathfinder.model.Recommendation;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,15 +32,18 @@ public class RecommendationCard extends JPanel
 	private static final Color BRONZEMAN_COPPER = new Color(205, 127, 50);
 	private static final Color BRONZEMAN_BG = new Color(50, 30, 15);
 
+	// Target width for text wrapping inside RuneLite's 225px panel with active scrollbar
+	private static final String BODY_STYLE = "width: 150px; word-wrap: break-word;";
+
 	public RecommendationCard(Recommendation rec)
 	{
 		Activity activity = rec.getActivity();
 
-		setLayout(new DynamicGridLayout(0, 1, 0, 4));
+		setLayout(new DynamicGridLayout(0, 1, 0, 3));
 		setBackground(ColorScheme.DARKER_GRAY_COLOR);
 		setBorder(BorderFactory.createCompoundBorder(
 			BorderFactory.createMatteBorder(0, 3, 0, 0, getStatusBorderColor(rec.getStatus())),
-			new EmptyBorder(6, 8, 6, 8)
+			new EmptyBorder(5, 6, 5, 4)
 		));
 
 		// 1. Header Row (Title on left, Status badge on right)
@@ -91,7 +91,7 @@ public class RecommendationCard extends JPanel
 		// 2. Unlock Highlight (if present)
 		if (activity.getUnlockHighlight() != null && !activity.getUnlockHighlight().isEmpty())
 		{
-			JLabel unlockLabel = new JLabel("<html><body style='width: 190px; color: #f1c40f;'><b>★ "
+			JLabel unlockLabel = new JLabel("<html><body style='" + BODY_STYLE + " color: #f1c40f;'><b>★ "
 				+ activity.getUnlockHighlight() + "</b></body></html>");
 			unlockLabel.setFont(FontManager.getRunescapeSmallFont());
 			add(unlockLabel);
@@ -100,7 +100,7 @@ public class RecommendationCard extends JPanel
 		// 3. Description
 		if (activity.getDescription() != null && !activity.getDescription().isEmpty())
 		{
-			JLabel descLabel = new JLabel("<html><body style='width: 190px; color: #b0b0b0; line-height: 1.15;'>"
+			JLabel descLabel = new JLabel("<html><body style='" + BODY_STYLE + " color: #b0b0b0; line-height: 1.15;'>"
 				+ activity.getDescription() + "</body></html>");
 			descLabel.setFont(FontManager.getRunescapeSmallFont());
 			add(descLabel);
@@ -121,9 +121,8 @@ public class RecommendationCard extends JPanel
 			Color bulletColor = rec.getStatus() == Recommendation.Status.ALMOST_READY ? ALMOST_READY_COLOR : LOCKED_COLOR;
 			for (String miss : rec.getMissingRequirements())
 			{
-				JLabel reqItem = new JLabel("<html><body style='width: 185px;'>• " + miss + "</body></html>");
+				JLabel reqItem = new JLabel("<html><body style='" + BODY_STYLE + " color: " + toHexColor(bulletColor) + ";'>• " + miss + "</body></html>");
 				reqItem.setFont(FontManager.getRunescapeSmallFont());
-				reqItem.setForeground(bulletColor);
 				reqPanel.add(reqItem);
 			}
 			add(reqPanel);
@@ -134,7 +133,7 @@ public class RecommendationCard extends JPanel
 		footerRow.setOpaque(false);
 
 		// Tags panel
-		JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 0));
+		JPanel tagPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
 		tagPanel.setOpaque(false);
 		int tagCount = 0;
 		for (String tag : activity.getTags())
@@ -190,6 +189,11 @@ public class RecommendationCard extends JPanel
 		footerRow.add(tagPanel, BorderLayout.CENTER);
 		footerRow.add(wikiLink, BorderLayout.EAST);
 		add(footerRow);
+	}
+
+	private String toHexColor(Color c)
+	{
+		return String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
 	}
 
 	private Color getStatusBorderColor(Recommendation.Status status)
