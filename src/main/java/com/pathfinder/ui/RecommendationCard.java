@@ -32,8 +32,8 @@ public class RecommendationCard extends JPanel
 	private static final Color BRONZEMAN_COPPER = new Color(205, 127, 50);
 	private static final Color BRONZEMAN_BG = new Color(50, 30, 15);
 
-	// Target width for text wrapping inside RuneLite's 225px panel with active scrollbar
-	private static final String BODY_STYLE = "width: 150px; word-wrap: break-word;";
+	// Target width for text wrapping strictly inside RuneLite's scrollable safe area (225 - 17 scrollbar - 16 padding)
+	private static final String BODY_STYLE = "width: 172px; word-wrap: break-word;";
 
 	public RecommendationCard(Recommendation rec)
 	{
@@ -43,14 +43,15 @@ public class RecommendationCard extends JPanel
 		setBackground(ColorScheme.DARKER_GRAY_COLOR);
 		setBorder(BorderFactory.createCompoundBorder(
 			BorderFactory.createMatteBorder(0, 3, 0, 0, getStatusBorderColor(rec.getStatus())),
-			new EmptyBorder(5, 6, 5, 4)
+			new EmptyBorder(5, 6, 5, 5)
 		));
 
 		// 1. Header Row (Title on left, Status badge on right)
 		JPanel headerRow = new JPanel(new BorderLayout(4, 0));
 		headerRow.setOpaque(false);
 
-		JLabel titleLabel = new JLabel(activity.getTitle());
+		JLabel titleLabel = new JLabel("<html><body style='width: 118px; word-wrap: break-word;'><b>"
+			+ activity.getTitle() + "</b></body></html>");
 		titleLabel.setFont(FontManager.getRunescapeBoldFont());
 		titleLabel.setForeground(Color.WHITE);
 		titleLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -77,12 +78,15 @@ public class RecommendationCard extends JPanel
 		});
 
 		// Status Badge Pill
-		JLabel statusBadge = new JLabel(" " + getStatusText(rec.getStatus()) + " ");
+		JLabel statusBadge = new JLabel(" " + getStatusText(rec.getStatus()) + " ", javax.swing.SwingConstants.CENTER);
 		statusBadge.setFont(FontManager.getRunescapeSmallFont());
 		statusBadge.setForeground(getStatusBorderColor(rec.getStatus()));
 		statusBadge.setBackground(getStatusBgColor(rec.getStatus()));
 		statusBadge.setOpaque(true);
-		statusBadge.setBorder(BorderFactory.createLineBorder(getStatusBorderColor(rec.getStatus()), 1));
+		statusBadge.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(getStatusBorderColor(rec.getStatus()), 1),
+			new EmptyBorder(1, 3, 1, 3)
+		));
 
 		headerRow.add(titleLabel, BorderLayout.CENTER);
 		headerRow.add(statusBadge, BorderLayout.EAST);
@@ -138,7 +142,7 @@ public class RecommendationCard extends JPanel
 		int tagCount = 0;
 		for (String tag : activity.getTags())
 		{
-			if (tagCount >= 3) break;
+			if (tagCount >= 2) break;
 			JLabel tagBadge = new JLabel(" " + tag + " ");
 			tagBadge.setFont(FontManager.getRunescapeSmallFont());
 

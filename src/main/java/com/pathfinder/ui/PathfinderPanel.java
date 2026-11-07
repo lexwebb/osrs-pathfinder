@@ -29,6 +29,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
+import java.awt.Rectangle;
+import javax.swing.Scrollable;
+import net.runelite.client.ui.DynamicGridLayout;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.util.LinkBrowser;
 
@@ -178,11 +181,11 @@ public class PathfinderPanel extends PluginPanel
 		topContainer.add(toggleRow);
 
 		// Card Container inside ScrollPane
-		cardsContainer.setLayout(new BoxLayout(cardsContainer, BoxLayout.Y_AXIS));
+		cardsContainer.setLayout(new DynamicGridLayout(0, 1, 0, 6));
 		cardsContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		cardsContainer.setBorder(new EmptyBorder(3, 4, 6, 2));
+		cardsContainer.setBorder(new EmptyBorder(3, 4, 6, 4));
 
-		JPanel listWrapper = new JPanel(new BorderLayout());
+		ScrollablePanel listWrapper = new ScrollablePanel();
 		listWrapper.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		listWrapper.add(cardsContainer, BorderLayout.NORTH);
 
@@ -194,6 +197,44 @@ public class PathfinderPanel extends PluginPanel
 
 		add(topContainer, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
+	}
+
+	private static class ScrollablePanel extends JPanel implements Scrollable
+	{
+		ScrollablePanel()
+		{
+			super(new BorderLayout());
+		}
+
+		@Override
+		public Dimension getPreferredScrollableViewportSize()
+		{
+			return getPreferredSize();
+		}
+
+		@Override
+		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction)
+		{
+			return 16;
+		}
+
+		@Override
+		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction)
+		{
+			return 48;
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportWidth()
+		{
+			return true; // Enforces child container strictly adheres to viewport visible safe width
+		}
+
+		@Override
+		public boolean getScrollableTracksViewportHeight()
+		{
+			return false;
+		}
 	}
 
 	public void updateProfile(AccountProfile profile)
@@ -290,7 +331,6 @@ public class PathfinderPanel extends PluginPanel
 			{
 				RecommendationCard card = new RecommendationCard(rec);
 				cardsContainer.add(card);
-				cardsContainer.add(Box.createRigidArea(new Dimension(0, 6)));
 			}
 		}
 
