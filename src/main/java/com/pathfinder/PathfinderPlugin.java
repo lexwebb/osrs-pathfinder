@@ -68,7 +68,9 @@ public class PathfinderPlugin extends Plugin
 	@Inject
 	private RecommendationEngine recommendationEngine;
 
-	private final Gson gson = new Gson();
+	@Inject
+	private Gson gson;
+
 	private PathfinderPanel panel;
 	private NavigationButton navButton;
 	private BankSnapshot lastBankSnapshot;

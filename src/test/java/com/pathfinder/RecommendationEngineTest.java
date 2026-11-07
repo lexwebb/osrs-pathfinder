@@ -26,7 +26,7 @@ public class RecommendationEngineTest
 	@Before
 	public void setUp()
 	{
-		database = new ActivityDatabase();
+		database = new ActivityDatabase(gson);
 		engine = new RecommendationEngine(database);
 	}
 

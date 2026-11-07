@@ -43,7 +43,7 @@ public class PathfinderPreview
 			{
 			}
 
-			ActivityDatabase database = new ActivityDatabase();
+			ActivityDatabase database = new ActivityDatabase(new Gson());
 			RecommendationEngine engine = new RecommendationEngine(database);
 
 			// Mock Account Profile (BMMApollo, Combat 104, Bronzeman)

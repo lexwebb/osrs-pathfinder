@@ -1,5 +1,6 @@
 package com.pathfinder;
 
+import com.google.gson.Gson;
 import com.pathfinder.engine.ActivityDatabase;
 import com.pathfinder.engine.RecommendationEngine;
 import com.pathfinder.model.AccountProfile;
@@ -30,7 +31,7 @@ public class NorthStarEngineTest
 	@Before
 	public void setUp()
 	{
-		database = new ActivityDatabase();
+		database = new ActivityDatabase(new Gson());
 		engine = new RecommendationEngine(database);
 	}
 

@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Skill;
@@ -32,10 +33,12 @@ public class ActivityDatabase
 	private final List<GearUpgrade> gearUpgrades = new ArrayList<>();
 	private final List<CombatCheckpoint> combatCheckpoints = new ArrayList<>();
 	private final List<BossCheckpoint> bossCheckpoints = new ArrayList<>();
-	private final Gson gson = new Gson();
+	private final Gson gson;
 
-	public ActivityDatabase()
+	@Inject
+	public ActivityDatabase(Gson gson)
 	{
+		this.gson = gson;
 		loadActivities();
 		loadGearUpgrades();
 		loadCombatCheckpoints();
