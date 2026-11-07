@@ -36,6 +36,43 @@ public class RecommendationEngineTest
 	}
 
 	@Test
+	public void testCompletedQuestsAreNeverRecommended()
+	{
+		Map<Skill, Integer> skills = new HashMap<>();
+		for (Skill s : Skill.values())
+		{
+			skills.put(s, 70);
+		}
+
+		Set<String> completedQuests = new HashSet<>();
+		// Player has completed Dragon Slayer I and Bone Voyage
+		completedQuests.add("Dragon Slayer I");
+		completedQuests.add("Bone Voyage");
+
+		AccountProfile profile = AccountProfile.builder()
+			.combatLevel(104)
+			.totalLevel(1500)
+			.isIronman(false)
+			.isBronzeman(true)
+			.skills(skills)
+			.completedQuests(completedQuests)
+			.build();
+
+		List<Recommendation> recs = engine.evaluateAll(profile);
+
+		boolean hasDragonSlayer = recs.stream()
+			.anyMatch(r -> "Dragon Slayer I".equalsIgnoreCase(r.getActivity().getTitle())
+				|| "dragon-slayer-i".equalsIgnoreCase(r.getActivity().getId()));
+
+		boolean hasBoneVoyage = recs.stream()
+			.anyMatch(r -> "Bone Voyage".equalsIgnoreCase(r.getActivity().getTitle())
+				|| "bone-voyage".equalsIgnoreCase(r.getActivity().getId()));
+
+		Assert.assertFalse("Completed quest Dragon Slayer I must NOT be recommended", hasDragonSlayer);
+		Assert.assertFalse("Completed quest Bone Voyage must NOT be recommended", hasBoneVoyage);
+	}
+
+	@Test
 	public void testBronzemanRequires85SlayerForWhip()
 	{
 		Map<Skill, Integer> skills = new HashMap<>();

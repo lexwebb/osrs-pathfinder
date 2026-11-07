@@ -58,6 +58,20 @@ public class RecommendationEngine
 		// 1. Standard activities (quests, skilling, minigames, bosses, diaries)
 		for (Activity activity : activityDatabase.getAllActivities())
 		{
+			// Skip quests that the player has already finished
+			if (activity.getCategory() == ActivityCategory.QUEST &&
+				(profile.hasCompletedQuest(activity.getTitle()) || profile.hasCompletedQuest(activity.getId())))
+			{
+				continue;
+			}
+
+			// Skip achievement diaries that the player has already finished
+			if (activity.getCategory() == ActivityCategory.DIARY &&
+				profile.getCompletedDiaries().contains(activity.getId()))
+			{
+				continue;
+			}
+
 			recommendations.add(evaluateActivity(profile, activity));
 		}
 

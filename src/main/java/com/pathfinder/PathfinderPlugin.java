@@ -22,6 +22,7 @@ import net.runelite.api.ItemID;
 import net.runelite.api.Quest;
 import net.runelite.api.QuestState;
 import net.runelite.api.Skill;
+import net.runelite.api.Varbits;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.StatChanged;
@@ -295,6 +296,16 @@ public class PathfinderPlugin extends Plugin
 			unlockedItemIds.addAll(allOwned);
 		}
 
+		Set<String> completedDiaries = new HashSet<>();
+		try
+		{
+			if (client.getVarbitValue(Varbits.DIARY_ARDOUGNE_EASY) == 1) completedDiaries.add("ardougne-easy-diary");
+			if (client.getVarbitValue(Varbits.DIARY_VARROCK_MEDIUM) == 1) completedDiaries.add("varrock-medium-diary");
+		}
+		catch (Exception ignored)
+		{
+		}
+
 		AccountProfile profile = AccountProfile.builder()
 			.combatLevel(combatLevel)
 			.totalLevel(totalLevel)
@@ -302,6 +313,7 @@ public class PathfinderPlugin extends Plugin
 			.isBronzeman(isBronzeman)
 			.skills(skills)
 			.completedQuests(completedQuests)
+			.completedDiaries(completedDiaries)
 			.unlockedItemIds(unlockedItemIds)
 			.bankSnapshot(snapshot)
 			.build();
