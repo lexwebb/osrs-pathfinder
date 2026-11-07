@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,25 +116,20 @@ public class PathfinderPanel extends PluginPanel
 		topContainer.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		topContainer.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		// 1. Header Title (Line 1 - full width, no overlap)
+		// 1. Header Title (Line 1)
 		headerTitle.setFont(FontManager.getRunescapeBoldFont());
 		headerTitle.setForeground(ColorScheme.BRAND_ORANGE);
 		headerTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		// 2. Subtitle Row (Line 2 - Combat & Ready on left, Mode Badge on right)
-		JPanel subtitleRow = new JPanel(new BorderLayout(4, 0));
-		subtitleRow.setOpaque(false);
-		subtitleRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-		subtitleRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 18));
-
-		statusSummary.setFont(FontManager.getRunescapeSmallFont());
-		statusSummary.setForeground(Color.WHITE);
-
+		// 2. Account Mode & Combat Level (Line 2 - full width, no horizontal collision)
 		modeBadge.setFont(FontManager.getRunescapeSmallFont());
 		modeBadge.setForeground(BRONZE_COLOR);
+		modeBadge.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		subtitleRow.add(statusSummary, BorderLayout.WEST);
-		subtitleRow.add(modeBadge, BorderLayout.EAST);
+		// 3. Ready Activities Summary (Line 3 - full width)
+		statusSummary.setFont(FontManager.getRunescapeSmallFont());
+		statusSummary.setForeground(new Color(180, 180, 180));
+		statusSummary.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		// Bank Banner Box
 		JPanel bankBox = new JPanel(new BorderLayout());
@@ -146,19 +142,21 @@ public class PathfinderPanel extends PluginPanel
 		bankSummary.setForeground(new Color(170, 170, 170));
 		bankBox.add(bankSummary, BorderLayout.CENTER);
 
-		// Action Buttons Row: [ 🎲 Surprise ] [ 🔄 Scan ] (Equal 50/50 split)
+		// Action Buttons Row: [ 🎲 Surprise ] [ 🔄 Scan ]
 		JPanel actionRow = new JPanel(new GridLayout(1, 2, 4, 0));
 		actionRow.setOpaque(false);
 		actionRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 		actionRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
 
-		surpriseBtn.setFont(FontManager.getRunescapeBoldFont());
+		surpriseBtn.setFont(FontManager.getRunescapeSmallFont());
 		surpriseBtn.setForeground(new Color(241, 196, 15));
+		surpriseBtn.setMargin(new Insets(2, 2, 2, 2));
 		surpriseBtn.setFocusable(false);
 		surpriseBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		surpriseBtn.addActionListener(e -> triggerSurprise());
 
 		refreshBtn.setFont(FontManager.getRunescapeSmallFont());
+		refreshBtn.setMargin(new Insets(2, 2, 2, 2));
 		refreshBtn.setFocusable(false);
 		refreshBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		refreshBtn.addActionListener(e -> plugin.requestAccountScan());
@@ -215,7 +213,9 @@ public class PathfinderPanel extends PluginPanel
 		// Assemble Header Controls
 		topContainer.add(headerTitle);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 2)));
-		topContainer.add(subtitleRow);
+		topContainer.add(modeBadge);
+		topContainer.add(Box.createRigidArea(new Dimension(0, 2)));
+		topContainer.add(statusSummary);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 4)));
 		topContainer.add(bankBox);
 		topContainer.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -365,9 +365,23 @@ public class PathfinderPanel extends PluginPanel
 		SwingUtilities.invokeLater(() -> {
 			boolean isOffline = !plugin.isClientLoggedIn();
 
-			statusSummary.setText(String.format("Combat %d • %d Ready",
-				profile.getCombatLevel(), readyCount));
+			if (profile.isBronzeman())
+			{
+				modeBadge.setText("🛡️ Bronzeman Mode (Combat " + profile.getCombatLevel() + ")");
+				modeBadge.setForeground(BRONZE_COLOR);
+			}
+			else if (profile.isIronman())
+			{
+				modeBadge.setText("⚔️ Ironman Mode (Combat " + profile.getCombatLevel() + ")");
+				modeBadge.setForeground(ColorScheme.BRAND_ORANGE);
+			}
+			else
+			{
+				modeBadge.setText("Combat " + profile.getCombatLevel() + " • Standard Account");
+				modeBadge.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+			}
 
+			statusSummary.setText(readyCount + " Activities Ready to Tackle");
 			if (isOffline)
 			{
 				statusSummary.setToolTipText("Viewing cached offline profile for " + profile.getUsername()
@@ -378,26 +392,10 @@ public class PathfinderPanel extends PluginPanel
 				statusSummary.setToolTipText(String.format("%d ready, %d almost ready", readyCount, nearCount));
 			}
 
-			if (profile.isBronzeman())
-			{
-				modeBadge.setText("🛡️ Bronzeman");
-				modeBadge.setForeground(BRONZE_COLOR);
-			}
-			else if (profile.isIronman())
-			{
-				modeBadge.setText("⚔️ Ironman");
-				modeBadge.setForeground(ColorScheme.BRAND_ORANGE);
-			}
-			else
-			{
-				modeBadge.setText("Standard");
-				modeBadge.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
-			}
-
 			if (profile.hasScannedBank())
 			{
 				BankSnapshot bs = profile.getBankSnapshot();
-				bankSummary.setText(String.format("💰 Cash: %s | Bank: ~%s GP",
+				bankSummary.setText(String.format("💰 %s GP  •  🏦 ~%s",
 					BankSnapshot.formatGpValue(bs.getTotalLiquidCash()),
 					BankSnapshot.formatGpValue(bs.getEstimatedTotalValue())));
 				bankSummary.setForeground(new Color(241, 196, 15));
