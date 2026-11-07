@@ -1,0 +1,146 @@
+[
+  {
+    "id": "melee-early",
+    "name": "Early Melee Setup",
+    "style": "MELEE",
+    "tier": "EARLY",
+    "description": "Foundational melee loadout for training Attack and Strength",
+    "highlight": "Rune Scimitar, Rune Armour, Glory & Combat Bracelet",
+    "recommended_combat": 40,
+    "recommended_skills": {
+      "ATTACK": 40,
+      "STRENGTH": 40,
+      "DEFENCE": 40
+    },
+    "core_item_ids": [1333, 1127, 1079, 1704],
+    "core_item_names": ["Rune Scimitar", "Rune Platebody", "Rune Platelegs", "Amulet of Glory"]
+  },
+  {
+    "id": "melee-mid",
+    "name": "Mid-Game Melee Setup",
+    "style": "MELEE",
+    "tier": "MID",
+    "description": "Core mid-game melee progression for high-DPS Slayer and bossing",
+    "highlight": "Zombie Axe / Whip, Fighter Torso, Dragon Defender, Fury, Fire Cape & Barrows Gloves",
+    "recommended_combat": 85,
+    "recommended_skills": {
+      "ATTACK": 70,
+      "STRENGTH": 70,
+      "DEFENCE": 65,
+      "PRAYER": 43,
+      "SLAYER": 70
+    },
+    "core_item_ids": [28810, 4151, 10551, 12954, 7462, 6570, 6585, 11840, 10828],
+    "core_item_names": ["Zombie Axe", "Abyssal Whip", "Fighter Torso", "Dragon Defender", "Barrows Gloves", "Fire Cape", "Amulet of Fury", "Dragon Boots", "Helm of Neitiznot"]
+  },
+  {
+    "id": "melee-late",
+    "name": "Late-Game Melee Setup",
+    "style": "MELEE",
+    "tier": "LATE",
+    "description": "High-tier melee setup for high-invocation raids and endgame bosses",
+    "highlight": "Osmumten's Fang, Neitiznot Faceguard, Blood Moon Chestplate & Berserker Ring (i)",
+    "recommended_combat": 105,
+    "recommended_skills": {
+      "ATTACK": 82,
+      "STRENGTH": 85,
+      "DEFENCE": 75,
+      "PRAYER": 70
+    },
+    "core_item_ids": [26219, 24271, 29022, 6737, 12954, 7462],
+    "core_item_names": ["Osmumten's Fang", "Neitiznot Faceguard", "Blood Moon Chestplate", "Berserker Ring", "Dragon Defender", "Barrows Gloves"]
+  },
+  {
+    "id": "ranged-early",
+    "name": "Early Ranged Setup",
+    "style": "RANGED",
+    "tier": "EARLY",
+    "description": "Essential early ranged gear with ammo-saving backpack",
+    "highlight": "Magic Shortbow (i), Ava's Accumulator & Green/Blue D'hide",
+    "recommended_combat": 40,
+    "recommended_skills": {
+      "RANGED": 50,
+      "DEFENCE": 40
+    },
+    "core_item_ids": [12788, 10499, 1704],
+    "core_item_names": ["Magic Shortbow (i)", "Ava's Accumulator", "Amulet of Glory"]
+  },
+  {
+    "id": "ranged-mid",
+    "name": "Mid-Game Ranged Setup",
+    "style": "RANGED",
+    "tier": "MID",
+    "description": "Versatile mid-game ranged setup for Zulrah, Vorkath, and Fight Caves",
+    "highlight": "Toxic Blowpipe, Hunter's Sunlight Crossbow, Black D'hide Body & Ava's Assembler",
+    "recommended_combat": 80,
+    "recommended_skills": {
+      "RANGED": 75,
+      "DEFENCE": 70,
+      "PRAYER": 44
+    },
+    "core_item_ids": [12926, 28869, 9185, 2503, 22109, 7462],
+    "core_item_names": ["Toxic Blowpipe", "Hunter's Sunlight Crossbow", "Rune Crossbow", "Black D'hide Body", "Ava's Assembler", "Barrows Gloves"]
+  },
+  {
+    "id": "ranged-late",
+    "name": "Late-Game Ranged Setup",
+    "style": "RANGED",
+    "tier": "LATE",
+    "description": "Premier long-range powerhouse setup for high-level PvM and Raids",
+    "highlight": "Bow of Faerdhinen, Crystal Armour & Necklace of Anguish",
+    "recommended_combat": 100,
+    "recommended_skills": {
+      "RANGED": 85,
+      "DEFENCE": 75,
+      "PRAYER": 74
+    },
+    "core_item_ids": [25865, 19547, 22109, 7462],
+    "core_item_names": ["Bow of Faerdhinen", "Necklace of Anguish", "Ava's Assembler", "Barrows Gloves"]
+  },
+  {
+    "id": "magic-early",
+    "name": "Early Magic Setup",
+    "style": "MAGIC",
+    "tier": "EARLY",
+    "description": "Cost-effective magic gear for Barrows and early quest bosses",
+    "highlight": "Iban's Staff (u) & Mystic Robes",
+    "recommended_combat": 40,
+    "recommended_skills": {
+      "MAGIC": 50,
+      "DEFENCE": 20
+    },
+    "core_item_ids": [1409, 1704],
+    "core_item_names": ["Iban's Staff (u)", "Amulet of Glory"]
+  },
+  {
+    "id": "magic-mid",
+    "name": "Mid-Game Magic Setup",
+    "style": "MAGIC",
+    "tier": "MID",
+    "description": "Powered staff setup with Mage Arena 2 cape and Occult Necklace",
+    "highlight": "Warped Sceptre / Trident of the Seas, Imbued God Cape, Occult Necklace & Ancient Staff",
+    "recommended_combat": 85,
+    "recommended_skills": {
+      "MAGIC": 75,
+      "DEFENCE": 70,
+      "SLAYER": 87
+    },
+    "core_item_ids": [28585, 11907, 21791, 12002, 4675, 7462],
+    "core_item_names": ["Warped Sceptre", "Trident of the Seas", "Imbued God Cape", "Occult Necklace", "Ancient Staff", "Barrows Gloves"]
+  },
+  {
+    "id": "magic-late",
+    "name": "Late-Game Magic Setup",
+    "style": "MAGIC",
+    "tier": "LATE",
+    "description": "High magic damage bonus setup for Chambers of Xeric and ToA",
+    "highlight": "Trident of the Swamp, Tormented Bracelet, Occult Necklace & Imbued God Cape",
+    "recommended_combat": 105,
+    "recommended_skills": {
+      "MAGIC": 85,
+      "DEFENCE": 75
+    },
+    "core_item_ids": [12899, 19544, 12002, 21791],
+    "core_item_names": ["Trident of the Swamp", "Tormented Bracelet", "Occult Necklace", "Imbued God Cape"]
+  }
+]

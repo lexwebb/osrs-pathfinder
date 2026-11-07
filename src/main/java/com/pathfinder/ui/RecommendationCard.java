@@ -1,6 +1,8 @@
 package com.pathfinder.ui;
 
+import com.pathfinder.engine.ActivityDatabase;
 import com.pathfinder.model.Activity;
+import com.pathfinder.model.NorthStarGoal;
 import com.pathfinder.model.Recommendation;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -8,6 +10,7 @@ import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.function.Consumer;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -29,6 +32,9 @@ public class RecommendationCard extends JPanel
 	private static final Color LOCKED_COLOR = new Color(229, 57, 53);
 	private static final Color LOCKED_BG = new Color(50, 20, 20);
 
+	private static final Color GOLD_ACCENT = new Color(241, 196, 15);
+	private static final Color GOLD_BG = new Color(50, 42, 10);
+
 	private static final Color BRONZEMAN_COPPER = new Color(205, 127, 50);
 	private static final Color BRONZEMAN_BG = new Color(50, 30, 15);
 
@@ -37,12 +43,26 @@ public class RecommendationCard extends JPanel
 
 	public RecommendationCard(Recommendation rec)
 	{
+		this(rec, null, null, null);
+	}
+
+	public RecommendationCard(
+		Recommendation rec,
+		NorthStarGoal activeGoal,
+		Consumer<NorthStarGoal> onSetNorthStar,
+		ActivityDatabase database)
+	{
 		Activity activity = rec.getActivity();
 
 		setLayout(new DynamicGridLayout(0, 1, 0, 3));
 		setBackground(ColorScheme.DARKER_GRAY_COLOR);
+
+		Color borderAccent = rec.isNorthStarPathway()
+			? GOLD_ACCENT
+			: getStatusBorderColor(rec.getStatus());
+
 		setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createMatteBorder(0, 3, 0, 0, getStatusBorderColor(rec.getStatus())),
+			BorderFactory.createMatteBorder(0, 3, 0, 0, borderAccent),
 			new EmptyBorder(5, 6, 5, 5)
 		));
 
@@ -92,11 +112,20 @@ public class RecommendationCard extends JPanel
 		headerRow.add(statusBadge, BorderLayout.EAST);
 		add(headerRow);
 
+		// Pathway Highlight Badge (if this activity advances the active North Star goal)
+		if (rec.isNorthStarPathway() && !rec.getPathwayReason().isEmpty())
+		{
+			JLabel pathwayBadge = new JLabel("<html><body style='" + BODY_STYLE + " color: #f1c40f;'><b>"
+				+ rec.getPathwayReason() + "</b></body></html>");
+			pathwayBadge.setFont(FontManager.getRunescapeSmallFont());
+			add(pathwayBadge);
+		}
+
 		// 2. Unlock Highlight (if present)
 		if (activity.getUnlockHighlight() != null && !activity.getUnlockHighlight().isEmpty())
 		{
-			JLabel unlockLabel = new JLabel("<html><body style='" + BODY_STYLE + " color: #f1c40f;'><b>★ "
-				+ activity.getUnlockHighlight() + "</b></body></html>");
+			JLabel unlockLabel = new JLabel("<html><body style='" + BODY_STYLE + " color: #f1c40f;'>★ "
+				+ activity.getUnlockHighlight() + "</body></html>");
 			unlockLabel.setFont(FontManager.getRunescapeSmallFont());
 			add(unlockLabel);
 		}
@@ -132,7 +161,7 @@ public class RecommendationCard extends JPanel
 			add(reqPanel);
 		}
 
-		// 5. Footer Row (Tags on left, Wiki Link on right)
+		// 5. Footer Row (Tags on left, North Star pin & Wiki Link on right)
 		JPanel footerRow = new JPanel(new BorderLayout(4, 0));
 		footerRow.setOpaque(false);
 
@@ -163,6 +192,67 @@ public class RecommendationCard extends JPanel
 			tagCount++;
 		}
 
+		// Action Links: [ ⭐ Set Goal ] [ Wiki ↗ ]
+		JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 4, 0));
+		actionPanel.setOpaque(false);
+
+		boolean isCurrentGoal = activeGoal != null && (
+			activeGoal.getId().equalsIgnoreCase("activity-" + activity.getId())
+			|| activeGoal.getId().equalsIgnoreCase(activity.getId())
+			|| activeGoal.getTitle().equalsIgnoreCase(activity.getTitle())
+		);
+
+		if (isCurrentGoal)
+		{
+			JLabel activeBadge = new JLabel("⭐ Goal");
+			activeBadge.setFont(FontManager.getRunescapeSmallFont());
+			activeBadge.setForeground(GOLD_ACCENT);
+			activeBadge.setToolTipText("Currently active North Star goal");
+			actionPanel.add(activeBadge);
+		}
+		else if (onSetNorthStar != null && database != null)
+		{
+			JLabel pinGoalLink = new JLabel("⭐ Set");
+			pinGoalLink.setFont(FontManager.getRunescapeSmallFont());
+			pinGoalLink.setForeground(new Color(200, 200, 120));
+			pinGoalLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			pinGoalLink.setToolTipText("Pin as your active North Star goal");
+			pinGoalLink.addMouseListener(new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					NorthStarGoal newGoal;
+					if (activity.getId().startsWith("gear-"))
+					{
+						String gearId = activity.getId().substring("gear-".length());
+						newGoal = database.resolveGoal(gearId);
+					}
+					else
+					{
+						newGoal = database.createGoalFromActivity(activity);
+					}
+					if (newGoal != null)
+					{
+						onSetNorthStar.accept(newGoal);
+					}
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e)
+				{
+					pinGoalLink.setForeground(GOLD_ACCENT);
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e)
+				{
+					pinGoalLink.setForeground(new Color(200, 200, 120));
+				}
+			});
+			actionPanel.add(pinGoalLink);
+		}
+
 		// Wiki Link button
 		JLabel wikiLink = new JLabel("Wiki ↗");
 		wikiLink.setFont(FontManager.getRunescapeSmallFont());
@@ -189,9 +279,10 @@ public class RecommendationCard extends JPanel
 				wikiLink.setForeground(new Color(130, 180, 255));
 			}
 		});
+		actionPanel.add(wikiLink);
 
 		footerRow.add(tagPanel, BorderLayout.CENTER);
-		footerRow.add(wikiLink, BorderLayout.EAST);
+		footerRow.add(actionPanel, BorderLayout.EAST);
 		add(footerRow);
 	}
 

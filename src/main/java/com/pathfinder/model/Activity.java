@@ -28,6 +28,9 @@ public class Activity
 	@Builder.Default
 	List<String> tags = Collections.emptyList();
 
+	@Builder.Default
+	List<net.runelite.api.Skill> trainedSkills = Collections.emptyList();
+
 	public String getSafeWikiUrl()
 	{
 		if (wikiUrl != null && !wikiUrl.isEmpty())

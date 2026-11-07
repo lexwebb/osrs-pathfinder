@@ -1,0 +1,124 @@
+[
+  {
+    "id": "boss-zulrah",
+    "boss_name": "Zulrah Ready",
+    "tier": "MID",
+    "description": "Solo poisonous serpentine boss in the poison waste. Premier mid-game moneymaker and source of Toxic Blowpipe, Magic Fang, and Serpentine Visage.",
+    "unlock_highlight": "Toxic Blowpipe, Toxic Trident & Zulrah's Scales",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Zulrah/Strategies",
+    "recommended_combat": 85,
+    "recommended_skills": {
+      "MAGIC": 80,
+      "RANGED": 75,
+      "PRAYER": 45,
+      "DEFENCE": 70
+    },
+    "prerequisite_quests": [
+      "Regicide",
+      "Underground Pass",
+      "Biohazard",
+      "Plague City"
+    ],
+    "recommended_item_ids": [11907, 28585, 12926, 9185, 21791, 10499],
+    "recommended_item_names": ["Trident of the Seas or Warped Sceptre", "Rune Crossbow or Toxic Blowpipe", "Imbued God Cape", "Ava's Accumulator"]
+  },
+  {
+    "id": "boss-vorkath",
+    "boss_name": "Vorkath Ready",
+    "tier": "LATE",
+    "description": "Resurrected blue dragon boss on the island of Ungael. Top-tier consistent GP/hr and source of Vorkath's head for Ava's Assembler.",
+    "unlock_highlight": "Ava's Assembler, Skeletal Visage & Draconic Visage",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Vorkath/Strategies",
+    "recommended_combat": 95,
+    "recommended_skills": {
+      "RANGED": 80,
+      "DEFENCE": 70,
+      "PRAYER": 74
+    },
+    "prerequisite_quests": [
+      "Dragon Slayer II",
+      "Legends' Quest",
+      "Dream Mentor",
+      "A Tail of Two Cats",
+      "Animal Magnetism",
+      "Ghosts Ahoy",
+      "Bone Voyage"
+    ],
+    "recommended_item_ids": [9185, 22109, 2503, 7462],
+    "recommended_item_names": ["Rune Crossbow (Ruby/Diamond Dragon bolts)", "Ava's Assembler", "Black D'hide Body", "Barrows Gloves"]
+  },
+  {
+    "id": "boss-corrupted-gauntlet",
+    "boss_name": "Corrupted Gauntlet Ready",
+    "tier": "LATE",
+    "description": "Solo instanced PvM trial under Prifddinas with zero gear requirements upon entry. Demands high player skill, precise prayer switching, and solid combat stats.",
+    "unlock_highlight": "Bow of Faerdhinen & Enhanced Crystal Weapon Seed",
+    "wiki_url": "https://oldschool.runescape.wiki/w/The_Gauntlet/Strategies",
+    "recommended_combat": 90,
+    "recommended_skills": {
+      "RANGED": 80,
+      "MAGIC": 80,
+      "DEFENCE": 75,
+      "PRAYER": 70
+    },
+    "prerequisite_quests": [
+      "Song of the Elves",
+      "Mourning's End Part II",
+      "Mourning's End Part I",
+      "Big Chompy Bird Hunting",
+      "Making History",
+      "Underground Pass"
+    ],
+    "recommended_item_ids": [],
+    "recommended_item_names": ["No outside gear permitted (PvM trial provides all supplies)"]
+  },
+  {
+    "id": "boss-muspah",
+    "boss_name": "Phantom Muspah Ready",
+    "tier": "LATE",
+    "description": "Ancient Mahjarrat creation in the frozen caverns of Weiss. Weak to precise magic and heavy ranged switches, drops Ancient Essence and Venator Shards.",
+    "unlock_highlight": "Venator Bow & Ancient Icon",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Phantom_Muspah/Strategies",
+    "recommended_combat": 95,
+    "recommended_skills": {
+      "RANGED": 82,
+      "MAGIC": 82,
+      "DEFENCE": 75,
+      "PRAYER": 70
+    },
+    "prerequisite_quests": [
+      "Secrets of the North",
+      "Making Friends with My Arm",
+      "Devious Minds",
+      "The General's Shadow"
+    ],
+    "recommended_item_ids": [25865, 12899, 11907, 28869, 22109],
+    "recommended_item_names": ["Bow of Faerdhinen or Crossbow", "Trident of the Swamp", "Ava's Assembler"]
+  },
+  {
+    "id": "boss-toa-entry",
+    "boss_name": "Tombs of Amascut (Entry Raid)",
+    "tier": "MID",
+    "description": "Accessible, modular raid in the Kharidian Desert beneath Necropolis. Fully customizable with Invocations from level 0-50 Entry mode up to Expert.",
+    "unlock_highlight": "Osmumten's Fang, Lightbearer & Elidinis' Ward",
+    "wiki_url": "https://oldschool.runescape.wiki/w/Tombs_of_Amascut/Strategies",
+    "recommended_combat": 85,
+    "recommended_skills": {
+      "ATTACK": 70,
+      "STRENGTH": 70,
+      "RANGED": 75,
+      "MAGIC": 75,
+      "PRAYER": 70,
+      "DEFENCE": 70
+    },
+    "prerequisite_quests": [
+      "Beneath Cursed Sands",
+      "Contact!",
+      "Prince Ali Rescue",
+      "Gertrude's Cat",
+      "Icthlarin's Little Helper"
+    ],
+    "recommended_item_ids": [28810, 4151, 12926, 9185, 28585, 11907, 7462],
+    "recommended_item_names": ["Zombie Axe or Whip", "Toxic Blowpipe or Crossbow", "Warped Sceptre or Trident", "Barrows Gloves"]
+  }
+]

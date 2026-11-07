@@ -20,4 +20,10 @@ public class Recommendation
 	List<String> missingRequirements;
 	int missingLevelSum;
 	int score;
+
+	@Builder.Default
+	boolean isNorthStarPathway = false;
+
+	@Builder.Default
+	String pathwayReason = "";
 }

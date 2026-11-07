@@ -94,6 +94,23 @@ public class PathfinderPlugin extends Plugin
 		// Load cached profile from previous session if available
 		loadCachedProfile();
 
+		// Load cached North Star goal if available
+		try
+		{
+			String savedGoal = configManager.getConfiguration("pathfinder", "activeNorthStar");
+			if (savedGoal != null && !savedGoal.isEmpty() && panel != null)
+			{
+				com.pathfinder.model.NorthStarGoal goal = recommendationEngine.getActivityDatabase().resolveGoal(savedGoal);
+				if (goal != null)
+				{
+					panel.setNorthStar(goal);
+				}
+			}
+		}
+		catch (Exception ignored)
+		{
+		}
+
 		clientThread.invokeLater(() -> {
 			if (client.getGameState() == GameState.LOGGED_IN)
 			{
@@ -135,7 +152,7 @@ public class PathfinderPlugin extends Plugin
 	{
 		if ("pathfinder".equals(event.getGroup()))
 		{
-			if ("cachedProfile".equals(event.getKey()))
+			if ("cachedProfile".equals(event.getKey()) || "activeNorthStar".equals(event.getKey()))
 			{
 				return;
 			}
@@ -372,6 +389,11 @@ public class PathfinderPlugin extends Plugin
 	public boolean isClientLoggedIn()
 	{
 		return client != null && client.getGameState() == GameState.LOGGED_IN;
+	}
+
+	public ConfigManager getConfigManager()
+	{
+		return configManager;
 	}
 
 	private void saveCachedProfile(AccountProfile profile)

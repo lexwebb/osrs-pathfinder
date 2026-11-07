@@ -5,13 +5,15 @@ import com.pathfinder.model.Activity;
 import com.pathfinder.model.ActivityCategory;
 import com.pathfinder.model.BankSnapshot;
 import com.pathfinder.model.GearUpgrade;
+import com.pathfinder.model.NorthStarGoal;
+import com.pathfinder.model.NorthStarProgress;
 import com.pathfinder.model.Recommendation;
 import com.pathfinder.model.SkillRequirement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -51,9 +53,20 @@ public class RecommendationEngine
 		this.activityDatabase = activityDatabase;
 	}
 
+	public ActivityDatabase getActivityDatabase()
+	{
+		return activityDatabase;
+	}
+
 	public List<Recommendation> evaluateAll(AccountProfile profile)
 	{
+		return evaluateAll(profile, null);
+	}
+
+	public List<Recommendation> evaluateAll(AccountProfile profile, NorthStarGoal activeGoal)
+	{
 		List<Recommendation> recommendations = new ArrayList<>();
+		NorthStarProgress progress = activeGoal != null ? evaluateNorthStar(profile, activeGoal) : null;
 
 		// 1. Standard activities (quests, skilling, minigames, bosses, diaries)
 		for (Activity activity : activityDatabase.getAllActivities())
@@ -72,7 +85,7 @@ public class RecommendationEngine
 				continue;
 			}
 
-			recommendations.add(evaluateActivity(profile, activity));
+			recommendations.add(evaluateActivity(profile, activity, activeGoal, progress));
 		}
 
 		// 2. Gear upgrades (evaluated against bank, cash stack, and Bronzeman/Ironman rules)
@@ -84,14 +97,109 @@ public class RecommendationEngine
 				continue;
 			}
 
-			recommendations.add(evaluateGearUpgrade(profile, gear));
+			recommendations.add(evaluateGearUpgrade(profile, gear, activeGoal, progress));
 		}
 
 		sort(recommendations, SortOrder.SMART_SCORE);
 		return recommendations;
 	}
 
+	public NorthStarProgress evaluateNorthStar(AccountProfile profile, NorthStarGoal goal)
+	{
+		if (goal == null)
+		{
+			return null;
+		}
+
+		List<NorthStarProgress.SkillGap> skillGaps = new ArrayList<>();
+		List<String> missingQuests = new ArrayList<>();
+		List<NorthStarProgress.ItemGap> missingItems = new ArrayList<>();
+
+		int totalReqs = 0;
+		int satisfiedReqs = 0;
+
+		// 1. Skill Requirements
+		for (Map.Entry<Skill, Integer> entry : goal.getTargetSkills().entrySet())
+		{
+			Skill skill = entry.getKey();
+			int targetLvl = entry.getValue();
+			int currentLvl = profile.getSkillLevel(skill);
+			totalReqs++;
+
+			if (currentLvl >= targetLvl)
+			{
+				satisfiedReqs++;
+			}
+			else
+			{
+				skillGaps.add(NorthStarProgress.SkillGap.builder()
+					.skill(skill)
+					.currentLevel(currentLvl)
+					.targetLevel(targetLvl)
+					.levelsRemaining(targetLvl - currentLvl)
+					.build());
+			}
+		}
+
+		// 2. Prerequisite Quests
+		for (String quest : goal.getPrerequisiteQuests())
+		{
+			totalReqs++;
+			if (profile.hasCompletedQuest(quest))
+			{
+				satisfiedReqs++;
+			}
+			else
+			{
+				missingQuests.add(quest);
+			}
+		}
+
+		// 3. Required Items
+		for (int i = 0; i < goal.getRequiredItemIds().size(); i++)
+		{
+			int itemId = goal.getRequiredItemIds().get(i);
+			String name = i < goal.getRequiredItemNames().size() ? goal.getRequiredItemNames().get(i) : "Item #" + itemId;
+			totalReqs++;
+
+			if (profile.hasScannedBank() && profile.getBankSnapshot().ownsItem(itemId))
+			{
+				satisfiedReqs++;
+			}
+			else
+			{
+				missingItems.add(NorthStarProgress.ItemGap.builder()
+					.itemId(itemId)
+					.itemName(name)
+					.build());
+			}
+		}
+
+		int progressPercent = totalReqs > 0 ? (satisfiedReqs * 100 / totalReqs) : 100;
+		boolean isFullyReady = (satisfiedReqs == totalReqs);
+
+		return NorthStarProgress.builder()
+			.goal(goal)
+			.isFullyReady(isFullyReady)
+			.totalRequirements(totalReqs)
+			.satisfiedRequirements(satisfiedReqs)
+			.progressPercent(progressPercent)
+			.missingSkills(skillGaps)
+			.missingQuests(missingQuests)
+			.missingItems(missingItems)
+			.build();
+	}
+
 	public Recommendation evaluateActivity(AccountProfile profile, Activity activity)
+	{
+		return evaluateActivity(profile, activity, null, null);
+	}
+
+	public Recommendation evaluateActivity(
+		AccountProfile profile,
+		Activity activity,
+		NorthStarGoal activeGoal,
+		NorthStarProgress progress)
 	{
 		List<String> missing = new ArrayList<>();
 		int missingLevelSum = 0;
@@ -158,16 +266,59 @@ public class RecommendationEngine
 			score += 30; // Bonus for variety
 		}
 
+		// North Star Pathway Analysis
+		boolean isPathway = false;
+		String pathwayReason = "";
+
+		if (activeGoal != null && progress != null)
+		{
+			// Check if this activity is a direct prerequisite quest
+			if (activity.getCategory() == ActivityCategory.QUEST &&
+				(progress.hasQuestGap(activity.getTitle()) || progress.hasQuestGap(activity.getId())))
+			{
+				isPathway = true;
+				pathwayReason = "🎯 Required Quest for " + activeGoal.getTitle();
+				score += 120; // Major priority boost
+			}
+			else
+			{
+				// Check if this activity trains any skill with an active gap
+				for (Skill trained : activity.getTrainedSkills())
+				{
+					if (progress.hasSkillGap(trained))
+					{
+						NorthStarProgress.SkillGap gap = progress.getSkillGap(trained);
+						isPathway = true;
+						pathwayReason = String.format("🎯 Pathway for %s: %s %d → %d (+%d lvls)",
+							activeGoal.getTitle(), trained.getName(), gap.getCurrentLevel(), gap.getTargetLevel(), gap.getLevelsRemaining());
+						score += 80;
+						break;
+					}
+				}
+			}
+		}
+
 		return Recommendation.builder()
 			.activity(activity)
 			.status(status)
 			.missingRequirements(missing)
 			.missingLevelSum(missingLevelSum)
 			.score(score)
+			.isNorthStarPathway(isPathway)
+			.pathwayReason(pathwayReason)
 			.build();
 	}
 
 	public Recommendation evaluateGearUpgrade(AccountProfile profile, GearUpgrade gear)
+	{
+		return evaluateGearUpgrade(profile, gear, null, null);
+	}
+
+	public Recommendation evaluateGearUpgrade(
+		AccountProfile profile,
+		GearUpgrade gear,
+		NorthStarGoal activeGoal,
+		NorthStarProgress progress)
 	{
 		List<String> missing = new ArrayList<>();
 		int missingLevelSum = 0;
@@ -289,6 +440,30 @@ public class RecommendationEngine
 			status = Recommendation.Status.LOCKED;
 		}
 
+		int score = 40;
+		if (status == Recommendation.Status.READY)
+		{
+			score += 90;
+		}
+		else if (status == Recommendation.Status.ALMOST_READY)
+		{
+			score += (35 - (missingLevelSum * 4));
+		}
+
+		// North Star Pathway Analysis
+		boolean isPathway = false;
+		String pathwayReason = "";
+
+		if (activeGoal != null && progress != null)
+		{
+			if (progress.hasItemGap(gear.getItemId()))
+			{
+				isPathway = true;
+				pathwayReason = "🎯 Target Gear for " + activeGoal.getTitle();
+				score += 90;
+			}
+		}
+
 		Activity gearActivity = Activity.builder()
 			.id("gear-" + gear.getId())
 			.title(gear.getName())
@@ -299,25 +474,8 @@ public class RecommendationEngine
 			.ironmanFriendly(true)
 			.hiddenGem(false)
 			.wikiUrl(gear.getWikiUrl())
-			.skillRequirements(reqsToCheck)
-			.questRequirements(gear.getQuestReq() != null && !gear.getQuestReq().isEmpty() ? List.of(gear.getQuestReq()) : Collections.emptyList())
 			.tags(tags)
 			.build();
-
-		int score = 65;
-		if (status == Recommendation.Status.READY)
-		{
-			score += 85;
-		}
-		else if (status == Recommendation.Status.ALMOST_READY)
-		{
-			score += 35;
-		}
-
-		if (profile.isBronzeman() && !isBronzemanUnlocked)
-		{
-			score += 20;
-		}
 
 		return Recommendation.builder()
 			.activity(gearActivity)
@@ -325,6 +483,8 @@ public class RecommendationEngine
 			.missingRequirements(missing)
 			.missingLevelSum(missingLevelSum)
 			.score(score)
+			.isNorthStarPathway(isPathway)
+			.pathwayReason(pathwayReason)
 			.build();
 	}
 
@@ -348,7 +508,8 @@ public class RecommendationEngine
 			case SMART_SCORE:
 			default:
 				list.sort(Comparator
-					.comparing((Recommendation r) -> r.getStatus() == Recommendation.Status.READY ? 0 :
+					.comparing((Recommendation r) -> r.isNorthStarPathway() ? 0 : 1) // Pathways always float to top!
+					.thenComparing((Recommendation r) -> r.getStatus() == Recommendation.Status.READY ? 0 :
 						r.getStatus() == Recommendation.Status.ALMOST_READY ? 1 : 2)
 					.thenComparing(Recommendation::getMissingLevelSum)
 					.thenComparing((r1, r2) -> Integer.compare(r2.getScore(), r1.getScore())));
@@ -363,7 +524,19 @@ public class RecommendationEngine
 		boolean hideLocked,
 		boolean hiddenGemsOnly)
 	{
+		return filter(list, category, readyOnly, hideLocked, hiddenGemsOnly, false);
+	}
+
+	public List<Recommendation> filter(
+		List<Recommendation> list,
+		ActivityCategory category,
+		boolean readyOnly,
+		boolean hideLocked,
+		boolean hiddenGemsOnly,
+		boolean pathwaysOnly)
+	{
 		return list.stream()
+			.filter(r -> !pathwaysOnly || r.isNorthStarPathway())
 			.filter(r -> category == ActivityCategory.ALL || r.getActivity().getCategory() == category)
 			.filter(r -> !readyOnly || r.getStatus() == Recommendation.Status.READY)
 			.filter(r -> !hideLocked || r.getStatus() != Recommendation.Status.LOCKED)
